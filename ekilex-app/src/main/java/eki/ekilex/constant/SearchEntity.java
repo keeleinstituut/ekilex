@@ -8,6 +8,7 @@ public enum SearchEntity {
 
 	HEADWORD(
 			SearchKey.VALUE,
+			SearchKey.VARIANT,
 			SearchKey.ID,
 			SearchKey.COMMA_SEPARATED_IDS,
 			SearchKey.LANGUAGE_DIRECT,
