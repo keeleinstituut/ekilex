@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
-import org.jooq.Record17;
+import org.jooq.Record18;
 import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -37,7 +37,6 @@ import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordWordType;
-import eki.ekilex.data.db.main.udt.records.TypeTermMeaningWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
@@ -196,8 +195,10 @@ public class TermSearchDbService extends AbstractDataDbService {
 			Table<Record3<Long, Long, Long[]>> wmid,
 			String resultLang, int offset, boolean noLimit) {
 
-		Lexeme lvs = LEXEME.as("lvs");
-		Lexeme lw = LEXEME.as("lw");
+		Lexeme l11 = LEXEME.as("l11");
+		Lexeme l22 = LEXEME.as("l22");
+		LexemeVariant lv = LEXEME_VARIANT.as("lv");
+		Word w22 = WORD.as("w2");
 		Word wm = WORD.as("wm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
@@ -210,62 +211,82 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(wmid.field("word_id", Long.class));
 
 		Field<Boolean> lvsmpf = DSL.field(DSL.exists(DSL
-				.select(lvs.ID)
-				.from(lvs)
+				.select(l11.ID)
+				.from(l11)
 				.where(
-						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_MOST_PREFERRED)))));
+						l11.WORD_ID.eq(wmid.field("word_id", Long.class))
+								.and(l11.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(l11.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_MOST_PREFERRED)))));
+
 		Field<Boolean> lvslpf = DSL.field(DSL.exists(DSL
-				.select(lvs.ID)
-				.from(lvs)
+				.select(l11.ID)
+				.from(l11)
 				.where(
-						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_LEAST_PREFERRED)))));
+						l11.WORD_ID.eq(wmid.field("word_id", Long.class))
+								.and(l11.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(l11.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_LEAST_PREFERRED)))));
+
 		Field<Boolean> lpf = DSL.field(DSL.exists(DSL
-				.select(lvs.ID)
-				.from(lvs)
+				.select(l11.ID)
+				.from(l11)
 				.where(
-						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-								.and(lvs.IS_PUBLIC.isTrue()))));
+						l11.WORD_ID.eq(wmid.field("word_id", Long.class))
+								.and(l11.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(l11.IS_PUBLIC.isTrue()))));
 
 		Field<Long> wmdsobf = DSL
 				.select(DSL.min(ds.ORDER_BY))
-				.from(lw, ds)
-				.where(lw.WORD_ID.eq(wm.ID).and(lw.DATASET_CODE.eq(ds.CODE)))
+				.from(l11, ds)
+				.where(
+						l11.WORD_ID.eq(wm.ID)
+								.and(l11.DATASET_CODE.eq(ds.CODE)))
 				.asField();
+
 		Field<Long> wlnobf = DSL
 				.select(ln.ORDER_BY)
 				.from(ln)
 				.where(ln.CODE.eq(wm.LANG))
 				.asField();
+
 		Field<Long> wtobf = DSL
 				.select(DSL.count(wt.ID))
 				.from(wt)
-				.where(wt.WORD_ID.eq(wm.ID).and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.where(
+						wt.WORD_ID.eq(wm.ID)
+								.and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
 				.asField();
 
-		Table<Record3<Long, String, Long>> wdsf = DSL
-				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
+		Field<String[]> wdsf = DSL.field(DSL
+				.select(DSL
+						.arrayAgg(lds.DATASET_CODE)
+						.orderBy(ds.ORDER_BY))
 				.from(lds, ds)
 				.where(
 						lds.WORD_ID.eq(wmid.field("word_id", Long.class))
 								.and(lds.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
 								.and(lds.DATASET_CODE.eq(ds.CODE)))
-				.asTable("wdsf");
+				.groupBy(lds.DATASET_CODE, ds.ORDER_BY));
 
-		Field<String[]> wds = DSL.field(DSL
-				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
-				.from(wdsf));
+		Field<String[]> vwvf = DSL
+				.select(DSL.arrayAgg(w22.VALUE).orderBy(lv.ORDER_BY))
+				.from(l11, l22, w22, lv)
+				.where(
+						l11.WORD_ID.eq(wmid.field("word_id", Long.class))
+								.and(l11.MEANING_ID.eq(l22.MEANING_ID))
+								.and(l11.IS_PUBLIC.isTrue())
+								.and(l22.WORD_ID.eq(w22.ID))
+								.and(l22.IS_PUBLIC.isTrue())
+								.and(w22.IS_PUBLIC.isTrue())
+								.and(lv.LEXEME_ID.eq(l11.ID))
+								.and(lv.VARIANT_LEXEME_ID.eq(l22.ID)))
+				.asField();
 
 		Condition wherewm = wm.ID.eq(wmid.field("word_id", Long.class));
 		if (StringUtils.isNotBlank(resultLang)) {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record17<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], Long, Long, Long>> wmm = DSL
+		Table<Record18<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], String[], Long, Long, Long>> wmm = DSL
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
@@ -280,7 +301,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lvsmpf.as("most_preferred"),
 						lvslpf.as("least_preferred"),
 						lpf.as("is_public"),
-						wds.as("dataset_codes"),
+						wdsf.as("dataset_codes"),
+						vwvf.as("variant_word_values"),
 						wmdsobf.as("word_min_ds_order_by"),
 						wlnobf.as("word_lang_order_by"),
 						wtobf.as("word_type_order_by"))
@@ -293,24 +315,24 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Field<JSON> mdf = queryHelper.getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
-		// TODO refactor with json builder
-		Field<TypeTermMeaningWordRecord[]> mw = DSL
-				.field("array(select row ("
-						+ "wm.word_id,"
-						+ "' ' || wm.word_value,"
-						+ "' ' || wm.word_value_prese,"
-						+ "wm.homonym_nr,"
-						+ "wm.lang,"
-						+ "wm.word_type_codes,"
-						+ "wm.prefixoid,"
-						+ "wm.suffixoid,"
-						+ "wm.foreign,"
-						+ "true,"
-						+ "wm.most_preferred,"
-						+ "wm.least_preferred,"
-						+ "wm.is_public,"
-						+ "wm.dataset_codes"
-						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
+		Field<JSON[]> mwf = DSL.field(DSL
+				.array(DSL
+						.jsonObject(
+								DSL.key("wordId").value(wmm.field("word_id")),
+								DSL.key("wordValue").value(wmm.field("word_value")),
+								DSL.key("wordValuePrese").value(wmm.field("word_value_prese")),
+								DSL.key("homonymNr").value(wmm.field("homonym_nr")),
+								DSL.key("lang").value(wmm.field("lang")),
+								DSL.key("wordTypeCodes").value(wmm.field("word_type_codes")),
+								DSL.key("prefixoid").value(wmm.field("prefixoid")),
+								DSL.key("suffixoid").value(wmm.field("suffixoid")),
+								DSL.key("foreign").value(wmm.field("foreign")),
+								DSL.key("matchingWord").value(DSL.value(true)),
+								DSL.key("mostPreferred").value(wmm.field("most_preferred")),
+								DSL.key("leastPreferred").value(wmm.field("least_preferred")),
+								DSL.key("public").value(wmm.field("is_public")),
+								DSL.key("datasetCodes").value(wmm.field("dataset_codes")),
+								DSL.key("variantWordValues").value(wmm.field("variant_word_values")))));
 
 		int limit = DEFAULT_MAX_RESULTS_LIMIT;
 		if (noLimit) {
@@ -329,7 +351,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.select(
 						wmm.field("meaning_id", Long.class),
 						mdf.as("meaning_domains"),
-						mw.as("meaning_words"))
+						mwf.as("meaning_words"))
 				.from(wmm)
 				.orderBy(
 						wmm.field("word_min_ds_order_by"),

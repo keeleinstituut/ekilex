@@ -62,6 +62,10 @@ create index lexeme_variant_lexeme_id_idx on lexeme_variant(lexeme_id);
 create index lexeme_variant_variant_lexeme_id_idx on lexeme_variant(variant_lexeme_id);
 create index lexeme_variant_variant_type_code_idx on lexeme_variant(variant_type_code);
 
+-- #3 --
+
+drop type type_term_meaning_word cascade;
+
 
 
 

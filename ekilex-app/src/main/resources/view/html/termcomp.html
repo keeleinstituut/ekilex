@@ -185,14 +185,16 @@
     <div class="entries" style="overflow:auto;">
       <th:block th:each="resultRow,resultRowIter : ${termSearchResult.results}">
         <div
-          th:id="${'word-result-' + resultRow.meaningId}"
+          th:id="|word-result-${resultRow.meaningId}|"
           class="d-flex flex-row flex-nowrap list-group-item"
           th:classappend="${resultRowIter.last} ? '' : 'border-bottom'" >
           <button
             type="button"
             data-plugin="contextmenu, loadDetailsPlugin"
             data-contextmenu:compare="Ava uues paneelis"
-            name="details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="color: inherit; text-decoration: none;">
+            name="details-btn" th:data-id="${resultRow.meaningId}"
+            class="btn btn-block ml-n1" 
+            style="color: inherit; text-decoration: none;">
             <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
             <th:block th:if="${resultRow.meaningWordsExist}">
               <th:block th:each="meaningWord : ${resultRow.meaningWords}">
@@ -210,17 +212,27 @@
                     <span class="ctxt mt-2">
                       <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">
                         <span th:text="${datasetCode}"></span>
-                        <span th:unless="${itemIter.last}">,</span>
+                        <span th:unless="${itemIter.last}" class="ml-n1">,</span>
                       </span>
                     </span>
                   </span>
                 </div>
+                <th:block th:unless="${#lists.isEmpty(meaningWord.variantWordValues)}">
+                  <div class="row ml-0">
+                    <span>(</span>
+                    <th:block th:each="variantWordValue,itemIter : ${meaningWord.variantWordValues}">
+                      <span th:text="${variantWordValue}"></span>
+                      <span th:unless="${itemIter.last}" class="mr-1">,</span>
+                    </th:block>
+                    <span>)</span>
+                  </div>
+                </th:block>
               </th:block>
-              <th:block th:if="${not #lists.isEmpty(resultRow.meaningDomains)}">
+              <th:block th:unless="${#lists.isEmpty(resultRow.meaningDomains)}">
                 <div class="row ml-0 mt-1">
                   <small th:each="domain,itemIter : ${resultRow.meaningDomains}">
                     <span th:text="${domain.code}" th:title="${domain.value}"></span>
-                    <span th:unless="${itemIter.last}" class="ml-n1">,&nbsp;</span>
+                    <span th:unless="${itemIter.last}" class="ml-n1 mr-1">,</span>
                   </small>
                 </div>
               </th:block>

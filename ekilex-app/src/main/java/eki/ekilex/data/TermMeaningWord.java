@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class TermMeaningWord extends AbstractDataObject implements DecoratedWordType {
@@ -32,7 +34,9 @@ public class TermMeaningWord extends AbstractDataObject implements DecoratedWord
 
 	private boolean isPublic;
 
-	private String[] datasetCodes;
+	private List<String> datasetCodes;
+
+	private List<String> variantWordValues;
 
 	public Long getWordId() {
 		return wordId;
@@ -150,12 +154,20 @@ public class TermMeaningWord extends AbstractDataObject implements DecoratedWord
 		this.isPublic = isPublic;
 	}
 
-	public String[] getDatasetCodes() {
+	public List<String> getDatasetCodes() {
 		return datasetCodes;
 	}
 
-	public void setDatasetCodes(String[] datasetCodes) {
+	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public List<String> getVariantWordValues() {
+		return variantWordValues;
+	}
+
+	public void setVariantWordValues(List<String> variantWordValues) {
+		this.variantWordValues = variantWordValues;
 	}
 
 }

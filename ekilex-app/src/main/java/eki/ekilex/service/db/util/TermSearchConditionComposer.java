@@ -305,8 +305,18 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 			}
 		}
 
-		Table<Record1<Long>> w = DSL.select(w1.ID).from(w1).where(wherew).asTable("w");
-		Table<Record1<Long>> m = DSL.select(m1.ID).from(m1).where(wherem).asTable("m");
+		Table<Record1<Long>> m = DSL
+				.select(m1.ID)
+				.from(m1)
+				.where(wherem)
+				.asTable("m");
+
+		Table<Record1<Long>> w = DSL
+				.select(w1.ID)
+				.from(w1)
+				.where(wherew)
+				.asTable("w");
+
 		Table<Record4<Long, Long, Long, Long>> l = DSL
 				.select(
 						l1.ID.as("lexeme_id"),
@@ -317,21 +327,25 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				.where(wherel)
 				.asTable("l");
 
-		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.field("id", Long.class)).and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
+		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.field("id", Long.class))
+				.and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
 
 		Table<Record3<Long, Long, Long[]>> wm = null;
 
 		if (SearchResultMode.MEANING.equals(resultMode)) {
+
 			wm = DSL
 					.select(
 							m.field("id", Long.class).as("meaning_id"),
-							DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("word_id"),
+							DSL.arrayGet(DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.field("order_by")), 1).as("word_id"),
 							DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
 					.from(m, l, w)
 					.where(wheremlw)
 					.groupBy(m.field("id"))
 					.asTable("m");
+
 		} else if (SearchResultMode.WORD.equals(resultMode)) {
+
 			wm = DSL
 					.select(
 							m.field("id", Long.class).as("meaning_id"),
@@ -383,21 +397,25 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				.where(wherel)
 				.asTable("l");
 
-		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.ID).and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
+		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.ID)
+				.and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
 
 		Table<Record3<Long, Long, Long[]>> wm = null;
 
 		if (SearchResultMode.MEANING.equals(resultMode)) {
+
 			wm = DSL
 					.select(
 							m.ID.as("meaning_id"),
-							DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("word_id"),
+							DSL.arrayGet(DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.field("order_by")), 1).as("word_id"),
 							DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
 					.from(m, l, w)
 					.where(wheremlw)
 					.groupBy(m.ID)
 					.asTable("m");
+
 		} else if (SearchResultMode.WORD.equals(resultMode)) {
+
 			wm = DSL
 					.select(
 							m.ID.as("meaning_id"),

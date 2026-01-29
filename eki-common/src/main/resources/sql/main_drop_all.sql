@@ -35,7 +35,7 @@ drop type if exists type_lang_dataset_publishing;
 drop function if exists encode_text(text);
 drop function if exists adjust_homonym_nrs();
 drop type if exists type_value_name_lang;
-drop type if exists type_term_meaning_word;
+drop type if exists type_term_meaning_word; -- remove later
 drop type if exists type_word_rel_param;
 drop type if exists type_word_rel_meaning;
 drop type if exists type_classifier;
