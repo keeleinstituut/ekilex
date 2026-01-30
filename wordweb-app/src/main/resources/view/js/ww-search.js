@@ -6,6 +6,10 @@ $(window).on("popstate", function(e) {
 	}
 });
 
+$(window).on('load', function() {
+	initStickyScrollPanel();
+})
+
 //Dismiss popovers when clicked outside of it
 $(document).on('click', function(e) {
 	$('[data-toggle="popover"],[data-original-title]').each(function() {
@@ -147,13 +151,6 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 		middle.addClass('limit-collapsed');
 	}
 });
-
-
-$(window).on('load', function() {
-	initStickyScrollPanel();
-})
-
-
 
 function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");

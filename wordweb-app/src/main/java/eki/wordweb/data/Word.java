@@ -28,6 +28,8 @@ public class Word extends WordTypeData {
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime lastActivityEventOn;
 
+	private List<LexemeVariant> lexemeVariants;
+
 	private List<MeaningWord> meaningWords;
 
 	private String meaningWordsWrapup;
@@ -104,6 +106,14 @@ public class Word extends WordTypeData {
 
 	public void setLastActivityEventOn(LocalDateTime lastActivityEventOn) {
 		this.lastActivityEventOn = lastActivityEventOn;
+	}
+
+	public List<LexemeVariant> getLexemeVariants() {
+		return lexemeVariants;
+	}
+
+	public void setLexemeVariants(List<LexemeVariant> lexemeVariants) {
+		this.lexemeVariants = lexemeVariants;
 	}
 
 	public List<MeaningWord> getMeaningWords() {

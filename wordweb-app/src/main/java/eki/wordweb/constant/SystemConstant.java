@@ -69,6 +69,8 @@ public interface SystemConstant extends StatSearchConstant {
 
 	String WORD_SEARCH_GROUP_FORM = "form";
 
+	String WORD_SEARCH_GROUP_VARIANT = "variant";
+
 	String WORD_SEARCH_GROUP_WORD_REL = "word_rel";
 
 	String WORD_SEARCH_GROUP_WORD_REL_COMP = "word_rel_comp";

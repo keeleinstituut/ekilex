@@ -94,24 +94,32 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		String wordInfixUnaccent = textDecorationService.getValueAsWord(wordInfix);
 		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, wordInfixUnaccent, searchContext, limit);
 		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
+		List<WordSearchElement> variantGroup = results.get(WORD_SEARCH_GROUP_VARIANT);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
 		if (CollectionUtils.isEmpty(wordGroup)) {
 			wordGroup = new ArrayList<>();
+		}
+		if (CollectionUtils.isEmpty(variantGroup)) {
+			variantGroup = new ArrayList<>();
 		}
 		if (CollectionUtils.isEmpty(formGroup)) {
 			formGroup = new ArrayList<>();
 		}
 		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
+		List<String> variantWords = variantGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
 		List<String> formWords = formGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(prefWords)) {
 			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();
+			int variantWordsCount = variantWords.size();
 			int formWordsCount = formWords.size();
-			int requiredPrefWordsCount = Math.min(prefWordsCount, limit - formWordsCount);
+			int totalWordLimit = limit - (variantWordsCount + formWordsCount);
+			int requiredPrefWordsCount = Math.min(prefWordsCount, totalWordLimit);
 			prefWords = prefWords.subList(0, requiredPrefWordsCount);
 		}
 		Map<String, List<String>> searchResultCandidates = new HashMap<>();
 		searchResultCandidates.put("prefWords", prefWords);
+		searchResultCandidates.put("variantWords", variantWords);
 		searchResultCandidates.put("formWords", formWords);
 		return searchResultCandidates;
 	}
@@ -164,6 +172,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		boolean wordResultExists = CollectionUtils.isNotEmpty(wordMatchWords);
 		boolean formResultExists = CollectionUtils.isNotEmpty(formMatchWordValues);
+		System.out.println("formMatchWordValues: " + formMatchWordValues);
 		boolean wordOrFormResultExists = wordResultExists || formResultExists;
 		int wordResultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = wordResultCount == 1;

@@ -16,20 +16,6 @@ drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
 drop view if exists view_ww_word_suggestion;
-drop type if exists type_meaning_word; -- remove later
-drop type if exists type_note; -- remove later
-drop type if exists type_value_entity; -- remove later
-drop type if exists type_freeform; -- remove later
-drop type if exists type_lang_complexity; -- remove later
-drop type if exists type_definition; -- remove later
-drop type if exists type_media_file; -- remove later
-drop type if exists type_usage; -- remove later
-drop type if exists type_source_link; -- remove later
-drop type if exists type_colloc_member; -- remove later
-drop type if exists type_word_etym_relation; -- remove later
-drop type if exists type_word_relation; -- remove later
-drop type if exists type_lexeme_relation; -- remove later
-drop type if exists type_meaning_relation; -- remove later
 drop type if exists type_domain;
 drop type if exists type_lang_dataset_publishing;
 
@@ -244,6 +230,57 @@ from
 	group by
 		w.value,
 		w.value_as_word)
+	union all 
+	(select
+		'variant' as sgroup,
+		w1.value word_value_comp,
+		w1.value word_value,
+		lower(w2.value) crit,
+		array_agg(
+			case
+				when (w1.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w1.lang
+				else 'other'
+			end) langs_filt,
+		(array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+	from
+		word w1,
+		word w2,
+		lexeme l1,
+		lexeme l2,
+		lexeme_variant lv,
+		language wl
+	where 
+		w1.lang = wl.code
+		and w1.is_public = true
+		and l1.word_id = w1.id
+		and l1.is_public = true
+		and l1.is_word = true
+		and l1.meaning_id = l2.meaning_id
+		and l2.is_public = true
+		and l2.is_word = true
+		and l2.word_id = w2.id
+		and lv.lexeme_id = l1.id
+		and lv.variant_lexeme_id = l2.id
+		and exists (
+			select
+				1
+			from
+				dataset ds
+			where
+				ds.code = l1.dataset_code
+				and ds.is_public = true
+		)
+		and not exists (
+			select 
+				wwt.id
+			from 
+				word_word_type wwt
+			where 
+				wwt.word_id = w1.id
+				and wwt.word_type_code = 'viga')
+	group by
+		w1.value,
+		w2.value)
 	union all
 	(select
 		'form' as sgroup,
@@ -381,6 +418,7 @@ select
 	w.manual_event_on,
 	w.last_activity_event_on,
 	wt.word_type_codes,
+	lv.lexeme_variants,
 	mw.meaning_words,
 	wd.definitions,
 	wer.word_eki_recommendations,
@@ -582,6 +620,43 @@ from (
 	) wt on wt.word_id = w.word_id
 	left outer join (
 		select
+			l1.word_id,
+			json_agg(
+				json_build_object(
+					'wordId', w2.id,
+					'value', w2.value,
+					'valuePrese', w2.value_prese,
+					'homonymNr', w2.homonym_nr,
+					'homonymExists', false,
+					'lang', w2.lang,
+					'lexemeId', lv.lexeme_id,
+					'variantLexemeId', lv.variant_lexeme_id,
+					'variantTypeCode', lv.variant_type_code,
+					'orderBy', lv.order_by
+				)
+				order by
+					lv.order_by
+			) lexeme_variants
+		from
+			lexeme l1,
+			lexeme l2,
+			word w2,
+			lexeme_variant lv
+		where
+			l1.is_public = true
+			and l1.is_word = true
+			and l1.meaning_id = l2.meaning_id
+			and l2.word_id = w2.id
+			and l2.is_public = true
+			and l2.is_word = true
+			and w2.is_public = true
+			and lv.lexeme_id = l1.id
+			and lv.variant_lexeme_id = l2.id
+		group by
+			l1.word_id
+	) lv on lv.word_id = w.word_id
+	left outer join (
+		select
 			mw.word_id,
 			json_agg(
 				json_build_object(
@@ -707,6 +782,14 @@ from (
 				and w2.is_public = true
 				and l1.dataset_code != 'ety'
 				and l2.dataset_code != 'ety'
+				and not exists (
+					select
+						1
+					from
+						lexeme_variant lv
+					where
+						lv.variant_lexeme_id = l2.id
+				)
 				and (
 					exists (
 						select
@@ -2269,6 +2352,14 @@ from
 				and w2.is_public = true
 				and l1.dataset_code != 'ety'
 				and l2.dataset_code != 'ety'
+				and not exists (
+					select
+						1
+					from
+						lexeme_variant lv
+					where
+						lv.variant_lexeme_id = l2.id
+				)
 				and (exists (
 					select
 						p.id
@@ -3836,6 +3927,22 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type in ('wordweb', 'os')
+	order by c.order_by, cl.lang, cl.type)
+	union all
+	(select
+		'VARIANT_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		cl.type,
+		c.order_by
+	from 
+		variant_type c,
+    	variant_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
 	order by c.order_by, cl.lang, cl.type)
 );
 

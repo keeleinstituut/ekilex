@@ -112,6 +112,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
+		MviewWwWordSearch v = MVIEW_WW_WORD_SEARCH.as("v");
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
 
@@ -123,11 +124,15 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.and(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD))
 				.and(aw.CRIT.like(wordInfixLowerUnaccentLikeField));
 
+		Condition vwhere = applyWordLangFilter(v, destinLangs, DSL.noCondition())
+				.and(v.SGROUP.eq(WORD_SEARCH_GROUP_VARIANT))
+				.and(v.CRIT.like(wordInfixLowerLikeField));
+
 		Condition fwhere = applyWordLangFilter(f, destinLangs, DSL.noCondition())
 				.and(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM))
 				.and(f.CRIT.eq(wordInfixLowerField));
 
-		Table<Record5<String, String, String, Long, TypeLangDatasetPublishingRecord[]>> ws = DSL
+		Table<Record5<String, String, String, Long, TypeLangDatasetPublishingRecord[]>> wvt = DSL
 				.select(
 						wgf.as("sgroup"),
 						w.WORD_VALUE,
@@ -147,21 +152,30 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.where(awwhere))
 				.asTable("ws");
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(wvt.field("word_value", String.class), wordInfixLowerField));
 
-		Condition wsWhere = applyContainingLangComplexityDatasetFilter(ws, searchContext, DSL.noCondition());
+		Condition wswhere = applyContainingLangComplexityDatasetFilter(wvt, searchContext, DSL.noCondition());
 
-		Table<Record3<String, String, Integer>> wfs = DSL
+		Table<Record3<String, String, Integer>> wvft = DSL
 				.select(
-						ws.field("sgroup", String.class),
-						ws.field("word_value", String.class),
+						wvt.field("sgroup", String.class),
+						wvt.field("word_value", String.class),
 						wlf.as("lev"))
-				.from(ws)
-				.where(wsWhere)
+				.from(wvt)
+				.where(wswhere)
 				.orderBy(
-						ws.field("lang_order_by"),
+						wvt.field("lang_order_by"),
 						DSL.field("lev"))
 				.limit(maxWordCount)
+				.unionAll(DSL
+						.select(
+								v.SGROUP,
+								v.WORD_VALUE,
+								DSL.field(DSL.val(0)).as("lev"))
+						.from(v)
+						.where(vwhere)
+						.orderBy(v.WORD_VALUE)
+						.limit(maxWordCount))
 				.unionAll(DSL
 						.select(
 								f.SGROUP,
@@ -175,9 +189,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		return (Map<String, List<WordSearchElement>>) create
 				.select(
-						wfs.field("sgroup", String.class),
-						wfs.field("word_value", String.class))
-				.from(wfs)
+						wvft.field("sgroup", String.class),
+						wvft.field("word_value", String.class))
+				.from(wvft)
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
@@ -655,6 +669,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.MANUAL_EVENT_ON,
 						w.LAST_ACTIVITY_EVENT_ON,
 						w.WORD_TYPE_CODES,
+						w.LEXEME_VARIANTS,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
 						w.WORD_EKI_RECOMMENDATIONS,

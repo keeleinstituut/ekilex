@@ -16,9 +16,7 @@ drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_news_article;
 drop materialized view if exists mview_ww_word_suggestion;
 
-drop type if exists type_lang_complexity; -- remove later
 drop type if exists type_lang_dataset_publishing;
-
 
 -- run this once:
 -- create extension dblink;
@@ -93,6 +91,7 @@ dblink(
 	manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	word_type_codes varchar(100) array,
+	lexeme_variants json,
 	meaning_words json,
 	definitions json,
 	word_eki_recommendations json,

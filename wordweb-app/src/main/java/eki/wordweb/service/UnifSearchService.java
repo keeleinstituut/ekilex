@@ -26,6 +26,7 @@ import eki.wordweb.data.WordCollocPosGroups;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelationsTuple;
+import eki.wordweb.data.WordTypeData;
 
 @Component
 public class UnifSearchService extends AbstractSearchService {
@@ -71,6 +72,7 @@ public class UnifSearchService extends AbstractSearchService {
 		// word data
 		Word word = searchDbService.getWord(wordId);
 		String wordLang = word.getLang();
+		classifierUtil.applyClassifiers((WordTypeData) word, displayLang);
 		classifierUtil.applyClassifiers(word, displayLang);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
 		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);

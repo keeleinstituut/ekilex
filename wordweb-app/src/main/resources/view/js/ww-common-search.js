@@ -57,9 +57,15 @@ function searchWordAutocomplete() {
 
 		ul.addClass("list-group");
 		$.each(groups, function(index, group) {
+			if (group == "variantWord") {
+				var li = $("<li>");
+				li.addClass("list-group-item list-group-item-info py-0");
+				li.text(messages.this_is_variant);
+				ul.append(li);
+			}
 			if (group == "formWord") {
 				var li = $("<li>");
-				li.addClass("list-group-item list-group-item-info");
+				li.addClass("list-group-item list-group-item-info py-0");
 				li.text(messages.this_is_form);
 				ul.append(li);
 			}
@@ -91,6 +97,13 @@ function searchWordAutocomplete() {
 					$.each(data.prefWords, function(index, item) {
 						fullList.push({
 							group: "prefWord",
+							label: item,
+							value: item
+						});
+					});
+					$.each(data.variantWords, function(index, item) {
+						fullList.push({
+							group: "variantWord",
 							label: item,
 							value: item
 						});

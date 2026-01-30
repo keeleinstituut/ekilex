@@ -18,10 +18,12 @@ import eki.wordweb.data.Dataset;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeRelation;
+import eki.wordweb.data.LexemeVariant;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.MeaningRelation;
 import eki.wordweb.data.MeaningWord;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordTypeData;
@@ -67,6 +69,19 @@ public class ClassifierUtil {
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		word.setAspect(classifier);
+	}
+
+	public void applyClassifiers(Word word, String displayLang) {
+		String classifierCode;
+		Classifier classifier;
+		List<LexemeVariant> lexemeVariants = word.getLexemeVariants();
+		if (CollectionUtils.isNotEmpty(lexemeVariants)) {
+			for (LexemeVariant lexemeVariant : lexemeVariants) {
+				classifierCode = lexemeVariant.getVariantTypeCode();
+				classifier = getClassifier(ClassifierName.VARIANT_TYPE, classifierCode, displayLang);
+				lexemeVariant.setVariantType(classifier);
+			}
+		}
 	}
 
 	public void applyClassifiers(LanguagesDatasets languagesDatasets, String displayLang) {

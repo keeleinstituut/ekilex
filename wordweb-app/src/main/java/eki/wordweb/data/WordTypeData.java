@@ -10,7 +10,6 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 
 	private Long wordId;
 
-	// TODO actually, change to wordValue. value is too ambiguous
 	private String value;
 
 	private String valuePrese;

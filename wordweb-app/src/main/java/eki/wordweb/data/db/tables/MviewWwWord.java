@@ -137,6 +137,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
+     * The column <code>public.mview_ww_word.lexeme_variants</code>.
+     */
+    public final TableField<MviewWwWordRecord, JSON> LEXEME_VARIANTS = createField(DSL.name("lexeme_variants"), SQLDataType.JSON, this, "");
+
+    /**
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
