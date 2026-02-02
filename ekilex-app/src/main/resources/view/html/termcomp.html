@@ -948,7 +948,18 @@
         <span class="ttl word-value"
               th:data-id="${lexeme.wordId}"
               th:id="${'word-value-' + lexeme.wordId}"
-              th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}"></span>
+              th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}">
+        </span>
+        <th:block th:unless="${#lists.isEmpty(lexeme.lexemeVariants)}">
+          <span>
+            <span class="mr-n1">(</span>
+            <th:block th:each="lexemeVariant, lexemeVariantIter : ${lexeme.lexemeVariants}">
+              <span th:utext="${lexemeVariant.wordValuePrese}"></span>
+              <span th:unless="${lexemeVariantIter.last}" class="ml-n1">,</span>
+            </th:block>
+            <span class="ml-n1">)</span>
+          </span>
+        </th:block>
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"

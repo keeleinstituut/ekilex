@@ -32,6 +32,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
+import eki.ekilex.data.LexemeVariant;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningImage;
@@ -255,6 +256,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 			permCalculator.applyCrud(user, wordForums);
+			List<LexemeVariant> lexemeVariants = variantDbService.getLexemeVariants(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<LexemeNote> lexemeNotes = lexeme.getNotes();
 			permCalculator.filterVisibility(user, lexemeNotes);
@@ -278,6 +280,7 @@ public class TermSearchService extends AbstractSearchService {
 					|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
 					|| CollectionUtils.isNotEmpty(grammars);
 
+			lexeme.setLexemeVariants(lexemeVariants);
 			lexeme.setFreeforms(lexemeFreeforms);
 			lexeme.setNoteLangGroups(lexemeNoteLangGroups);
 			lexeme.setGrammars(grammars);

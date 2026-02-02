@@ -21,11 +21,15 @@ import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.OsDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.service.db.VariantDbService;
 
 public abstract class AbstractSearchService extends AbstractService implements PermConstant {
 
 	@Autowired
 	protected CommonDataDbService commonDataDbService;
+
+	@Autowired
+	protected VariantDbService variantDbService;
 
 	@Autowired
 	protected OsDataDbService osDataDbService;
