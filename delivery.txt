@@ -1,1 +1,5 @@
 Märkused ver 1.46.0 tarne kohta:
+
+jutumärkide parandus märgendusega tekstides
+mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev 
+

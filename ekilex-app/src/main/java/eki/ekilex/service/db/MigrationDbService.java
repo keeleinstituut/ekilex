@@ -367,7 +367,7 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 	private List<ValueId> getValues(String containingStr, Table<?> t, Field<String> langField) {
 
 		String containingCrit = "%" + containingStr + "%";
-		Condition where = t.field("value", String.class).like(containingCrit);
+		Condition where = t.field("value_prese", String.class).like(containingCrit);
 		return mainDb
 				.select(
 						DSL.value(t.getName()).as("table_name"),
@@ -386,6 +386,16 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 		mainDb
 				.update(t)
 				.set(t.field("value", String.class), value)
+				.set(t.field("value_prese", String.class), valuePrese)
+				.where(t.field("id", Long.class).eq(id))
+				.execute();
+	}
+
+	public void updateValuePrese(String tableName, Long id, String valuePrese) {
+
+		Table<?> t = PUBLIC.getTable(tableName).as("t");
+		mainDb
+				.update(t)
 				.set(t.field("value_prese", String.class), valuePrese)
 				.where(t.field("id", Long.class).eq(id))
 				.execute();

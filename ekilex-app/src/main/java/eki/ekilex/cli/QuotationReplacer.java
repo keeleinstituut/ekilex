@@ -32,7 +32,7 @@ public class QuotationReplacer implements CommandLineRunner {
 	@Autowired
 	private QuotationReplacerRunner runner;
 
-	//mvn spring-boot:run -P qure -D spring-boot.run.profiles=<dev|prod> 
+	//mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");

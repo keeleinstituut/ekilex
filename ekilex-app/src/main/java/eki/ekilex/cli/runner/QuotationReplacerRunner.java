@@ -25,6 +25,8 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(QuotationReplacerRunner.class);
 
+	private static final String QUOTATION_INCIDENT_STR = "=„";
+
 	private static final char[] ALT_QUOTATION_CHARS = {'„', '”', '“', '″', '\''};
 
 	private static final char DEFAULT_QUOTATION_CHAR = '"';
@@ -36,9 +38,9 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 	@Autowired
 	private MigrationDbService migrationDbService;
 
-	private final String reportFileName = "double-quotation-replace-report.txt";
+	private final String reportFileName = "double-quotation-fix-report.txt";
 
-	private boolean makeReport = true;
+	private boolean makeReport = false;
 
 	@Transactional(rollbackFor = Exception.class)
 	public void execute() throws Exception {
@@ -52,31 +54,31 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 			reportWriter = new OutputStreamWriter(reportStream, StandardCharsets.UTF_8);
 		}
 
-		final String defaultQuotationStr = String.valueOf(DEFAULT_QUOTATION_CHAR);
+		final String quotationIncidentStr = QUOTATION_INCIDENT_STR;
 		List<ValueId> valueIds;
 		Count recordCount = new Count();
 
-		valueIds = migrationDbService.getWordValues(defaultQuotationStr);
+		valueIds = migrationDbService.getWordValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getDefinitionValues(defaultQuotationStr);
+		valueIds = migrationDbService.getDefinitionValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getUsageValues(defaultQuotationStr);
+		valueIds = migrationDbService.getUsageValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getWordEkiRecommendationValues(defaultQuotationStr);
+		valueIds = migrationDbService.getWordEkiRecommendationValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getWordOsUsageValues(defaultQuotationStr);
+		valueIds = migrationDbService.getWordOsUsageValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getMeaningNoteValues(defaultQuotationStr);
+		valueIds = migrationDbService.getMeaningNoteValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getLexemeNoteValues(defaultQuotationStr);
+		valueIds = migrationDbService.getLexemeNoteValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getMeaningForumValues(defaultQuotationStr);
+		valueIds = migrationDbService.getMeaningForumValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getLearnerCommentValues(defaultQuotationStr);
+		valueIds = migrationDbService.getLearnerCommentValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getGrammarValues(defaultQuotationStr);
+		valueIds = migrationDbService.getGrammarValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getSourceValues(defaultQuotationStr);
+		valueIds = migrationDbService.getSourceValues(quotationIncidentStr);
 		handleValues(valueIds, recordCount, reportWriter);
 
 		if (makeReport) {
@@ -112,45 +114,40 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 			Long id = valueId.getId();
 			String value = valueId.getValue();
 			String valuePrese = valueId.getValuePrese();
+			String newValuePrese = fixQuotationIncident(valuePrese);
+			migrationDbService.updateValuePrese(tableName, id, newValuePrese);
 
-			boolean containsAltQuotationChars = StringUtils.containsAny(value, ALT_QUOTATION_CHARS);
-			if (containsAltQuotationChars) {
-				continue;
-			}
-			int defaultQuotationCharCount = StringUtils.countMatches(value, DEFAULT_QUOTATION_CHAR);
-			if (defaultQuotationCharCount == 2) {
-				matchCount.increment();
-				String newValue = replaceQuotation(value);
-				String newValuePrese = replaceQuotation(valuePrese);
-				migrationDbService.updateValue(tableName, id, newValue, newValuePrese);
-				if (makeReport) {
-					String reportLine = tableName + "\t" + id + "\t" + value + "\t" + newValue + "\t" + newValuePrese + "\n";
-					reportWriter.write(reportLine);
-				}
+			if (makeReport) {
+				String reportLine = tableName + "\t" + id + "\t" + value + "\t" + valuePrese + "\t" + newValuePrese + "\n";
+				reportWriter.write(reportLine);
 			}
 		}
 
 		logger.info("{} quoted values: {}, matching quoatations: {}", tableName, valueIds.size(), matchCount.getValue());
 	}
 
-	private String replaceQuotation(String value) {
+	private String fixQuotationIncident(String value) {
 
 		StringBuffer valueBuf = new StringBuffer();
-		char[] valueChars = value.toCharArray();
-		boolean isPairOpen = false;
-		for (char ch : valueChars) {
-			if (ch == DEFAULT_QUOTATION_CHAR) {
-				if (isPairOpen) {
-					valueBuf.append(REPLACE_CLOSE_QUOTATION_CHAR);
-					isPairOpen = false;
-				} else {
-					valueBuf.append(REPLACE_OPEN_QUOTATION_CHAR);
-					isPairOpen = true;
-				}
+
+		boolean isIncidentOpen = false;
+		for (int charIndex = 0; charIndex < value.length(); charIndex++) {
+
+			char ch = value.charAt(charIndex);
+			String substring = StringUtils.substring(value, charIndex, charIndex + QUOTATION_INCIDENT_STR.length());
+			if (StringUtils.equals(substring, QUOTATION_INCIDENT_STR)) {
+				isIncidentOpen = true;
 			} else {
-				valueBuf.append(ch);
+				if (isIncidentOpen && (ch == REPLACE_OPEN_QUOTATION_CHAR)) {
+					ch = DEFAULT_QUOTATION_CHAR;
+				} else if (isIncidentOpen && (ch == REPLACE_CLOSE_QUOTATION_CHAR)) {
+					ch = DEFAULT_QUOTATION_CHAR;
+					isIncidentOpen = false;
+				}
 			}
+			valueBuf.append(ch);
 		}
+
 		String newValue = valueBuf.toString();
 		return newValue;
 	}
