@@ -42,6 +42,11 @@ public class LanguageData extends AbstractDataObject {
 		return imageName;
 	}
 
+	public Boolean getIsDefaultLanguage() {
+		// TODO: use a constant?
+		return "et".equals(codeIso2);
+	}
+
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
 	}
