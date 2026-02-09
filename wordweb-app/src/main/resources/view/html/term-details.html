@@ -63,7 +63,7 @@
                     <th:block th:if="${definition.subDataExists}">
                       <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.id}">
                         <span class="definition-value text-body-regular text-weight-semi-bold">
-                          <th:block th:utext="${definition.valuePrese}" th:lang="${langData.isDefaultLanguage ? null : langData.codeIso2}"></th:block>
+                          <span th:utext="${definition.valuePrese}" th:lang="${langData.isDefaultLanguage ? null : langData.codeIso2}"></span>
                           <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                             <span class="definition-sources">
                               <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
