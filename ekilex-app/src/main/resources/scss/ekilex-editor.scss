@@ -1,336 +1,342 @@
 /* stylelint-disable */
 .eki-editor-menu {
-    visibility: hidden;
-    width: 200px;
-    padding: 6px;
-    position: absolute;
-    z-index: 1;
-    top: -25%;
-    left: 65%;
+  visibility: hidden;
+  width: 200px;
+  padding: 6px;
+  position: absolute;
+  z-index: 1;
+  top: -25%;
+  left: 65%;
 }
 
 .eki-editor-menu.show {
-    visibility: visible;
+  visibility: visible;
 }
 
 .eki-tag-select {
-    width: 100%;
-    overflow-y: auto;
+  width: 100%;
+  overflow-y: auto;
 }
 
 .eki-tag-select option {
-    padding: 2px 4px;
+  padding: 2px 4px;
 }
 
 .edit-area-sm {
-    height: 4em;
-    overflow: auto;
+  height: 4em;
+  overflow: auto;
 }
 
 .edit-area-lg {
-    height: 8em;
-    overflow: auto;
+  height: 8em;
+  overflow: auto;
 }
 
-
-.cke_button__ekisub_icon, .cke_button__ekisup_icon{
-    background-size: 16px !important;
+.cke_button__ekisub_icon,
+.cke_button__ekisup_icon {
+  background-size: 16px !important;
 }
-.cke_button__stress, .cke_button__foreign, .cke_button__meta, .cke_button__highlight {
-    .cke_button_icon {
-        background-size: 32px !important;
-        width: 32px;
-    }
+.cke_button__stress,
+.cke_button__foreign,
+.cke_button__meta,
+.cke_button__highlight {
+  .cke_button_icon {
+    background-size: 32px !important;
+    width: 32px;
+  }
 }
 .cke_button__stress_icon {
-    background-position: 50% 45% !important;
-    background-image: url('../img/ckeditor/ekistress.png') !important;
+  background-position: 50% 45% !important;
+  background-image: url("../img/ckeditor/ekistress.png") !important;
 }
 .cke_button__ekisub_icon {
-    background-image: url('../img/ckeditor/ekisub.png') !important;
+  background-image: url("../img/ckeditor/ekisub.png") !important;
 }
 
 .cke_button__ekisup_icon {
-    background-image: url('../img/ckeditor/ekisup.png') !important;
+  background-image: url("../img/ckeditor/ekisup.png") !important;
 }
 
 .cke_button__foreign_icon {
-    background-image: url('../img/ckeditor/foreign.png') !important;
+  background-image: url("../img/ckeditor/foreign.png") !important;
 }
 
 .cke_button__highlight_icon {
-    background-image: url('../img/ckeditor/highlight.png') !important;
+  background-image: url("../img/ckeditor/highlight.png") !important;
 }
 
 .ql-container.ql-snow {
-    min-height: 200px;
-    resize: vertical;
-    overflow: auto;
+  height: 200px;
+  resize: vertical;
+  overflow: auto;
 }
 
 .ql-snow.ql-toolbar {
-    button[data-format] {
-        background-size: 18px;
-        width: 28px;
-        height: 24px;
-        background-repeat: no-repeat;
-        background-position: center;
+  button[data-format] {
+    background-size: 18px;
+    width: 36px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-position: center;
 
-        &.ql-active {
-            box-shadow: inset 1px 1px 6px var(--color-gray-100);
-        }
-
-        &:not(:first-child) {
-            margin-left: 2px;
-        }
+    &.ql-active {
+      box-shadow: inset 1px 1px 6px var(--color-gray-200);
     }
 
-    button[data-format="bold"] {
-        background-size: 24px;
-        background-image: url('../img/ckeditor/highlight.png');
+    &:not(:first-child) {
+      margin-left: 2px;
     }
+  }
 
-    button[data-format="italic"] {
-        background-size: 24px;
-        background-image: url('../img/ckeditor/foreign.png');
-    }
+  button[data-format="bold"] {
+    background-size: 36px;
+    background-image: url("../img/ckeditor/highlight.png");
+  }
 
-    button[data-format="stress"] {
-        background-size: 24px;
-        background-image: url('../img/ckeditor/ekistress.png');
-    }
+  button[data-format="italic"] {
+    background-size: 36px;
+    background-image: url("../img/ckeditor/foreign.png");
+  }
 
-    button[data-format="meta"] {
-        background-size: 24px;
-        background-image: url('../img/ckeditor/meta.png');
-    }
+  button[data-format="stress"] {
+    background-size: 36px;
+    background-image: url("../img/ckeditor/ekistress.png");
+  }
 
-    button[data-format="eki-sup"] {
-        background-size: 14px;
-        background-image: url('../img/ckeditor/ekisup.png');
-    }
+  button[data-format="meta"] {
+    background-size: 36px;
+    background-image: url("../img/ckeditor/meta.png");
+  }
 
-    button[data-format="eki-sub"] {
-        background-size: 14px;
-        background-image: url('../img/ckeditor/ekisub.png');
-    }
+  button[data-format="eki-sup"] {
+    background-size: 24px;
+    background-image: url("../img/ckeditor/ekisup.png");
+  }
 
-    button[data-format="link"] {
-        background-size: 16px;
-        background-image: url('../img/ckeditor/ekilink.png');
-    }
+  button[data-format="eki-sub"] {
+    background-size: 24px;
+    background-image: url("../img/ckeditor/ekisub.png");
+  }
 
-    button[data-format="remove-link"] {
-        background-size: 16px;
-        background-image: url('../img/ckeditor/removeekilink.png');
-    }
+  button[data-format="link"] {
+    background-size: 24px;
+    background-image: url("../img/ckeditor/ekilink.png");
+  }
 
-    button[data-format="eki-media"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        // Currently using FontAwesome, image would be in this form:
-        // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
-        &:after {
-            content: "\f03e";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: #2c5ec0;
-        }
-    }
+  button[data-format="remove-link"] {
+    background-size: 24px;
+    background-image: url("../img/ckeditor/removeekilink.png");
+  }
 
-    button[data-format="remove-media"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        // Currently using FontAwesome, image would be in this form:
-        // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
-        &:after {
-            content: "\f03e";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: red;
-        }
+  button[data-format="eki-media"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Currently using FontAwesome, image would be in this form:
+    // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
+    &:after {
+      content: "\f03e";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: #2c5ec0;
     }
+  }
 
-    button[data-format="undo"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &:after {
-            content: "\f0e2";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: #444;
-        }
+  button[data-format="remove-media"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Currently using FontAwesome, image would be in this form:
+    // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
+    &:after {
+      content: "\f03e";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: red;
     }
+  }
 
-    button[data-format="redo"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &:after {
-            content: "\f01e";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: #444;
-        }
+  button[data-format="undo"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      content: "\f0e2";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: #444;
     }
+  }
 
-    button[data-format="source"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &:after {
-            content: "\f121";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: #444;
-        }
+  button[data-format="redo"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      content: "\f01e";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: #444;
     }
+  }
 
-    button[data-format="remove-format"] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &:after {
-            content: "\f12d";
-            font-family: 'FontAwesome';
-            font-size: 14px;
-            color: #444;
-        }
+  button[data-format="source"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      content: "\f121";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: #444;
     }
+  }
+
+  button[data-format="remove-format"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:after {
+      content: "\f12d";
+      font-family: "FontAwesome";
+      font-size: 20px;
+      color: #444;
+    }
+  }
 }
 
 .cke_button__meta_icon {
-    background-image: url('../img/ckeditor/meta.png') !important;
+  background-image: url("../img/ckeditor/meta.png") !important;
 }
 
 .cke_button__ekilink_icon {
-    background-image: url('../img/ckeditor/ekilink.png') !important;
+  background-image: url("../img/ckeditor/ekilink.png") !important;
 }
 .cke_button__removeekilink_icon {
-    background-image: url('../img/ckeditor/removeekilink.png') !important;
+  background-image: url("../img/ckeditor/removeekilink.png") !important;
 }
 
 .cke_button_icon.cke_button__ekimedia_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // Currently using FontAwesome, image would be in this form:
-    // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
-    &:after {
-        content: "\f03e";
-        font-family: 'FontAwesome';
-        color: #2c5ec0;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Currently using FontAwesome, image would be in this form:
+  // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
+  &:after {
+    content: "\f03e";
+    font-family: "FontAwesome";
+    color: #2c5ec0;
+  }
 }
 
 .cke_button_icon.cke_button__removeekimedia_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // Currently using FontAwesome, image would be in this form:
-    // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
-    &:after {
-        content: "\f03e";
-        font-family: 'FontAwesome';
-        color: red;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Currently using FontAwesome, image would be in this form:
+  // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
+  &:after {
+    content: "\f03e";
+    font-family: "FontAwesome";
+    color: red;
+  }
 }
 
-a.cke_path_item:first-child{display: none !important;}
+a.cke_path_item:first-child {
+  display: none !important;
+}
 
 .ekilinkEditor,
 .ekimediaEditor {
-    h3 {
-        color: $gray-300;
-        font-size: 12px;
-        margin: 0;
+  h3 {
+    color: $gray-300;
+    font-size: 12px;
+    margin: 0;
+  }
+  .formItem {
+    &__title {
+      margin-bottom: 5px;
     }
-    .formItem {
-        &__title {
-            margin-bottom: 5px;
-        }
-        &__error {
-            color: red; 
-            font-size: 12px;
-            display: none;
-        }
-
-        &--dual {
-            display: flex;
-            button {
-                margin-left: 16px;
-            }
-        }
-        &--error {
-            .formItem__error {
-                display: block;
-            }
-        }
-        input {
-            border: 1px solid $gray-400;
-            box-sizing: border-box;
-            border-radius: 2px;
-            font-size: 14px;
-            padding:5px 6px;
-            width: 100%;
-        }
+    &__error {
+      color: red;
+      font-size: 12px;
+      display: none;
     }
 
-    .results {
-        margin-top:8px;
-        max-height: 300px;
-        overflow: auto;
-        border: 0.0625rem solid rgba(0,0,0,.125);
-        #results.pb-3 {
-            margin: 0 !important;
-        }
+    &--dual {
+      display: flex;
+      button {
+        margin-left: 16px;
+      }
     }
-    .loader {
-        text-align: center;
-        padding: 20px 0;
+    &--error {
+      .formItem__error {
+        display: block;
+      }
     }
-    .editorLink {
-        border-bottom: 1px solid $gray-200;
-        color: $gray-400;
-        font-size: 14px;
-        padding:12px 10px;
-        line-height: 100%;
-        cursor: pointer;
-        &--nested {
-            cursor:auto;
-        }
-        &:last-child {
-            border-bottom: none;
-        }
-        &__child {
-            padding-left: 27px;
-            margin: 10px 0;
-            cursor: pointer;
-            border-left: $white 1px solid;
-        }
-        &.active, .active {
-            font-weight: bold;
-        }
-        .active {
-            border-left-color: $blue-100;
-        }
+    input {
+      border: 1px solid $gray-400;
+      box-sizing: border-box;
+      border-radius: 2px;
+      font-size: 14px;
+      padding: 5px 6px;
+      width: 100%;
     }
-    .col-4 {
-        margin-right: -1rem;
+  }
+
+  .results {
+    margin-top: 8px;
+    max-height: 300px;
+    overflow: auto;
+    border: 0.0625rem solid rgba(0, 0, 0, 0.125);
+    #results.pb-3 {
+      margin: 0 !important;
     }
-    .col-8.position-relative {
-        &:before {
-            position: absolute;
-            content: ' ';
-            display: block;
-            top: -1rem;
-            left: 0;
-            bottom: -1rem;
-            width: 1px;
-            background: $gray-200;
-        }
+  }
+  .loader {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .editorLink {
+    border-bottom: 1px solid $gray-200;
+    color: $gray-400;
+    font-size: 14px;
+    padding: 12px 10px;
+    line-height: 100%;
+    cursor: pointer;
+    &--nested {
+      cursor: auto;
     }
+    &:last-child {
+      border-bottom: none;
+    }
+    &__child {
+      padding-left: 27px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-left: $white 1px solid;
+    }
+    &.active,
+    .active {
+      font-weight: bold;
+    }
+    .active {
+      border-left-color: $blue-100;
+    }
+  }
+  .col-4 {
+    margin-right: -1rem;
+  }
+  .col-8.position-relative {
+    &:before {
+      position: absolute;
+      content: " ";
+      display: block;
+      top: -1rem;
+      left: 0;
+      bottom: -1rem;
+      width: 1px;
+      background: $gray-200;
+    }
+  }
 }
