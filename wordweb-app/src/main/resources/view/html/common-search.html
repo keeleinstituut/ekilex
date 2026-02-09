@@ -168,18 +168,16 @@
         </span>
       </th:block>
     </div>
-    <th:block th:if="${wordData.word.lexemeVariants}">
-      <div>
-        <span>Variant</span>
-        <span class="ml-2">
-          <th:block th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
-            <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
-            <span th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
-            <span th:unless="${lexemeVariantIter.last}" class="ml-n1">,</span>
-          </th:block>
-        </span>
-      </div>
-    </th:block>
+    <div class="variants" th:if="${wordData.word.lexemeVariants}">
+      <span class="text-caption" th:text="#{label.word.variant}">Variant</span>
+      <ul class="list-unstyled mb-0 ml-2 d-inline-flex gap-1 flex-wrap">
+        <li class="d-inline-flex" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
+          <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
+          <span th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
+          <span th:unless="${lexemeVariantIter.last}" aria-hidden="true">,</span>
+        </li>
+      </ul>
+    </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">
     <div class="level-3-panel meaning-panel row d-block" th:if="${!wordData.lexemesExist}">
