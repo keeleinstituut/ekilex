@@ -51,6 +51,7 @@
 					<executable>true</executable>
 				</configuration>
 			</plugin>
+			<!-- requires Maven upgrade
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -58,6 +59,7 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			-->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
