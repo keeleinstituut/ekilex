@@ -15532,6 +15532,24 @@ span.material-symbols-outlined--filled {
   justify-content: center;
   align-items: center;
 }
+.variants {
+  display: flex;
+  font-size: 0.875rem;
+  color: var(--color-dark-blue);
+  margin-top: 8px;
+}
+.variants > * {
+  line-height: 24px;
+}
+.variants strong {
+  font-weight: 600;
+}
+@media (min-width: 576px) {
+  .variants {
+    margin-left: 34px;
+    margin-top: 0;
+  }
+}
 .news-page {
   background-color: var(--color-white);
 }

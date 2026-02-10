@@ -135,13 +135,11 @@
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}">
-      <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
-        <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
-        <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
-      </th:block>
+    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}, langData=${@viewUtil.getLangData(wordData.word.lang)}">
+      <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
+      <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       <div class="search__lex-title-wrapper">
-        <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(wordData.word)}">
+        <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(wordData.word)}" th:lang="${langData.isDefaultLanguage ? null : langData.codeIso2}">
           tee
         </h1>
         <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@decorUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
@@ -170,18 +168,16 @@
         </span>
       </th:block>
     </div>
-    <th:block th:if="${wordData.word.lexemeVariants}">
-      <div>
-        <span>Variant</span>
-        <span class="ml-2">
-          <th:block th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
-            <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
-            <span th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
-            <span th:unless="${lexemeVariantIter.last}" class="ml-n1">,</span>
-          </th:block>
-        </span>
-      </div>
-    </th:block>
+    <div class="variants" th:if="${wordData.word.lexemeVariants}">
+      <span class="text-caption" th:text="#{label.word.variant}">Variant</span>
+      <ul class="list-unstyled mb-0 ml-2 d-inline-flex gap-1 flex-wrap">
+        <li class="d-inline-flex" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
+          <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
+          <span th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
+          <span th:unless="${lexemeVariantIter.last}" aria-hidden="true">,</span>
+        </li>
+      </ul>
+    </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">
     <div class="level-3-panel meaning-panel row d-block" th:if="${!wordData.lexemesExist}">
