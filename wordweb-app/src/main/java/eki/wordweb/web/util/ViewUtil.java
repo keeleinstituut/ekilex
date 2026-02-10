@@ -22,6 +22,7 @@ import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocMember;
+import eki.wordweb.data.CorpusSource;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Government;
@@ -190,6 +191,27 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 			tooltipText = messageSource.getMessage("label.government.partitive.case", messageArgs, locale);
 		}
 		return tooltipText;
+	}
+
+	public String getCorpusSourceTooltipHtml(CorpusSource corpusSource) {
+
+		StringBuilder buf = new StringBuilder();
+		buf.append(corpusSource.getDisplayName());
+		String sentenceTitle = corpusSource.getSentenceTitle();
+		if (StringUtils.isNotBlank(sentenceTitle)) {
+			buf.append("<br />");
+			buf.append(sentenceTitle);
+		}
+		String sentenceUrl = corpusSource.getSentenceUrl();
+		if (StringUtils.isNotBlank(sentenceUrl)) {
+			buf.append("<br />");
+			buf.append("<a href='");
+			buf.append(sentenceUrl);
+			buf.append("' target='_blank'>");
+			buf.append(sentenceUrl);
+			buf.append("</a>");
+		}
+		return buf.toString();
 	}
 
 	public List<Form> getForms(Paradigm paradigm, String morphCode) {

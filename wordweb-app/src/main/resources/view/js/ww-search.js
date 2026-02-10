@@ -74,6 +74,9 @@ function fetchCorpSentences() {
 	}
 	$.get(corpUrlWithParams).done(function(data) {
 		corpDiv.replaceWith(data);
+		$('[data-toggle="popover"]').popover({
+			placement: 'top'
+		});
 	}).fail(function(data) {
 	})
 }

@@ -172,7 +172,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		boolean wordResultExists = CollectionUtils.isNotEmpty(wordMatchWords);
 		boolean formResultExists = CollectionUtils.isNotEmpty(formMatchWordValues);
-		System.out.println("formMatchWordValues: " + formMatchWordValues);
 		boolean wordOrFormResultExists = wordResultExists || formResultExists;
 		int wordResultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = wordResultCount == 1;

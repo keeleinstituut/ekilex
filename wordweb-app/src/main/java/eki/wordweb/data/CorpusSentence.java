@@ -6,9 +6,19 @@ public class CorpusSentence extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String leftPart = "";
-	private String middlePart = "";
-	private String rightPart = "";
+	private String leftPart;
+
+	private String middlePart;
+
+	private String rightPart;
+
+	private CorpusSource source;
+
+	public CorpusSentence() {
+		leftPart = "";
+		middlePart = "";
+		rightPart = "";
+	}
 
 	public String getLeftPart() {
 		return leftPart;
@@ -34,7 +44,12 @@ public class CorpusSentence extends AbstractDataObject {
 		this.rightPart = rightPart;
 	}
 
-	public String getSentence() {
-		return leftPart + middlePart + rightPart;
+	public CorpusSource getSource() {
+		return source;
 	}
+
+	public void setSource(CorpusSource source) {
+		this.source = source;
+	}
+
 }

@@ -3,7 +3,6 @@ package eki.ekilex.service;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,14 +47,10 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		List<String> resourceFileLines = IOUtils.readLines(resourceFileInputStream, UTF_8);
 		resourceFileInputStream.close();
 
-		technicalFreeformTypesCodes = new ArrayList<>();
-		for (String resourceFileLine : resourceFileLines) {
-			if (StringUtils.isBlank(resourceFileLine)) {
-				continue;
-			}
-			String freeformTypeCode = StringUtils.trim(resourceFileLine);
-			technicalFreeformTypesCodes.add(freeformTypeCode);
-		}
+		technicalFreeformTypesCodes = resourceFileLines.stream()
+				.filter(line -> StringUtils.isNotBlank(line))
+				.map(line -> StringUtils.trim(line))
+				.collect(Collectors.toList());
 	}
 
 	@Transactional

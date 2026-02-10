@@ -2,26 +2,36 @@ package eki.wordweb.service;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import eki.common.data.KeyValuePair;
 import eki.wordweb.data.CorpusSentence;
+import eki.wordweb.data.CorpusSource;
+import eki.wordweb.web.util.ViewUtil;
 
 @Component
-public class CorpusEstService extends AbstractRemoteRequestService {
+public class CorpusEstService extends AbstractRemoteRequestService implements InitializingBean {
+
+	private static final String CORPUS_NAME_MAP_FILE_PATH = "data/corpus_name_map.txt";
 
 	private static final String[] POS_PUNCTUATIONS = {"Z", "_Z_"};
 
@@ -30,6 +40,9 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 	private static final String[] SKIP_QUERY_POS_CODES = {"inda", "suf", "prf"};
 
 	private static final String[] IGNORE_POS_CODES = {"vrm"};
+
+	@Autowired
+	private ViewUtil viewUtil;
 
 	@Value("${corpus.service.est.url:}")
 	private String serviceUrl;
@@ -47,10 +60,32 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 	private String wordQueryParamKeySimple;
 
 	@Value("#{${corpus.service.est.parameters}}")
-	private MultiValueMap<String, String> defaultQueryParamsMap;
+	private Map<String, String> defaultQueryParamsMap;
 
 	@Value("#{${corpus.service.est.posmap}}")
 	private Map<String, String> posMap;
+
+	private Map<String, String> corpusNameMap;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream = classLoader.getResourceAsStream(CORPUS_NAME_MAP_FILE_PATH);
+		List<String> resourceFileLines = IOUtils.readLines(resourceFileInputStream, UTF_8);
+		resourceFileInputStream.close();
+
+		corpusNameMap = resourceFileLines.stream()
+				.filter(line -> StringUtils.isNotBlank(line))
+				.map(line -> StringUtils.trim(line))
+				.map(line -> {
+					String[] keyValueParts = StringUtils.split(line, '\t');
+					String key = StringUtils.trim(keyValueParts[0]);
+					String value = StringUtils.trim(keyValueParts[1]);
+					return new KeyValuePair<String, String>(key, value);
+				})
+				.collect(Collectors.toMap(KeyValuePair::getKey, KeyValuePair::getValue));
+	}
 
 	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #searchMode, #wordValue, #posCodes}")
 	public List<CorpusSentence> getCorpusSentences(String searchMode, String wordValue, List<String> posCodes) {
@@ -86,11 +121,16 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 		}
 
 		try {
-			return UriComponentsBuilder
+			UriComponentsBuilder queryBuilder = UriComponentsBuilder
 					.fromUriString(serviceUrl)
 					.queryParam("corpus", corpName)
-					.queryParam("cqp", queryString)
-					.queryParams(defaultQueryParamsMap)
+					.queryParam("cqp", queryString);
+
+			for (Entry<String, String> queryParamEntry : defaultQueryParamsMap.entrySet()) {
+				queryBuilder = queryBuilder.queryParam(queryParamEntry.getKey(), queryParamEntry.getValue());
+			}
+
+			return queryBuilder
 					.encode(StandardCharsets.UTF_8)
 					.build()
 					.toUri();
@@ -165,53 +205,99 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 		if (MapUtils.isEmpty(response)) {
 			return sentences;
 		}
-		if (response.containsKey("hits") && (int) response.get("hits") == 0) {
-			return sentences;
-		}
-		if (!response.containsKey("kwic")) {
-			return sentences;
+		if (response.containsKey("hits")) {
+			int hits = (int) response.get("hits");
+			if (hits == 0) {
+				return sentences;
+			}
 		}
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> kwics = (List<Map<String, Object>>) response.get("kwic");
+		if (kwics == null) {
+			return sentences;
+		}
+
 		for (Map<String, Object> kwic : kwics) {
+
 			@SuppressWarnings("unchecked")
 			Map<String, Object> match = (Map<String, Object>) kwic.get("match");
-			int middlePartStartPos = (int) match.get("start");
-			int middlePartEndPos = (int) match.get("end");
-			int currentWordPos = 0;
-			boolean skipSpaceBeforeWord = false;
-			CorpusSentence sentence = new CorpusSentence();
+			@SuppressWarnings("unchecked")
+			Map<String, Object> structs = (Map<String, Object>) kwic.get("structs");
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> tokens = (List<Map<String, Object>>) kwic.get("tokens");
-			for (Map<String, Object> token : tokens) {
-				String word = parseWord(token, skipSpaceBeforeWord);
-				if (currentWordPos < middlePartStartPos) {
-					sentence.setLeftPart(sentence.getLeftPart() + word);
-				} else if (currentWordPos >= middlePartEndPos) {
-					sentence.setRightPart(sentence.getRightPart() + word);
-				} else {
-					sentence.setMiddlePart(sentence.getMiddlePart() + word);
-				}
-				if (currentWordPos == 0 || skipSpaceBeforeWord) {
-					skipSpaceBeforeWord = StringUtils.equals(QUOTATION_MARK, word);
-				}
-				currentWordPos++;
-			}
+
+			CorpusSource corpusSource = composeSource(structs);
+			CorpusSentence sentence = composeSentence(match, tokens);
+			sentence.setSource(corpusSource);
 			sentences.add(sentence);
 		}
 		return sentences;
 	}
 
-	private String parseWord(Map<String, Object> token, boolean skipSpaceBeforeWord) {
+	private CorpusSource composeSource(Map<String, Object> structs) {
 
-		String word = (String) token.get("word");
-		String pos = (String) token.get("pos");
-		boolean isPunctuation = ArrayUtils.contains(POS_PUNCTUATIONS, pos);
-		if (isPunctuation || skipSpaceBeforeWord) {
-			return word;
+		String sentenceCorpus = (String) structs.get("sentence_corpus");
+		String sentenceSrc = (String) structs.get("sentence_src");
+		String sentenceTitle = (String) structs.get("sentence_title");
+		String sentenceUrl = (String) structs.get("sentence_url");
+		String displayName = null;
+		CorpusSource corpusSource = null;
+
+		if (StringUtils.isBlank(sentenceSrc)) {
+			displayName = corpusNameMap.get(sentenceCorpus);
 		} else {
-			return " " + word;
+			displayName = corpusNameMap.get(sentenceSrc);
 		}
+		if (StringUtils.isNotBlank(sentenceTitle)) {
+			if (StringUtils.contains(sentenceTitle, "==NONE==")) {
+				sentenceTitle = null;
+			} else if (StringUtils.contains(sentenceTitle, "_")) {
+				sentenceTitle = StringUtils.replace(sentenceTitle, "_", " ");
+			}
+		}
+		if (StringUtils.isNotBlank(displayName)) {
+			corpusSource = new CorpusSource(displayName, sentenceTitle, sentenceUrl);
+			String tooltipHtml = viewUtil.getCorpusSourceTooltipHtml(corpusSource);
+			corpusSource.setTooltipHtml(tooltipHtml);
+		}
+		return corpusSource;
+	}
+
+	private CorpusSentence composeSentence(Map<String, Object> match, List<Map<String, Object>> tokens) {
+
+		CorpusSentence sentence = new CorpusSentence();
+		int middlePartStartIndex = (int) match.get("start");
+		int middlePartEndIndex = (int) match.get("end");
+		int currentWordIndex = 0;
+		boolean isSkipSpace = false;
+
+		for (Map<String, Object> token : tokens) {
+
+			String wordValue = (String) token.get("word");
+			String pos = (String) token.get("pos");
+			boolean isPunctuation = ArrayUtils.contains(POS_PUNCTUATIONS, pos);
+			if (currentWordIndex < middlePartStartIndex) {
+				String leftPart = handleWordSpacing(sentence.getLeftPart(), wordValue, isPunctuation, isSkipSpace);
+				sentence.setLeftPart(leftPart);
+			} else if (currentWordIndex >= middlePartEndIndex) {
+				String rightPart = handleWordSpacing(sentence.getRightPart(), wordValue, isPunctuation, isSkipSpace);
+				sentence.setRightPart(rightPart);
+			} else {
+				String middlePart = handleWordSpacing(sentence.getMiddlePart(), wordValue, isPunctuation, isSkipSpace);
+				sentence.setMiddlePart(middlePart);
+			}
+			isSkipSpace = (currentWordIndex == 0) || StringUtils.equals(QUOTATION_MARK, wordValue);
+			currentWordIndex++;
+		}
+		return sentence;
+	}
+
+	private String handleWordSpacing(String sentencePart, String wordValue, boolean isPunctuation, boolean isSkipSpace) {
+
+		if (isPunctuation || isSkipSpace) {
+			return sentencePart + wordValue;
+		}
+		return sentencePart + " " + wordValue;
 	}
 
 }

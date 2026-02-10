@@ -1,0 +1,18 @@
+Web 2013	Eesti keele veebikorpus 2013
+Web 2017	Eesti keele veebikorpus 2017
+Web 2019	Eesti keele veebikorpus 2019
+Web 2021	Eesti keele veebikorpus 2021
+Web 2023	Eesti keele veebikorpus 2023
+Timestamped 2014–2023	Ajamärgistatud eesti keele korpus 2014–2023 
+Feeds 2014–2021	Ajamärgistatud eesti keele korpus 2014–2021
+Wikipedia 2017	Vikipeedia 2017
+Wikipedia 2019	Vikipeedia 2019
+Wikipedia 2021	Vikipeedia 2021
+Wikipedia 2023	Vikipeedia 2023
+Literature Contemporary 2000–2023	Kaasaegne ilukirjandus 2000–2023
+Literature Old 1864–1945	Vana ilukirjandus 1864–1945
+Academic Texts	Akadeemilised tekstid	 
+DOAJ	Akadeemilised tekstid
+Reference Corpus	TÜ koondkorpus 1990–2008
+Balanced Corpus	TÜ tasakaalus korpus 1990–2008
+ecd	Eesti keele naabersõnade sõnastik 2019
