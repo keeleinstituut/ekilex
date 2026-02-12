@@ -173,7 +173,7 @@
       <ul class="list-unstyled mb-0 ml-2 d-inline-flex gap-1 flex-wrap">
         <li class="d-inline-flex" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
           <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
-          <span th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
+          <span class="ml-1" th:text="|(${lexemeVariant.variantType.value})|" th:if="${lexemeVariant.variantType}"></span>
           <span th:unless="${lexemeVariantIter.last}" aria-hidden="true">,</span>
         </li>
       </ul>

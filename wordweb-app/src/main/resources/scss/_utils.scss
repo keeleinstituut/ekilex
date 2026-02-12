@@ -1,18 +1,18 @@
 /* stylelint-disable */
-.overflow-hidden{
+.overflow-hidden {
   overflow: hidden !important;
 }
 
-.text-wrap{
+.text-wrap {
   white-space: normal !important;
 }
-.text-small{
+.text-small {
   font-size: $font-size-sm !important;
 }
 .text-medium {
   font-size: 14px;
 }
-.tex-weight-medium{
+.tex-weight-medium {
   font-weight: $font-weight-medium;
 }
 
@@ -32,4 +32,8 @@
       }
     }
   }
+}
+
+.display-inline-block {
+  display: inline-block;
 }
