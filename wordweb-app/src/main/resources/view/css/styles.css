@@ -14328,6 +14328,9 @@ body.hidden-scroll {
     gap: 40px;
   }
 }
+.display-inline-block {
+  display: inline-block;
+}
 .dropdown-menu {
   overflow: hidden;
 }
