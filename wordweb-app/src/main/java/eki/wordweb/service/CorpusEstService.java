@@ -236,6 +236,10 @@ public class CorpusEstService extends AbstractRemoteRequestService implements In
 
 	private CorpusSource composeSource(Map<String, Object> structs) {
 
+		if (structs == null) {
+			return null;
+		}
+
 		String sentenceCorpus = (String) structs.get("sentence_corpus");
 		String sentenceSrc = (String) structs.get("sentence_src");
 		String sentenceTitle = (String) structs.get("sentence_title");
@@ -286,7 +290,7 @@ public class CorpusEstService extends AbstractRemoteRequestService implements In
 				String middlePart = handleWordSpacing(sentence.getMiddlePart(), wordValue, isPunctuation, isSkipSpace);
 				sentence.setMiddlePart(middlePart);
 			}
-			isSkipSpace = (currentWordIndex == 0) || StringUtils.equals(QUOTATION_MARK, wordValue);
+			isSkipSpace = StringUtils.equals(QUOTATION_MARK, wordValue);
 			currentWordIndex++;
 		}
 		return sentence;
