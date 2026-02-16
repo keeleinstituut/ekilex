@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common_header(title,links,titleString)">
+<title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+<meta property="og:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<!-- Common styles and scripts -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<th:block th:replace=" :: faviconOS"></th:block>
+<th:block th:replace=" :: css"></th:block>
+<th:block th:replace=" :: js"></th:block>
+<!--/* Per-page placeholder for additional links */-->
+<th:block th:replace="${links}"></th:block>
+<script th:inline="javascript">
+	var applicationUrl = /*[[@{/}]]*/'/';
+	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
+	const messages = {
+		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+		'this_is_variant' : /*[[#{label.word.is.variant.of}]]*/'see on variant sõnale',
+		'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
+		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
+		'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
+		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
+	}
+</script>
+<!-- Google Tag Manager -->
+<script defer type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-TXK9BCXH');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="survey-active">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXK9BCXH" height="0" width="0" style="display:none;visibility:hidden">
+    </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- OS favicon -->
+  <th:block th:fragment="faviconOS">
+    <meta property="og:image" content="https://sonaveeb.ee/view/images/og/os-og.png"  />
+    <meta name="twitter:image" content="https://sonaveeb.ee/view/images/og/os-twitter.png" />
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-os.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon-os.ico}">
+    <meta property="og:description" th:content="#{label.og.os.description}"/>
+  </th:block>
+  <!-- Bootstrap core CSS -->
+  <th:block th:fragment="css">
+    <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/view/js/kiosk-board/src/kioskboard.css}" />
+    <!-- TODO MV, palun ressurss lae alla-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,book_ribbon,cancel,content_copy,info,keyboard,language,record_voice_over,search,visibility" />
+  </th:block>
+  <!-- Bootstrap core JS -->
+  <th:block th:fragment="js">
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.7.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/popper.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/simple-lightbox.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-form-validator.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/lazysizes.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-custom-elements.js}"></script>
+    <!--/* script type="text/javascript" th:src="@{/view/js/nps-survey.js}"></script */-->
+    <script type="text/javascript" th:src="@{/view/js/kiosk-board/src/kioskboard-custom.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/kioskboard-run.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/eki-components/eki-components.js}" defer></script>
+    <script th:inline="javascript">
+		const viewPathWordweb = /*[[@{/view}]]*/'/view';
+	</script>
+  </th:block>
+  <!-- menu -->
+  <th:block th:fragment="header">
+    <div class="header header--os">
+      <div class="header__content">
+        <th:block th:if="${logoTemplate}">
+          <th:block th:replace="${logoTemplate}"></th:block>
+        </th:block>
+        <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
+          <th:block th:if="${searchInputTemplate}">
+            <th:block th:replace="${searchInputTemplate}"></th:block>
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <!-- WCAG main -->
+  <th:block th:fragment="wcag-main">
+    <a class="sr-only sr-only-focusable" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
+  </th:block>
+  <!-- WCAG sidebar -->
+  <th:block th:fragment="wcag-sidebar">
+    <a class="sr-only sr-only-focusable" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
+  </th:block>
+  <!-- WCAG search -->
+  <th:block th:fragment="wcag-search">
+    <a class="sr-only sr-only-focusable" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
+  </th:block>
+  <div aria-live="polite" class="sr-only" id="aria-live-announcer" th:fragment="aria-live-announcer"></div>
+  <!-- Footer -->
+  <th:block th:fragment="footer-content">
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__column">
+          <div class="footer__column-header">
+            <a href="https://eki.ee" target="_blank">
+              <img class="footer__logo" th:src="@{'/view/images/eki.svg'}" th:alt="#{general.eki}">
+            </a>
+          </div>
+          <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
+        </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="${linksTitle ?: #messages.msg('general.title')}"></div>
+          <th:block th:if="${linksTemplate}">
+            <th:block th:replace="${linksTemplate}"></th:block>
+          </th:block>
+        </div>
+      </div>
+      <div class="footer__logos">
+        <img th:src="@{/view/images/esif.svg}" th:alt="#{label.footer.logos.esif}" width="156" height="91" />
+        <img th:src="@{/view/images/esf.svg}" th:alt="#{label.footer.logos.esf}" width="156" height="82" />
+        <img th:src="@{/view/images/funding.svg}" th:alt="#{label.footer.logos.co_funded_eu}" width="174" height="82" />
+        <img th:src="@{/view/images/htm.svg}" th:alt="#{label.footer.logos.htm}" width="230" height="67" />
+      </div>
+    </footer>
+  </th:block>
+  <!-- Scroll content top -->
+  <th:block th:fragment="content-top">
+    <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+    </a>
+  </th:block>
+  <div class="clipboard" th:fragment="clipboard">
+    <button class="clipboard__trigger" th:title="#{button.copy_clipboard}" type="button" aria-haspopup="dialog">
+      <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+    </button>
+    <div class="clipboard__popup" role="dialog"
+     th:aria-labelledby="|clipboard-label-${id}|"
+     th:aria-describedby="|clipboard-content-${id}|"
+     th:data-announce-prefix="|#{label.clipboard.copied} |"
+     th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
+      <span th:id="|clipboard-label-${id}|" th:text="#{label.clipboard.copied}"></span>
+      <p th:id="|clipboard-content-${id}|">
+        <span class="clipboard__word">
+          <span th:text="${word.value}">sõna</span>
+          <sup th:if="${word.homonymExists}" th:text="${word.homonymNr}"></sup>
+          <span>.</span>
+        </span>
+        <th:block th:if="${text}" th:utext="${text}"></th:block>
+        <br aria-hidden="true"/>
+        <a th:if="${link}" th:href="${link}" th:text="${link}"></a>
+        <span th:if="${date}" th:utext="${'(' + date + ')'}"></span>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

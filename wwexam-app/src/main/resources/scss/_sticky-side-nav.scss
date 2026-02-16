@@ -1,0 +1,9 @@
+.sticky-side-nav{
+  @include media-breakpoint-up(md){
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    padding-bottom: 32px;
+    overflow-y: auto;
+  }
+}

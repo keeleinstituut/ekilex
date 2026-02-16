@@ -1,0 +1,67 @@
+/* stylelint-disable */
+@font-face {
+  font-family: "material-icons";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../fonts/material-icons.ttf?z7bx2c") format("truetype"), url("../fonts/material-icons.woff?z7bx2c") format("woff"), url("../fonts/material-icons.svg?z7bx2c#material-icons") format("svg");
+}
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "material-icons" !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-transform: none;
+  speak: none;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-eki-logo::before {
+  content: "\e90e";
+}
+.icon-logo::before {
+  content: "\e90b";
+}
+.icon-logo-s::before {
+  content: "\e90a";
+}
+.icon-logo-type::before {
+  content: "\e90c";
+}
+.icon-menu::before {
+  content: "\e909";
+}
+.icon-close::before {
+  content: "\e900";
+}
+.icon-caret-down::before {
+  content: "\e901";
+}
+.icon-mic::before {
+  content: "\e902";
+}
+.icon-search::before {
+  content: "\e903";
+}
+.icon-speaker::before {
+  content: "\e904";
+}
+.icon-arrow-right::before {
+  content: "\e905";
+}
+.icon-add::before {
+  content: "\e906";
+}
+.icon-chevron-left::before {
+  content: "\e907";
+}
+.icon-chevron-right::before {
+  content: "\e908";
+}
+.icon-back::before {
+  content: "\e90d";
+}

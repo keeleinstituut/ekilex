@@ -11,4 +11,6 @@ public interface StatSearchConstant {
 	String SEARCH_MODE_DETAIL = "detail";
 
 	String SEARCH_MODE_OS = "os";
+
+	String SEARCH_MODE_EXAM = "exam";
 }

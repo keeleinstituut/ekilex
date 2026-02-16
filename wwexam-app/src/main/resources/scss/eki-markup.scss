@@ -1,0 +1,66 @@
+/* stylelint-disable */
+eki-foreign {
+  font-style: italic;
+}
+
+.example-text eki-foreign {
+  font-style: italic;
+}
+
+eki-highlight {
+  font-weight: bold;
+}
+
+eki-stress {
+  position: relative;
+
+  &::after{
+    position: absolute;
+    content: "\301";
+    display: flex;
+    width: 100%;
+    top: -2px;
+    font-size: inherit;
+    left: 30%;
+  }
+}
+
+.corp-panel eki-stress::after {
+  content: none;
+}
+.corp-panel eki-stress {
+  font-weight: bold;
+}
+
+eki-sub {
+  font-size: 70%;
+  vertical-align: sub;
+}
+
+eki-sup {
+  font-size: 70%;
+  vertical-align: super;
+}
+
+eki-meta {
+  font-variant: small-caps;
+  font-stretch: expanded;
+}
+
+eki-link, ext-link {
+  color: #004F87;
+  cursor: pointer;
+}
+
+eki-form { 
+  color: var(--color-dark-green);
+  font-weight: 700;
+}
+
+eki-shy::before {
+  content: "­";
+}
+/* textual content not shown, but needed to keep markup dialog simple */
+eki-shy {
+  display: none;
+}

@@ -1,0 +1,52 @@
+@layer base, component;
+
+@layer base {
+  .text-body-regular {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 24px;
+  }
+
+  .text-body-two {
+    color: var(--color-dark-blue);
+    font-family: Inter;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .text-weight-regular {
+    font-weight: 400;
+  }
+
+  .text-weight-medium {
+    font-weight: 500;
+  }
+
+  .text-weight-semi-bold {
+    font-weight: 600;
+  }
+
+  .text-underlined {
+    text-decoration: underline;
+  }
+
+  .text-capitalize {
+    text-transform: capitalize;
+  }
+
+  .text-darker-gray {
+    color: var(--color-darker-gray);
+  }
+}
+
+.text-caption {
+  color: var(--color-dark-blue);
+  font-family: Inter;
+  font-size: .75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.048px;
+}

@@ -1,0 +1,80 @@
+.dependence .dependence-unit {
+  position: relative;
+  padding-bottom: .1875rem;
+  margin-bottom: -.4375rem;
+  overflow: inherit;
+}
+
+.question {
+  font-size: .75rem;
+  font-style: italic;
+  font-weight: $font-weight-normal;
+  color: $gray-100;
+}
+
+.dependence-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-item{
+
+  .dependence-unit {
+    display: flex;
+    margin-bottom: .125rem;
+  }
+
+  .dependence-unit:hover {
+    cursor: pointer;
+    background-color: $gray-200;
+  }
+}
+
+.example-text {
+  .example-text-value{
+    white-space: normal;
+  }
+}
+.example-sentence-wrap{
+  .example-text{
+    padding-left: .5rem;
+    margin-left: .5rem;
+    border-left: 1px solid $gray-900;
+
+    &:first-child,
+    &:nth-child(2){
+      padding-left: 0;
+      margin-left: 0;
+      border-left: 0;
+    }
+  }
+
+}
+
+
+.btn-speaker {
+  padding: 0;
+  line-height: 1.2;
+  color: var(--color-dark-blue);
+  background: transparent;
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  .icon{
+    padding: 0;
+    pointer-events: none;
+  }
+
+  &--inactive {
+    color: var(--color-gray-300);
+
+    &:hover {
+      color: var(--color-dark-blue);
+    }
+  }
+}
+.dependencies{
+  .rekts-est b{
+    margin-right: 10px;
+  }
+}

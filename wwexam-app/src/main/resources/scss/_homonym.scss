@@ -1,0 +1,270 @@
+// Homonym styles
+/* stylelint-disable */
+.homonym-item-wrap {
+  display: block;
+  transition: 0ms !important;
+}
+
+.homonym-matches,
+.homonym-intro {
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.homonym-name{
+  padding: 0 12px;
+}
+
+.homonym-nr {
+  position: relative;
+  top: -.1875rem;
+  display: inline-block;
+  width: 1.375rem;
+  height: 1.375rem;
+  padding-top: .125rem;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  background-color: #001124;
+  border-radius: 6.25rem;
+  transition: 0ms !important;
+}
+
+.homonym-matches,
+.homonym-intro {
+  font-size: .75rem;
+}
+
+.homonym-matches {
+  font-weight: 700;
+}
+
+.homonym-intro * {
+  color: #7f8891 !important;
+}
+
+.homonym-panel {
+  @include media-breakpoint-up(md) {
+    overflow: hidden;
+    &.overflow{
+      position: relative;
+
+      &::before,
+      &::after{
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        display: block;
+        width: 24px;
+        height: 100%;
+        pointer-events: none;
+        content: "";
+        background: $black;
+
+      }
+      &::before{
+        @include border-top-left-radius(10px);
+        background: linear-gradient(90deg, #8a98a5 -25%, rgba(236, 240, 242, 0) 100%);
+      }
+      &::after{
+        right: 0;
+        @include border-top-right-radius(10px);
+        background: linear-gradient(270deg, #8a98a5 -25%, rgba(236, 240, 242, 0) 100%);
+      }
+
+    }
+    &.overflow-right-end{
+      &::after{
+        display: none;
+      }
+    }
+    &.overflow-left-end{
+      &::before{
+        display: none;
+      }
+    }
+  }
+
+}
+
+.homonym-list-toggle {
+  position: relative;
+  width: 100%;
+  padding: 9px 42px 9px 16px;
+  margin-bottom: 24px;
+  background: $white;
+  border: 3px solid $gray-300;
+  height: 100%;
+  gap: 4px;
+  --homonym-body-align-items: center;
+  --homonym-body-max-width: calc(100% - 44px);
+
+  @include border-radius(10px);
+
+  &::after{
+    position: absolute;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: $gray-100;
+    background: $gray-300;
+    height: 100%;
+    content: "\f0d7";
+    top: 0;
+    right: 0;
+    width: 44px;
+    background: #8a98a5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+
+  .homonym-item-wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    padding-right: 16px;
+  }
+  @include form-control-focus();
+}
+
+.homonym-list {
+  background: $white;
+  @include media-breakpoint-down(sm) {
+
+    display: none;
+    margin-top: -24px;
+    border: 3px solid $gray-300;
+    @include border-radius(10px);
+    overflow: hidden;
+    &.expand {
+      display: block;
+    }
+
+    .homonym-list-item:first-child{
+      @include border-top-radius(7px);
+    }
+
+    .homonym-list-item:last-child{
+      @include border-bottom-radius(7px);
+    }
+
+  }
+  @include media-breakpoint-up(md) {
+    display: flex;
+    overflow-y: clip;
+    overflow-x: auto;
+    white-space: nowrap;
+    background: none;
+    gap: 8px;
+  }
+}
+
+.homonym-list-item {
+  @include media-breakpoint-down(sm) {
+
+    &.selected {
+      background: $blue-100;
+      .homonym-item,
+      .homonym-name{
+        color: $gray-1000;
+      }
+    }
+  }
+
+  &.selected {
+    .homonym-item {
+      @include media-breakpoint-up(md) {
+        background: var(--color-light-blue);
+        border: 1px solid var(--color-dark-blue);
+      }
+    }
+  }
+}
+
+.homonym {
+  &__item {
+    display: flex;
+    gap: 8px;
+    padding: 16px;
+    background: var(--color-white);
+    box-shadow: 0px 2px 8px 0px #0000001a;
+    border: none;
+    width: 100%;
+    text-align: left;
+    &:hover {
+      text-decoration: none;
+      background: var(--color-light-blue);
+    }
+    
+    @include media-breakpoint-up(md) {
+      width: 200px;
+      height: 100%;
+      border-radius: 8px;
+      max-height: 120px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    gap: 8px;
+    align-items: var(--homonym-body-align-items, center);
+    overflow: hidden;
+    // Subtract down arrow width
+    max-width: var(--homonym-body-max-width);
+    @include media-breakpoint-up(md) {
+      flex-direction: column;
+      align-items: var(--homonym-body-align-items, baseline);
+    }
+  }
+
+  &__matches {
+    font-weight: 700;
+    @include media-breakpoint-up(md) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__text {
+    white-space: nowrap;
+    max-width: 100%;
+    display: flex;
+    gap: 4px;
+
+    @include media-breakpoint-up(md) {
+      flex-direction: column;
+    }
+
+    & p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+
+.word-details-homonym-nr {
+  @include media-breakpoint-up(md) {
+    position: relative;
+    top: -.25rem;
+    display: inline-block;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: $white;
+    text-align: center;
+    border-radius: 6.25rem;
+    transition: 0ms !important;
+  }
+
+}
+
+
+.is-homonym sup{
+  left: -5px;
+}

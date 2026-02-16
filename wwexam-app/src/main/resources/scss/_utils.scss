@@ -1,0 +1,39 @@
+/* stylelint-disable */
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
+.text-wrap {
+  white-space: normal !important;
+}
+.text-small {
+  font-size: $font-size-sm !important;
+}
+.text-medium {
+  font-size: 14px;
+}
+.tex-weight-medium {
+  font-weight: $font-weight-medium;
+}
+
+.text-gray {
+  color: $gray-900;
+}
+
+.text-gray-350 {
+  color: $gray-350;
+}
+
+@layer base {
+  .gap {
+    @for $i from 1 through 10 {
+      &-#{$i} {
+        gap: #{$i * 4}px;
+      }
+    }
+  }
+}
+
+.display-inline-block {
+  display: inline-block;
+}

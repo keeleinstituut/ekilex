@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},#{menu.os.title})">
+<title th:text="#{menu.os.title}">ÕS</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
+</th:block>
+</head>
+<body class="home-page d-flex flex-column survey-active os-home">
+  <th:block
+    th:replace="common-app :: header(
+    withSearch = ${false},
+    logoTemplate = ~{os-comp :: logo},
+    searchInputTemplate = ~{os-comp :: search})">
+  </th:block>
+  <div class="home-page-content">
+    <div class="os-home__logo" th:src="@{'/view/images/os-full.svg'}" aria-hidden="true"></div>
+    <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+      <th:block th:replace="os-comp :: search"></th:block>
+    </div>
+  </div>
+  <div th:replace="os-comp :: footer"></div>
+  <script th:inline="javascript">
+  	var searchFragUrl = /*[[@{/searchfrag}]]*/"/searchfrag";
+  </script>
+</body>
+</html>

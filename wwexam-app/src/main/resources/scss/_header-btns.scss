@@ -1,0 +1,51 @@
+.menu-btn {
+  font-size: $h4-font-size;
+
+  @include media-breakpoint-up(md){
+    padding-right: 50px;
+  }
+
+  > .icon {
+    @include media-breakpoint-up(md){
+      position: absolute;
+      top: 2px;
+      right: 10px;
+    }
+
+  }
+  &:hover {
+    > .icon {
+      text-decoration: none;
+    }
+  }
+}
+
+.lang-btn{
+  font-size: $h4-font-size;
+  @include media-breakpoint-up(md){
+    padding-right: 1rem;
+  }
+}
+
+
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  padding: .625rem 1.25rem;
+  background-color: transparent;
+}
+
+.back,
+.back:hover{
+  color: #001124;
+  text-decoration: none;
+}
+
+.back .icon::before,
+.menu-btn .icon::before {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  font-size: 2.1875rem;
+}

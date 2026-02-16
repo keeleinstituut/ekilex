@@ -21,6 +21,7 @@
 		<module>ekilex-app</module>
 		<module>wordweb-app</module>
 		<module>ekistat-app</module>
+		<module>wwexam-app</module>
 	</modules>
 
 	<developers>

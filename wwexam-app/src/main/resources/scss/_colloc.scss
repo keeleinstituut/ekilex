@@ -1,0 +1,50 @@
+.colloc-row {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 2px;
+
+  .colloc-member:first-child .value::before{
+    display: none;
+  }
+}
+
+.colloc-inner-section {
+  padding-left: 16px;
+  margin-bottom: 4px;
+}
+
+.colloc-heading {
+  font-size: 14px;
+  color: $gray-350;
+}
+
+.colloc-member {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 2px 5px;
+  font-size: .875rem;
+
+  &::after{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    display: block;
+    height: 20px;
+    content: "";
+    border-left: 1px solid $gray-900;
+    transform: translateY(-50%);
+  }
+
+  .value {
+    display: inline-block;
+  }
+}
+.colloc-row .colloc-member:last-of-type::after{
+  display: none;
+}
+
+.colloc-section {
+  padding-left: 1rem;
+}

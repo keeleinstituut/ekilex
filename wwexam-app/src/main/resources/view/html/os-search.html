@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},#{label.os.search.title(${searchValue})})">
+<title th:text="#{label.os.search.title(${searchValue})}">Otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-clipboard.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <th:block
+    th:replace="common-app :: header(
+    withSearch = ${true},
+    logoTemplate = ~{os-comp :: logo},
+    searchInputTemplate = ~{os-comp :: search})">
+  </th:block>
+  <div class="container-fluid homonym-page homonym-page--os">
+    <main id="mainContentArea" role="main" class="content-panel loading">
+      <th:block th:replace="os-comp :: homonyms"></th:block>
+      <th:block th:unless="${searchResult.resultExists}">
+        <div class="no-results__wrapper">
+          <th:block th:if="${searchResult.validSearch}">
+            <h1 class="no-results__title">
+              <span th:text="#{label.search.word.not.found(${searchValue}, '')}"></span>
+            </h1>
+            <div th:utext="#{label.word.not.found.os}">Ei leidnud midagi</div>
+          </th:block>
+          <th:block th:unless="${searchResult.validSearch}">
+            <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>
+          </th:block>
+        </div>
+      </th:block>
+      <th:block th:if="${searchResult.resultExists}">
+        <th:block th:each="word, wordIter : ${searchResult.words}">
+          <th:block th:if="${word.selected}">
+            <th:block th:replace="os-word :: details"></th:block>
+            <div class="p-3" th:unless="${wordIter.last}"></div>
+          </th:block>
+        </th:block>
+      </th:block>
+    </main>
+  </div>
+  <th:block th:replace="~{os-comp :: footer}"></th:block>
+  <script th:inline="javascript">
+  	var searchFragUrl = /*[[@{/searchfrag}]]*/"/searchfrag";
+  </script>
+</body>
+</html>

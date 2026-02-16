@@ -1,0 +1,41 @@
+.definition-area .domain {
+  text-transform: uppercase;
+}
+
+.definition-area,
+.matches{
+  margin-bottom: 8px;
+}
+
+.definition-sources {
+  font-size: .75rem;
+  font-weight: 400;
+  color: #6b7885;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  .source-link{
+    font-size: .75rem;
+    color: #6b7885;
+    text-align: left;
+    word-break: break-all;
+  }
+}
+
+.definition-source {
+  max-width: 50ch;
+  & > * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @include media-breakpoint-down(sm) {
+    max-width: 30ch;
+  }
+}
+
+.ul-list-style{
+  margin-bottom: 12px;
+  list-style: disc;
+}

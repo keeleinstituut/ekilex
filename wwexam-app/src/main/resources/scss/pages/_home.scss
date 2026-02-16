@@ -1,0 +1,60 @@
+/* stylelint-disable */
+.home-page {
+  position: relative;
+  min-height: 100%;
+}
+
+.home-page .header-container {
+  position: static;
+}
+
+
+.home-page-content {
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-align: center;
+  min-height: 450px;
+
+  &--simple {
+    min-height: 350px;
+  }
+
+  @include media-breakpoint-up(md) {
+    margin-top: 88px;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .home-page-content .logo-main {
+    font-size: calc(5vw);
+  }
+
+}
+
+@media (max-width: 767px) {
+  .home-page-content .search-lang {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .home-page-content .detail-toggle-container {
+    display: block;
+    margin: 0 auto .5rem;
+  }
+}
+
+.simple-search-brand-link {
+  display: flex;
+  align-items: center;
+
+  &::before {
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+    content: "";
+    background: url("../images/sonaveeb-logo-light-sm.svg") no-repeat;
+    background-size: contain;
+  }
+}

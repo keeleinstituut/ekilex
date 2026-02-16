@@ -1,0 +1,69 @@
+.os-home {
+  background-color: var(--color-white);
+
+  & .home-page-content {
+    padding-top: 88px;
+    margin: 0;
+    flex-grow: 1;
+    background-repeat: no-repeat, no-repeat;
+    background-position: left -150px top 50%, right -80px bottom -80px;
+    background-image: url(../images/os-tilde.svg), url(../images/os-large-letters.svg);
+    background-size: auto 100px, auto 288px;
+
+    @media (min-width: 500px) {
+      background-size: auto 125px, auto 388px;
+    }
+
+    @include media-breakpoint-up(md) {
+      background-size: auto 175px, auto 500px;
+      background-position: left -150px top 50%, right -180px bottom -80px;
+    }
+
+    @media (min-width: 1700px) {
+      background-size: auto 250px, auto 677px;
+      background-position: left 24px center, right 108px bottom;
+    }
+  }
+
+  --header-bg-color: var(--color-white);
+
+  &__logo {
+    background-image: url(../images/os-full.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 270px;
+    height: 91px;
+    margin: 0 auto 4px;
+
+    @include media-breakpoint-up(sm) {
+      width: 418px;
+      margin-bottom: 48px;
+    }
+  }
+}
+
+
+.os-link {
+  color: var(--color-dark-blue);
+  font-size: .875rem;
+  font-weight: 500;
+  display: block;
+  margin: 24px auto 24px;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  & span:first-child {
+    text-decoration: underline;
+  }
+
+  @include media-breakpoint-up(md) {
+    margin: 88px auto 198px;
+  }
+
+  &--smaller-margin {
+    margin: 16px auto;
+  }
+}
