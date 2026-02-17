@@ -265,18 +265,16 @@
               <span th:utext="${sentence.leftPart}"></span>
               <strong th:utext="${sentence.middlePart}"></strong>
               <span th:utext="${sentence.rightPart}"></span>
-              <div th:if="${sentence.source}">
-                <button
-                  type="button"
-                  class="lang-code text-caption lang-code--unrestricted definition-source"
-                  data-toggle="popover"
-                  data-html="true"
-                  th:title="#{label.source}"
-                  th:data-content="${sentence.source.tooltipHtml}"
-                  th:aria-label="|#{label.source} ${sentence.source.displayName} ${sentence.source.sentenceTitle} ${sentence.source.sentenceUrl}|">
-                  <span class="text-underlined text-muted" th:text="${sentence.source.displayName}"></span>
-                </button>
-              </div>
+              <button
+                type="button"
+                class="btn badge p-0 mb-1"
+                data-toggle="popover"
+                data-html="true"
+                th:data-content="${sentence.source.tooltipHtml}"
+                th:aria-label="|#{label.source} ${sentence.source.displayName} ${sentence.source.sentenceTitle} ${sentence.source.sentenceUrl}|"
+                th:if="${sentence.source}">
+                <i class="fa fa-info-circle"></i>
+              </button>
             </div>
           </div>
         </th:block>
