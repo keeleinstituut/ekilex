@@ -86,6 +86,12 @@
     &:not(:first-child) {
       margin-left: 2px;
     }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 
   button[data-format="bold"] {
