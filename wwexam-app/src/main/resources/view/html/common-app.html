@@ -23,9 +23,6 @@
 	const messages = {
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
 		'this_is_variant' : /*[[#{label.word.is.variant.of}]]*/'see on variant sõnale',
-		'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
-		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
-		'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
 		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
 	}
 </script>
@@ -52,7 +49,7 @@
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon-os.ico}">
-    <meta property="og:description" th:content="#{label.og.os.description}"/>
+    <meta property="og:description" th:content="#{label.os.description}"/>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
