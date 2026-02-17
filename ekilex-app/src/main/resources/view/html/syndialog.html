@@ -35,7 +35,7 @@
        role="dialog"
        th:fragment="add_word_forum_dlg"
        data-callback="refreshSynDetails"
-       data-plugin="initEkiEditorDlgAndFocusPlugin">
+       data-plugin="initQuillDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -56,7 +56,7 @@
   <div th:id="${'editWordForumDlg_' + forum.id}" class="modal"
         role="dialog"
         th:fragment="edit_word_forum_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
+        data-plugin="initQuillDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
