@@ -169,7 +169,7 @@ from
 				)
 			) m
 		where 
-			m.first_event_on between '2024-04-01' and '2025-02-28'
+			m.first_event_on between '2025-04-01' and '2026-01-31'
 		) create_meaning_count,
 		(
 		select
@@ -200,7 +200,7 @@ from
 					mal.meaning_id = m.id
 					and mal.activity_log_id = al.id
 					and al.owner_name in ('MEANING', 'LEXEME')
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 				union all
 				select
 					1
@@ -219,12 +219,15 @@ from
 						'WORD_RELATION',
 						'WORD_RELATION_GROUP_MEMBER',
 						'WORD_ETYMOLOGY',
+						'WORD_OS_MORPH',
+						'WORD_OS_USAGE',
 						'PARADIGM',
 						'FORM',
-						'OD_WORD_RECOMMENDATION',
-						'TAG')
+						'WORD_EKI_RECOMMENDATION',
+						'TAG',
+						'PUBLISHING')
 					and al.funct_name not like '%join%'
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 			)
 		) update_meaning_count,
 		(
@@ -292,7 +295,7 @@ from
 					mal.meaning_id = m.id
 					and mal.activity_log_id = al.id
 					and al.owner_name in ('MEANING', 'LEXEME')
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 				union all
 				select
 					1
@@ -311,12 +314,15 @@ from
 						'WORD_RELATION',
 						'WORD_RELATION_GROUP_MEMBER',
 						'WORD_ETYMOLOGY',
+						'WORD_OS_MORPH',
+						'WORD_OS_USAGE',
 						'PARADIGM',
 						'FORM',
-						'OD_WORD_RECOMMENDATION',
-						'TAG')
+						'WORD_EKI_RECOMMENDATION',
+						'TAG',
+						'PUBLISHING')
 					and al.funct_name not like '%join%'
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 			)
 		) w_domain_update_meaning_count,
 		(
@@ -612,7 +618,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -631,12 +637,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 			)
 		) w_source_link_meaning_update_term_count,
@@ -715,7 +724,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -734,12 +743,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 			)
 		) wo_source_link_meaning_update_term_count,
@@ -784,7 +796,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -803,12 +815,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 				group by
 					m.id
@@ -861,7 +876,7 @@ from
 					mal.meaning_id = m.id
 					and mal.activity_log_id = al.id
 					and al.owner_name in ('MEANING', 'LEXEME')
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 				union all
 				select
 					1
@@ -880,12 +895,15 @@ from
 						'WORD_RELATION',
 						'WORD_RELATION_GROUP_MEMBER',
 						'WORD_ETYMOLOGY',
+						'WORD_OS_MORPH',
+						'WORD_OS_USAGE',
 						'PARADIGM',
 						'FORM',
-						'OD_WORD_RECOMMENDATION',
-						'TAG')
+						'WORD_EKI_RECOMMENDATION',
+						'TAG',
+						'PUBLISHING')
 					and al.funct_name not like '%join%'
-					and al.event_on between '2024-04-01' and '2025-02-28'
+					and al.event_on between '2025-04-01' and '2026-01-31'
 			)
 		) w_def_meaning_update_meaning_count,
 		(
@@ -971,7 +989,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -990,12 +1008,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 				group by
 					m.id
@@ -1240,7 +1261,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -1259,12 +1280,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 					
 			)
@@ -1364,7 +1388,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -1383,12 +1407,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 			)
 			and exists (
@@ -1456,7 +1483,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -1475,12 +1502,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 			)
 			and not exists (
@@ -1591,7 +1621,7 @@ from
 							mal.meaning_id = m.id
 							and mal.activity_log_id = al.id
 							and al.owner_name in ('MEANING', 'LEXEME')
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 						union all
 						select
 							1
@@ -1610,12 +1640,15 @@ from
 								'WORD_RELATION',
 								'WORD_RELATION_GROUP_MEMBER',
 								'WORD_ETYMOLOGY',
+								'WORD_OS_MORPH',
+								'WORD_OS_USAGE',
 								'PARADIGM',
 								'FORM',
-								'OD_WORD_RECOMMENDATION',
-								'TAG')
+								'WORD_EKI_RECOMMENDATION',
+								'TAG',
+								'PUBLISHING')
 							and al.funct_name not like '%join%'
-							and al.event_on between '2024-04-01' and '2025-02-28'
+							and al.event_on between '2025-04-01' and '2026-01-31'
 					)
 				group by
 					m.id
