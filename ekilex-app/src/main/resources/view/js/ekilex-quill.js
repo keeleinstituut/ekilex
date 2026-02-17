@@ -164,8 +164,27 @@ function applyQuillOptions(editor, container, options) {
   }
 }
 
+function updateUndoRedoButtons(editor, buttonContainer) {
+  const bc = $(buttonContainer);
+  const undoBtn = bc.find('[data-format="undo"]').get(0);
+  const redoBtn = bc.find('[data-format="redo"]').get(0);
+  const undoLen = editor?.history?.stack?.undo?.length ?? 0;
+  const redoLen = editor?.history?.stack?.redo?.length ?? 0;
+  if (undoBtn) {
+    undoBtn.disabled = undoLen === 0;
+    undoBtn.classList.toggle("ql-disabled", undoBtn.disabled);
+  }
+  if (redoBtn) {
+    redoBtn.disabled = redoLen === 0;
+    redoBtn.classList.toggle("ql-disabled", redoBtn.disabled);
+  }
+}
+
 function bindFormatButtons(buttonContainer, editor, dlg) {
   buttonContainer.find("[data-format]").on("click", function () {
+    if (this.disabled) {
+      return;
+    }
     const format = this.getAttribute("data-format");
     switch (format) {
       case "link":
@@ -182,9 +201,11 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
         return;
       case "undo":
         editor.history.undo();
+        updateUndoRedoButtons(editor, buttonContainer);
         return;
       case "redo":
         editor.history.redo();
+        updateUndoRedoButtons(editor, buttonContainer);
         return;
       case "source":
         toggleSourceView(editor, dlg);
@@ -251,6 +272,11 @@ function initQuillDlg(dlg, options = {}) {
 
   applyQuillOptions(editor, container, options);
   bindFormatButtons(dlg, editor, dlg);
+  // Initialize undo/redo button states and update on text changes
+  updateUndoRedoButtons(editor, dlg);
+  editor.on("text-change", function () {
+    updateUndoRedoButtons(editor, dlg);
+  });
 
   return editor;
 }
@@ -281,6 +307,11 @@ function initQuillForField(editorField, dlg, options = {}) {
 
   applyQuillOptions(editor, container, options);
   bindFormatButtons(buttonContainer, editor, dlg);
+  // Initialize undo/redo button states and update on text changes
+  updateUndoRedoButtons(editor, buttonContainer);
+  editor.on("text-change", function () {
+    updateUndoRedoButtons(editor, buttonContainer);
+  });
 
   return editor;
 }
@@ -290,6 +321,11 @@ function setQuillContent(editor, content) {
 }
 
 function getQuillContent(editor) {
+  const container = $(editor.root).parent();
+  const sourceArea = container.find(".ql-source-area");
+  if (sourceArea.length) {
+    return sourceArea.val();
+  }
   return stripPTags(editor.root.innerHTML);
 }
 
@@ -1144,6 +1180,8 @@ const quillMediaTemplate = /*html*/ `
 
 function toggleSourceView(editor, dlg) {
   const container = $(editor.root).parent();
+  const wrapper = container.closest(".quill-editor-wrapper");
+  const toolbarContainer = wrapper.length ? wrapper : $(dlg);
   let sourceArea = container.find(".ql-source-area");
 
   if (sourceArea.length) {
@@ -1156,7 +1194,12 @@ function toggleSourceView(editor, dlg) {
     editor.root.innerHTML = html;
     sourceArea.remove();
     $(editor.root).show();
-    dlg.find('[data-format="source"]').removeClass("ql-active");
+    // Re-enable toolbar buttons for this editor instance (toolbar sits in the wrapper)
+    const buttons = toolbarContainer.find("[data-format]");
+    buttons.prop("disabled", false).removeClass("ql-disabled");
+    toolbarContainer.find('[data-format="source"]').removeClass("ql-active");
+    // Update undo/redo state after switching back
+    updateUndoRedoButtons(editor, toolbarContainer);
   } else {
     // Switch to source mode
     const html = stripPTags(editor.root.innerHTML);
@@ -1176,6 +1219,15 @@ function toggleSourceView(editor, dlg) {
       boxSizing: "border-box",
     });
     $(editor.root).hide().after(sourceArea);
-    dlg.find('[data-format="source"]').addClass("ql-active");
+    // Disable other format buttons while in source mode (toolbar sits in the wrapper)
+    const buttons = toolbarContainer.find("[data-format]");
+    buttons.each(function () {
+      const fmt = this.getAttribute("data-format");
+      if (fmt !== "source") {
+        this.disabled = true;
+        this.classList.add("ql-disabled");
+      }
+    });
+    toolbarContainer.find('[data-format="source"]').addClass("ql-active");
   }
 }
