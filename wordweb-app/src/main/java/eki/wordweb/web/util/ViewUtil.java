@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -78,8 +77,14 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	public LanguageData getLangData(String langIso3, List<String> selectedLangs) {
 		// Let the template know that the lang code should not be shown if only one lang is selected
-		if (selectedLangs != null && selectedLangs.size() == 1 && Objects.equals(selectedLangs.get(0), langIso3)) {
-			return null;
+		if (selectedLangs == null) {
+			return getLangData(langIso3);
+		}
+		if (selectedLangs.size() == 1) {
+			String singleSelectedLang = selectedLangs.get(0);
+			if (StringUtils.equals(singleSelectedLang, langIso3)) {
+				return null;
+			}
 		}
 		return getLangData(langIso3);
 	}

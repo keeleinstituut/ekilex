@@ -212,7 +212,7 @@
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap" th:with="langData=${@viewUtil.getLangData(synEntry.key)}">
                         <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
                         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
-                        <ul class="list-unstyled m-0 d-inline-block" th:lang="${langData.isDefaultLanguage ? null : langData.codeIso2}">
+                        <ul class="list-unstyled m-0 d-inline-block" th:lang="${langData.defaultLang ? null : langData.codeIso2}">
                           <th:block th:each="syn,synIter : ${destinLangSyns}"
                                     th:with="
                                     isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},

@@ -12,6 +12,8 @@ public class LanguageData extends AbstractDataObject {
 
 	private String label;
 
+	private boolean defaultLang;
+
 	private String imageName;
 
 	public String getCode() {
@@ -38,13 +40,16 @@ public class LanguageData extends AbstractDataObject {
 		this.label = label;
 	}
 
-	public String getImageName() {
-		return imageName;
+	public boolean isDefaultLang() {
+		return defaultLang;
 	}
 
-	public Boolean getIsDefaultLanguage() {
-		// TODO: use a constant?
-		return "et".equals(codeIso2);
+	public void setDefaultLang(boolean defaultLang) {
+		this.defaultLang = defaultLang;
+	}
+
+	public String getImageName() {
+		return imageName;
 	}
 
 	public void setImageName(String imageName) {
