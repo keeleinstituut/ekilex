@@ -11,7 +11,7 @@
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>eki-root</artifactId>
-	<version>1.46-SNAPSHOT</version>
+	<version>1.47-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Eki apps root project</name>
@@ -77,7 +77,7 @@
 				<groupId>eki.common</groupId>
 				<artifactId>eki-common</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
-				<version>1.46-SNAPSHOT</version>
+				<version>1.47-SNAPSHOT</version>
 			</dependency>
 			<!-- commons -->
 			<dependency>

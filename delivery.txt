@@ -1,15 +1,1 @@
-Märkused ver 1.46.0 tarne kohta:
-
-jutumärkide parandus märgendusega tekstides
-mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev 
-
-wwexam rakendus
-
-create extension fuzzystrmatch;
-
-https://ekitest.tripledev.ee/wwexam.zip
-
-paki lahti
-
-psql -v -U postgres -d wwexam -f wwexam.sql
-
+Märkused ver 1.47.0 tarne kohta:
