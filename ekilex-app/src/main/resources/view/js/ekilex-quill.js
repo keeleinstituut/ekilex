@@ -144,9 +144,6 @@ function toggleFormatVisualState(dlg, editor) {
   formatButtons.removeClass("ql-active");
   const selection = editor.getSelection();
   if (!selection) {
-    formatButtons.each(function () {
-      this.disabled = false;
-    });
     return;
   }
   const formats = editor.getFormat(selection.index, selection.length);
@@ -154,12 +151,6 @@ function toggleFormatVisualState(dlg, editor) {
     const format = this.getAttribute("data-format");
     if (formats[format]) {
       this.classList.add("ql-active");
-    }
-    if (format === "eki-sub") {
-      this.disabled = !!formats["eki-sup"];
-    }
-    if (format === "eki-sup") {
-      this.disabled = !!formats["eki-sub"];
     }
   });
 }
@@ -193,6 +184,7 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
       return;
     }
     const format = this.getAttribute("data-format");
+    const selection = editor.getSelection();
     switch (format) {
       case "link":
         new QuillLink(editor, dlg).init();
@@ -218,7 +210,6 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
         toggleSourceView(editor, dlg);
         return;
       case "remove-format":
-        const selection = editor.getSelection();
         if (selection && selection.length > 0) {
           editor.removeFormat(selection.index, selection.length);
         } else if (selection) {
@@ -227,8 +218,13 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
           editor.setSelection(selection.index + 1, 0);
         }
         return;
+      case "eki-sub":
+        editor.format("eki-sup", false);
+        break;
+      case "eki-sup":
+        editor.format("eki-sub", false);
+        break;
     }
-    const selection = editor.getSelection();
     if (!selection) return;
     const currentValue = editor.getFormat(selection.index, selection.length)[
       format
@@ -682,20 +678,14 @@ function initBasicInlineQuillOnContent(obj, callback) {
       format
     ];
     editor.format(format, !currentValue);
-    // update visual state and disable counterpart buttons for sub/sup
-    const formats = editor.getFormat(selection.index, selection.length);
-    const subBtn = editContainer.find('[data-format="eki-sub"]').get(0);
-    const supBtn = editContainer.find('[data-format="eki-sup"]').get(0);
-    const hasSub = !!formats["eki-sub"];
-    const hasSup = !!formats["eki-sup"];
-    if (subBtn) {
-      subBtn.disabled = hasSup;
-      subBtn.classList.toggle("ql-active", hasSub);
+    // update counterparts
+    if (format === "eki-sub") {
+      editor.format("eki-sup", false);
     }
-    if (supBtn) {
-      supBtn.disabled = hasSub;
-      supBtn.classList.toggle("ql-active", hasSup);
+    if (format === "eki-sup") {
+      editor.format("eki-sub", false);
     }
+    toggleFormatVisualState(editContainer, editor);
   });
 
   $(document).on("click.replace.quill.editor", function (e) {
