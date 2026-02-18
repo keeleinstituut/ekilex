@@ -172,11 +172,9 @@ function updateUndoRedoButtons(editor, buttonContainer) {
   const redoLen = editor?.history?.stack?.redo?.length ?? 0;
   if (undoBtn) {
     undoBtn.disabled = undoLen === 0;
-    undoBtn.classList.toggle("ql-disabled", undoBtn.disabled);
   }
   if (redoBtn) {
     redoBtn.disabled = redoLen === 0;
-    redoBtn.classList.toggle("ql-disabled", redoBtn.disabled);
   }
 }
 
@@ -186,6 +184,7 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
       return;
     }
     const format = this.getAttribute("data-format");
+    const selection = editor.getSelection();
     switch (format) {
       case "link":
         new QuillLink(editor, dlg).init();
@@ -211,7 +210,6 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
         toggleSourceView(editor, dlg);
         return;
       case "remove-format":
-        const selection = editor.getSelection();
         if (selection && selection.length > 0) {
           editor.removeFormat(selection.index, selection.length);
         } else if (selection) {
@@ -220,8 +218,13 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
           editor.setSelection(selection.index + 1, 0);
         }
         return;
+      case "eki-sub":
+        editor.format("eki-sup", false);
+        break;
+      case "eki-sup":
+        editor.format("eki-sub", false);
+        break;
     }
-    const selection = editor.getSelection();
     if (!selection) return;
     const currentValue = editor.getFormat(selection.index, selection.length)[
       format
@@ -665,6 +668,9 @@ function initBasicInlineQuillOnContent(obj, callback) {
 
   // Bind format buttons
   editContainer.find("[data-format]").on("click", function () {
+    if (this.disabled) {
+      return;
+    }
     const format = this.getAttribute("data-format");
     const selection = editor.getSelection();
     if (!selection) return;
@@ -672,6 +678,14 @@ function initBasicInlineQuillOnContent(obj, callback) {
       format
     ];
     editor.format(format, !currentValue);
+    // update counterparts
+    if (format === "eki-sub") {
+      editor.format("eki-sup", false);
+    }
+    if (format === "eki-sup") {
+      editor.format("eki-sub", false);
+    }
+    toggleFormatVisualState(editContainer, editor);
   });
 
   $(document).on("click.replace.quill.editor", function (e) {
@@ -1196,7 +1210,7 @@ function toggleSourceView(editor, dlg) {
     $(editor.root).show();
     // Re-enable toolbar buttons for this editor instance (toolbar sits in the wrapper)
     const buttons = toolbarContainer.find("[data-format]");
-    buttons.prop("disabled", false).removeClass("ql-disabled");
+    buttons.prop("disabled", false);
     toolbarContainer.find('[data-format="source"]').removeClass("ql-active");
     // Update undo/redo state after switching back
     updateUndoRedoButtons(editor, toolbarContainer);
@@ -1225,7 +1239,6 @@ function toggleSourceView(editor, dlg) {
       const fmt = this.getAttribute("data-format");
       if (fmt !== "source") {
         this.disabled = true;
-        this.classList.add("ql-disabled");
       }
     });
     toolbarContainer.find('[data-format="source"]').addClass("ql-active");
