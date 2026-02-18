@@ -144,6 +144,9 @@ function toggleFormatVisualState(dlg, editor) {
   formatButtons.removeClass("ql-active");
   const selection = editor.getSelection();
   if (!selection) {
+    formatButtons.each(function () {
+      this.disabled = false;
+    });
     return;
   }
   const formats = editor.getFormat(selection.index, selection.length);
@@ -151,6 +154,12 @@ function toggleFormatVisualState(dlg, editor) {
     const format = this.getAttribute("data-format");
     if (formats[format]) {
       this.classList.add("ql-active");
+    }
+    if (format === "eki-sub") {
+      this.disabled = !!formats["eki-sup"];
+    }
+    if (format === "eki-sup") {
+      this.disabled = !!formats["eki-sub"];
     }
   });
 }
@@ -172,11 +181,9 @@ function updateUndoRedoButtons(editor, buttonContainer) {
   const redoLen = editor?.history?.stack?.redo?.length ?? 0;
   if (undoBtn) {
     undoBtn.disabled = undoLen === 0;
-    undoBtn.classList.toggle("ql-disabled", undoBtn.disabled);
   }
   if (redoBtn) {
     redoBtn.disabled = redoLen === 0;
-    redoBtn.classList.toggle("ql-disabled", redoBtn.disabled);
   }
 }
 
@@ -665,6 +672,9 @@ function initBasicInlineQuillOnContent(obj, callback) {
 
   // Bind format buttons
   editContainer.find("[data-format]").on("click", function () {
+    if (this.disabled) {
+      return;
+    }
     const format = this.getAttribute("data-format");
     const selection = editor.getSelection();
     if (!selection) return;
@@ -672,6 +682,20 @@ function initBasicInlineQuillOnContent(obj, callback) {
       format
     ];
     editor.format(format, !currentValue);
+    // update visual state and disable counterpart buttons for sub/sup
+    const formats = editor.getFormat(selection.index, selection.length);
+    const subBtn = editContainer.find('[data-format="eki-sub"]').get(0);
+    const supBtn = editContainer.find('[data-format="eki-sup"]').get(0);
+    const hasSub = !!formats["eki-sub"];
+    const hasSup = !!formats["eki-sup"];
+    if (subBtn) {
+      subBtn.disabled = hasSup;
+      subBtn.classList.toggle("ql-active", hasSub);
+    }
+    if (supBtn) {
+      supBtn.disabled = hasSub;
+      supBtn.classList.toggle("ql-active", hasSup);
+    }
   });
 
   $(document).on("click.replace.quill.editor", function (e) {
@@ -1196,7 +1220,7 @@ function toggleSourceView(editor, dlg) {
     $(editor.root).show();
     // Re-enable toolbar buttons for this editor instance (toolbar sits in the wrapper)
     const buttons = toolbarContainer.find("[data-format]");
-    buttons.prop("disabled", false).removeClass("ql-disabled");
+    buttons.prop("disabled", false);
     toolbarContainer.find('[data-format="source"]').removeClass("ql-active");
     // Update undo/redo state after switching back
     updateUndoRedoButtons(editor, toolbarContainer);
@@ -1225,7 +1249,6 @@ function toggleSourceView(editor, dlg) {
       const fmt = this.getAttribute("data-format");
       if (fmt !== "source") {
         this.disabled = true;
-        this.classList.add("ql-disabled");
       }
     });
     toolbarContainer.find('[data-format="source"]').addClass("ql-active");
