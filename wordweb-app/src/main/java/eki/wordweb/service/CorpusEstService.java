@@ -252,19 +252,24 @@ public class CorpusEstService extends AbstractRemoteRequestService implements In
 		} else {
 			displayName = corpusNameMap.get(sentenceSrc);
 		}
-		if (StringUtils.isNotBlank(sentenceTitle)) {
-			if (StringUtils.contains(sentenceTitle, "==NONE==")) {
-				sentenceTitle = null;
-			} else if (StringUtils.contains(sentenceTitle, "_")) {
-				sentenceTitle = StringUtils.replace(sentenceTitle, "_", " ");
-			}
+		if (StringUtils.contains(sentenceTitle, "_")) {
+			sentenceTitle = StringUtils.replace(sentenceTitle, "_", " ");
 		}
+		sentenceTitle = handleEmptyValue(sentenceTitle);
+		sentenceUrl = handleEmptyValue(sentenceUrl);
 		if (StringUtils.isNotBlank(displayName)) {
 			corpusSource = new CorpusSource(displayName, sentenceTitle, sentenceUrl);
 			String tooltipHtml = viewUtil.getCorpusSourceTooltipHtml(corpusSource);
 			corpusSource.setTooltipHtml(tooltipHtml);
 		}
 		return corpusSource;
+	}
+
+	private String handleEmptyValue(String value) {
+		if (StringUtils.contains(value, "==NONE==")) {
+			return null;
+		}
+		return value;
 	}
 
 	private CorpusSentence composeSentence(Map<String, Object> match, List<Map<String, Object>> tokens) {

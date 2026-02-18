@@ -4,4 +4,12 @@ jutumärkide parandus märgendusega tekstides
 mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev 
 
 wwexam rakendus
+
+create extension fuzzystrmatch;
+
+https://ekitest.tripledev.ee/wwexam.zip
+
+paki lahti
+
 psql -v -U postgres -d wwexam -f wwexam.sql
+

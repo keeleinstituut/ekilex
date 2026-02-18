@@ -197,9 +197,9 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 		StringBuilder buf = new StringBuilder();
 		buf.append(corpusSource.getDisplayName());
-		buf.append('.');
 		String sentenceUrl = corpusSource.getSentenceUrl();
 		if (StringUtils.isNotBlank(sentenceUrl)) {
+			buf.append('.');
 			buf.append("<br />");
 			buf.append("<a href='");
 			buf.append(sentenceUrl);
