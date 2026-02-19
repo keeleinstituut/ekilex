@@ -102,7 +102,7 @@
                                   th:with="
                                   isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                   isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                          <li class="text-nowrap d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
+                          <li class="text-nowrap display-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
                             <a
                               th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                               class="synonym"
@@ -157,7 +157,7 @@
                                   th:with="
                                   isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                   isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                          <li class="text-nowrap d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
+                          <li class="text-nowrap display-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
                             <a
                               th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                               class="synonym"
@@ -218,7 +218,7 @@
                                     isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                     isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                     isNearSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
-                            <li class="d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
+                            <li class="display-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
                               <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                                 th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
                                 th:utext="${@decorUtil.getWordValueMarkup(syn)}">
