@@ -108,9 +108,9 @@ public interface ApiConstant {
 
 	String IDS_URI = "/ids";
 
-	String API_KEY_HEADER_NAME = "ekilex-api-key";
-
 	String APP_KEY_HEADER_NAME = "ekilex-app-key";
+
+	String API_KEY_HEADER_NAME = "ekilex-api-key";
 
 	String EMPTY_API_KEY = "empty-api-key";
 }

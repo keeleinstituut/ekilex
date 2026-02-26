@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eki.ekilex</groupId>
+		<artifactId>eki-root</artifactId>
+		<version>1.47-SNAPSHOT</version>
+	</parent>
+
+	<groupId>eki.ekimedia</groupId>
+	<artifactId>ekimedia-app</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Ekimedia App</name>
+
+	<developers>
+		<developer>
+			<id>martin</id>
+			<name>Martin Laubre</name>
+			<email>martin.laubre@tripledev.ee</email>
+			<organization>TripleDev</organization>
+		</developer>
+	</developers>
+
+	<build>
+		<finalName>ekimedia-app</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>src/main/resources/application.properties</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<jdbc>
+								<driver>org.postgresql.Driver</driver>
+								<url>${spring.datasource.url}</url>
+								<user>${spring.datasource.username}</user>
+								<password>${spring.datasource.password}</password>
+							</jdbc>
+							<generator>
+								<database>
+									<name>
+										org.jooq.meta.postgres.PostgresDatabase</name>
+									<includes>.*</includes>
+									<includeIndexes>false</includeIndexes>
+									<includeSystemIndexes>false</includeSystemIndexes>
+									<excludes></excludes>
+									<inputSchema>public</inputSchema>
+								</database>
+								<generate>
+									<javaTimeTypes>true</javaTimeTypes>
+								</generate>
+								<target>
+									<packageName>eki.ekimedia.data.db</packageName>
+									<directory>src/main/java</directory>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>eki.common</groupId>
+			<artifactId>eki-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.41.19</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>17</java.version>
+		<skip.jooq.generation>true</skip.jooq.generation>
+	</properties>
+
+</project>

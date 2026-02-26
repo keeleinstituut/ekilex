@@ -8,15 +8,14 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.FeedbackConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.data.AppResponse;
 import eki.common.data.Feedback;
 import eki.common.data.ValidationResult;
 import eki.common.service.util.FeedbackValidator;
 
 @Component
-public class FeedbackService extends AbstractRemoteRequestService implements FeedbackConstant {
-
-	private static final String EKILEX_APP_KEY_HEADER_NAME = "ekilex-app-key";
+public class FeedbackService extends AbstractRemoteRequestService implements FeedbackConstant, GlobalConstant {
 
 	@Value("${wordweb.feedback.service.url}")
 	private String feedbackServiceUrl;

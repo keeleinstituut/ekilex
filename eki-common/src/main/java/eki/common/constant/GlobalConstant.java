@@ -151,6 +151,11 @@ public interface GlobalConstant {
 
 	String SEARCH_MASK_CHAR = "?";
 
+	String EKILEX_APP_KEY_HEADER_NAME = "ekilex-app-key";
+
+	String EKIMEDIA_API_KEY_HEADER_NAME = "ekimedia-api-key";
+
+	// TODO rename
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 
 	String EMPTY_API_KEY = "empty-api-key";

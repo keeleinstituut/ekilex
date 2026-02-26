@@ -113,10 +113,11 @@
 				<spring.boot.mainclass>eki.ekilex.cli.QuotationReplacer</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<!-- temporary. remove later-->
 		<profile>
-			<id>msemail</id>
+			<id>msrvt</id>
 			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.MsSmtpEmail</spring.boot.mainclass>
+				<spring.boot.mainclass>eki.ekilex.cli.MediaServerTestbench</spring.boot.mainclass>
 			</properties>
 		</profile>
 	</profiles>
