@@ -35,8 +35,6 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	private static final Field<String> ORIGIN_FIELD = DSL.field("origin", String.class);
 
-	private static final Field<Object> DATASETS_FIELD = DSL.field("datasets");
-
 	private static final Field<Long> ORDER_BY_FIELD = DSL.field("order_by", Long.class);
 
 	public List<ClassifierFull> getClassifierFulls(ClassifierName classifierName, String origin, List<String> labelTypes) {
@@ -226,11 +224,10 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void createClassifier(String classifierName, String classifierCode) {
 
-		String[] emptyArray = new String[0];
 		mainDb
 				.insertInto(DSL.table(classifierName))
-				.columns(CODE_FIELD, DATASETS_FIELD)
-				.values(classifierCode, emptyArray)
+				.columns(CODE_FIELD)
+				.values(classifierCode)
 				.execute();
 	}
 
