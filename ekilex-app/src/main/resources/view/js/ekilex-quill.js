@@ -144,7 +144,7 @@ function createQuillToolbarHtml(uniqueId, basicOnly = false) {
       <div>
         ${buttons}
       </div>
-      <div class="d-flex">
+      <div>
         <button data-insert="en-dash" type="button">–</button>
         <button data-insert="open-quotes" type="button">„</button>
         <button data-insert="close-quotes" type="button">“</button>
@@ -270,25 +270,23 @@ function bindInsertButtons(buttonContainer, editor) {
   buttonContainer.find("[data-insert]").on("click", function () {
     const insertType = this.getAttribute("data-insert");
     const selection = editor.getSelection();
-    if (!selection) {
-      return;
-    }
+    const index = selection?.index ?? 0;
     switch (insertType) {
       case "en-dash":
-        editor.insertText(selection.index, "–");
-        editor.setSelection(selection.index + 1, 0);
+        editor.insertText(index, "–");
+        editor.setSelection(index + 1, 0);
         break;
       case "open-quotes":
-        editor.insertText(selection.index, "„");
-        editor.setSelection(selection.index + 1, 0);
+        editor.insertText(index, "„");
+        editor.setSelection(index + 1, 0);
         break;
       case "close-quotes":
-        editor.insertText(selection.index, "“");
-        editor.setSelection(selection.index + 1, 0);
+        editor.insertText(index, "“");
+        editor.setSelection(index + 1, 0);
         break;
       case "apostrophe":
-        editor.insertText(selection.index, "'");
-        editor.setSelection(selection.index + 1, 0);
+        editor.insertText(index, "'");
+        editor.setSelection(index + 1, 0);
         break;
     }
   });

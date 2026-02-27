@@ -177,7 +177,7 @@
   <div th:fragment="quill_editor">
     <input type="hidden" th:data-id="${editFld ?: 'editFld'}" data-editor-field="true" th:data-optional="${optional ?: 'false'}">
     <div role="toolbar" class="ql-toolbar ql-snow" th:data-quill-toolbar="${editFld ?: 'editFld'}">
-      <div class="d-flex">
+      <div>
         <button data-format="bold" type="button" th:title="#{editor.toolbar.bold}"></button>
         <button data-format="italic" type="button" th:title="#{editor.toolbar.italic}"></button>
         <button data-format="stress" type="button" th:title="#{editor.toolbar.stress}"></button>
@@ -193,7 +193,7 @@
         <button data-format="redo" type="button" th:title="#{editor.toolbar.redo}"></button>
         <button data-format="source" type="button" th:title="#{editor.toolbar.source}"></button>
       </div>
-      <div class="d-flex">
+      <div>
         <button data-insert="en-dash" type="button">–</button>
         <button data-insert="open-quotes" type="button">„</button>
         <button data-insert="close-quotes" type="button">“</button>
