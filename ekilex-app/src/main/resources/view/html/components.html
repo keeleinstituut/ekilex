@@ -177,20 +177,28 @@
   <div th:fragment="quill_editor">
     <input type="hidden" th:data-id="${editFld ?: 'editFld'}" data-editor-field="true" th:data-optional="${optional ?: 'false'}">
     <div role="toolbar" class="ql-toolbar ql-snow" th:data-quill-toolbar="${editFld ?: 'editFld'}">
-      <button data-format="bold" type="button" th:title="#{editor.toolbar.bold}"></button>
-      <button data-format="italic" type="button" th:title="#{editor.toolbar.italic}"></button>
-      <button data-format="stress" type="button" th:title="#{editor.toolbar.stress}"></button>
-      <button data-format="meta" type="button" th:title="#{editor.toolbar.meta}"></button>
-      <button data-format="eki-sub" type="button" th:title="#{editor.toolbar.sub}"></button>
-      <button data-format="eki-sup" type="button" th:title="#{editor.toolbar.sup}"></button>
-      <button data-format="link" type="button" th:title="#{editor.toolbar.link}"></button>
-      <button data-format="remove-link" type="button" th:title="#{editor.toolbar.remove_link}"></button>
-      <button data-format="eki-media" type="button" th:title="#{editor.toolbar.media}"></button>
-      <button data-format="remove-media" type="button" th:title="#{editor.toolbar.remove_media}"></button>
-      <button data-format="remove-format" type="button" th:title="#{editor.toolbar.remove_format}"></button>
-      <button data-format="undo" type="button" th:title="#{editor.toolbar.undo}"></button>
-      <button data-format="redo" type="button" th:title="#{editor.toolbar.redo}"></button>
-      <button data-format="source" type="button" th:title="#{editor.toolbar.source}"></button>
+      <div class="d-flex">
+        <button data-format="bold" type="button" th:title="#{editor.toolbar.bold}"></button>
+        <button data-format="italic" type="button" th:title="#{editor.toolbar.italic}"></button>
+        <button data-format="stress" type="button" th:title="#{editor.toolbar.stress}"></button>
+        <button data-format="meta" type="button" th:title="#{editor.toolbar.meta}"></button>
+        <button data-format="eki-sub" type="button" th:title="#{editor.toolbar.sub}"></button>
+        <button data-format="eki-sup" type="button" th:title="#{editor.toolbar.sup}"></button>
+        <button data-format="link" type="button" th:title="#{editor.toolbar.link}"></button>
+        <button data-format="remove-link" type="button" th:title="#{editor.toolbar.remove_link}"></button>
+        <button data-format="eki-media" type="button" th:title="#{editor.toolbar.media}"></button>
+        <button data-format="remove-media" type="button" th:title="#{editor.toolbar.remove_media}"></button>
+        <button data-format="remove-format" type="button" th:title="#{editor.toolbar.remove_format}"></button>
+        <button data-format="undo" type="button" th:title="#{editor.toolbar.undo}"></button>
+        <button data-format="redo" type="button" th:title="#{editor.toolbar.redo}"></button>
+        <button data-format="source" type="button" th:title="#{editor.toolbar.source}"></button>
+      </div>
+      <div class="d-flex">
+        <button data-insert="en-dash" type="button">–</button>
+        <button data-insert="open-quotes" type="button">„</button>
+        <button data-insert="close-quotes" type="button">“</button>
+        <button data-insert="apostrophe" type="button">'</button>
+      </div>
     </div>
     <div th:data-quill-container="${editFld ?: 'editFld'}"></div>
   </div>

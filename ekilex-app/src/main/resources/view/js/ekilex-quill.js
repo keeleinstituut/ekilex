@@ -1,5 +1,6 @@
 $(function () {
   const Inline = Quill.import("blots/inline");
+  const Clipboard = Quill.import("modules/clipboard");
 
   class BoldBlot extends Inline {
     static blotName = "bold";
@@ -89,6 +90,22 @@ $(function () {
     }
   }
 
+  class PlainClipboard extends Clipboard {
+    onPaste(_, { text }) {
+      const trimmedText = text?.trim();
+      const range = this.quill.getSelection();
+      const delta = new (Quill.import("delta"))()
+        .retain(range.index)
+        .delete(range.length)
+        .insert(trimmedText);
+      const index = trimmedText.length + range.index;
+      const length = 0;
+      this.quill.updateContents(delta, "silent");
+      this.quill.setSelection(index, length, "silent");
+      this.quill.scrollSelectionIntoView();
+    }
+  }
+
   Quill.register(BoldBlot, true);
   Quill.register(ItalicBlot, true);
   Quill.register(StressBlot, true);
@@ -98,6 +115,7 @@ $(function () {
   Quill.register(EkiLinkBlot, true);
   Quill.register(ExtLinkBlot, true);
   Quill.register(EkiMediaBlot, true);
+  Quill.register("modules/clipboard", PlainClipboard, true);
 });
 
 function createQuillToolbarHtml(uniqueId, basicOnly = false) {
@@ -123,7 +141,15 @@ function createQuillToolbarHtml(uniqueId, basicOnly = false) {
 
   return `
     <div role="toolbar" class="ql-toolbar ql-snow" data-quill-toolbar="${uniqueId}">
-      ${buttons}
+      <div>
+        ${buttons}
+      </div>
+      <div class="d-flex">
+        <button data-insert="en-dash" type="button">–</button>
+        <button data-insert="open-quotes" type="button">„</button>
+        <button data-insert="close-quotes" type="button">“</button>
+        <button data-insert="apostrophe" type="button">'</button>
+      </div>
     </div>
   `;
 }
@@ -240,6 +266,34 @@ function bindFormatButtons(buttonContainer, editor, dlg) {
   initQuillMediaSelection(editor);
 }
 
+function bindInsertButtons(buttonContainer, editor) {
+  buttonContainer.find("[data-insert]").on("click", function () {
+    const insertType = this.getAttribute("data-insert");
+    const selection = editor.getSelection();
+    if (!selection) {
+      return;
+    }
+    switch (insertType) {
+      case "en-dash":
+        editor.insertText(selection.index, "–");
+        editor.setSelection(selection.index + 1, 0);
+        break;
+      case "open-quotes":
+        editor.insertText(selection.index, "„");
+        editor.setSelection(selection.index + 1, 0);
+        break;
+      case "close-quotes":
+        editor.insertText(selection.index, "“");
+        editor.setSelection(selection.index + 1, 0);
+        break;
+      case "apostrophe":
+        editor.insertText(selection.index, "'");
+        editor.setSelection(selection.index + 1, 0);
+        break;
+    }
+  });
+}
+
 function initQuillDlg(dlg, options = {}) {
   let container = dlg.find("[data-quill-container]").get(0);
   let toolbar;
@@ -275,6 +329,7 @@ function initQuillDlg(dlg, options = {}) {
 
   applyQuillOptions(editor, container, options);
   bindFormatButtons(dlg, editor, dlg);
+  bindInsertButtons(dlg, editor);
   // Initialize undo/redo button states and update on text changes
   updateUndoRedoButtons(editor, dlg);
   editor.on("text-change", function () {
@@ -310,6 +365,7 @@ function initQuillForField(editorField, dlg, options = {}) {
 
   applyQuillOptions(editor, container, options);
   bindFormatButtons(buttonContainer, editor, dlg);
+  bindInsertButtons(buttonContainer, editor);
   // Initialize undo/redo button states and update on text changes
   updateUndoRedoButtons(editor, buttonContainer);
   editor.on("text-change", function () {

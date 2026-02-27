@@ -72,12 +72,15 @@
 }
 
 .ql-snow.ql-toolbar {
-  button[data-format] {
+  button[data-format],
+  button[data-insert] {
     background-size: 18px;
     width: 36px;
     height: 24px;
     background-repeat: no-repeat;
     background-position: center;
+    float: none;
+    font-size: 1rem;
 
     &.ql-active {
       box-shadow: inset 1px 1px 6px var(--color-gray-200);
