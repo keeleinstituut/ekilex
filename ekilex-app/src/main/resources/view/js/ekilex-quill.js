@@ -148,7 +148,7 @@ function createQuillToolbarHtml(uniqueId, basicOnly = false) {
         <button data-insert="en-dash" type="button">–</button>
         <button data-insert="open-quotes" type="button">„</button>
         <button data-insert="close-quotes" type="button">“</button>
-        <button data-insert="apostrophe" type="button">'</button>
+        <button data-insert="apostrophe" type="button">’</button>
       </div>
     </div>
   `;
@@ -285,7 +285,7 @@ function bindInsertButtons(buttonContainer, editor) {
         editor.setSelection(index + 1, 0);
         break;
       case "apostrophe":
-        editor.insertText(index, "'");
+        editor.insertText(index, "’");
         editor.setSelection(index + 1, 0);
         break;
     }
