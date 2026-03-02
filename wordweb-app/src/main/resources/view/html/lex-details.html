@@ -283,32 +283,32 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="related-meanings mb-3" th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
-                  <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                    <span class="mr-2 search__helper-text text-caption" th:text="${relationType.value}"></span>
-                    <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                      <div class="relation-item mr-1">
-                        <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
+                <div class="mb-3" th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
+                  <th:block th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
+                    <span class="text-caption" th:text="${relationType.value}" th:id="|lexeme-related-meanings-${lexeme.lexemeId}|"></span>
+                    <ul class="list-unstyled d-inline" th:aria-describedby="|lexeme-related-meanings-${lexeme.lexemeId}|">
+                      <li class="d-inline" th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
+                        <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
                         <th:block th:unless="${#lists.isEmpty(relation.wordTypes)}">
                           <th:block th:each="wordType,wtIter : ${relation.wordTypes}">
                             <span th:text="${wordType.value}" class="text-small text-uppercase"></span>
-                            <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                            <span th:unless="${wtIter.last}" class="ml-n1" aria-hidden="true">,</span>
                           </th:block>
                         </th:block>
                         <th:block th:unless="${#lists.isEmpty(relation.lexRegisters)}">
                           <th:block th:each="register, rIter : ${relation.lexRegisters}">
                             <span class="rections register">
                               <span th:text="${register.value}" class="text-uppercase text-small"></span>
-                              <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                              <span th:unless="${rIter.last}" class="ml-n1" aria-hidden="true">,</span>
                             </span>
                           </th:block>
                         </th:block>
-                        <span th:unless="${relationIter.last}" class="ml-n1">,</span>
-                      </div>
-                    </th:block>
-                  </div>
+                        <span th:unless="${relationIter.last}" class="ml-n1" aria-hidden="true">,</span>
+                      </li>
+                    </ul>
+                  </th:block>
                 </div>
                 <div class="row" th:unless="${#lists.isEmpty(lexeme.learnerComments)}">
                   <div class="col-6">

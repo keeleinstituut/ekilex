@@ -69,22 +69,27 @@
   height: 200px;
   resize: vertical;
   overflow: auto;
+  font-family: inherit;
 }
 
-.ql-snow.ql-toolbar {
+.ql-snow.ql-toolbar[role="toolbar"] {
+  font-family: inherit;
+
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
   button[data-format] {
     background-size: 18px;
     width: 36px;
     height: 24px;
     background-repeat: no-repeat;
     background-position: center;
+    float: none;
 
     &.ql-active {
       box-shadow: inset 1px 1px 6px var(--color-gray-200);
-    }
-
-    &:not(:first-child) {
-      margin-left: 2px;
     }
 
     &:disabled {
@@ -92,6 +97,12 @@
       cursor: not-allowed;
       pointer-events: none;
     }
+  }
+
+  button[data-insert] {
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
   }
 
   button[data-format="bold"] {
@@ -135,7 +146,7 @@
   }
 
   button[data-format="eki-media"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     // Currently using FontAwesome, image would be in this form:
@@ -149,7 +160,7 @@
   }
 
   button[data-format="remove-media"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     // Currently using FontAwesome, image would be in this form:
@@ -163,7 +174,7 @@
   }
 
   button[data-format="undo"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     &:after {
@@ -175,7 +186,7 @@
   }
 
   button[data-format="redo"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     &:after {
@@ -187,7 +198,7 @@
   }
 
   button[data-format="source"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     &:after {
@@ -199,7 +210,7 @@
   }
 
   button[data-format="remove-format"] {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     &:after {
