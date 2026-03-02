@@ -1,7 +1,9 @@
 package eki.ekilex.cli.runner;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -9,6 +11,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,9 +40,6 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 	protected UserContext userContext;
 
 	@Autowired
-	private TextDecorationService textDecorationService;
-
-	@Autowired
 	protected ValueUtil valueUtil;
 
 	@Autowired
@@ -46,6 +47,9 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 
 	@Autowired
 	protected MigrationDbService migrationDbService;
+
+	@Autowired
+	private TextDecorationService textDecorationService;
 
 	protected void createSecurityContext() {
 
@@ -90,5 +94,17 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 		} finally {
 			fileInputStream.close();
 		}
+	}
+
+	protected Document readDocument(String dataXmlFilePath) throws Exception {
+
+		SAXReader dataDocParser = new SAXReader();
+		File dataDocFile = new File(dataXmlFilePath);
+		FileInputStream dataDocFileInputStream = new FileInputStream(dataDocFile);
+		InputStreamReader dataDocInputReader = new InputStreamReader(dataDocFileInputStream, StandardCharsets.UTF_8);
+		Document dataDoc = dataDocParser.read(dataDocInputReader);
+		dataDocInputReader.close();
+		dataDocFileInputStream.close();
+		return dataDoc;
 	}
 }

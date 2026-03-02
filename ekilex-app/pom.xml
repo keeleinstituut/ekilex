@@ -120,6 +120,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.MediaServerTestbench</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>etyl</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.EtymLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
@@ -255,6 +261,14 @@
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
 			<artifactId>zjsonpatch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jsoup</groupId>
