@@ -41,7 +41,7 @@ public class CommonDataService implements SystemConstant {
 	@Transactional
 	public Map<String, LanguageData> getLangDataMap() {
 
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 		return commonDataDbService.getLangDataMap(displayLang);
 	}
 
@@ -49,7 +49,7 @@ public class CommonDataService implements SystemConstant {
 	public List<UiFilterElement> getUnifLangFilter() {
 
 		Locale locale = languageContext.getDisplayLocale();
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
 		String otherLangsLabel = messageSource.getMessage("label.search.lang.other", new Object[0], locale);
 		List<String> langCodes = Arrays.asList(
@@ -73,7 +73,7 @@ public class CommonDataService implements SystemConstant {
 	public List<UiFilterElement> getSimpleLangFilter() {
 
 		Locale locale = languageContext.getDisplayLocale();
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
 		List<String> langCodes = Arrays.asList(
 				DESTIN_LANG_EST,

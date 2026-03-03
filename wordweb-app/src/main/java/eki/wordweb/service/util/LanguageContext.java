@@ -23,7 +23,11 @@ public class LanguageContext {
 		return locale;
 	}
 
-	public String getDisplayLang() {
+	public String getIso3DisplayLang() {
 		return getDisplayLocale().getISO3Language();
+	}
+
+	public String getIso2DisplayLang() {
+		return getDisplayLocale().getLanguage();
 	}
 }

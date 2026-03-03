@@ -21,7 +21,6 @@ import eki.common.data.ExtendedFeedback;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordSuggestion;
 import eki.wordweb.service.FeedbackService;
-import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -34,9 +33,6 @@ public class WordSuggestionController extends AbstractController {
 
 	@Autowired
 	private MessageSource messageSource;
-
-	@Autowired
-	private LanguageContext languageContext;
 
 	@GetMapping(WORD_SUGGESTION_URI)
 	public String wordSuggestion(Model model) {

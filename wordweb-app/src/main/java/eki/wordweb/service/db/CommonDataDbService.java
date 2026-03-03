@@ -285,7 +285,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 						cl.CODE,
 						DSL.coalesce(cli.VALUE, DSL.value("?")).as("codeIso2"),
 						DSL.coalesce(cll.VALUE, cl.VALUE).as("label"),
-						DSL.field(cl.CODE.eq(LANGUAGE_CODE_EST)).as("defaultLang"))
+						DSL.field(cl.CODE.eq(lang)).as("defaultLang"))
 				.from(cl
 						.leftOuterJoin(cli).on(
 								cli.NAME.eq(cl.NAME)

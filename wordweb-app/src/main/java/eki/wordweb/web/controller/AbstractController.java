@@ -28,6 +28,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.service.AncillaryDataService;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.StatDataCollector;
+import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.LinkUtil;
 import eki.wordweb.web.util.UserAgentUtil;
@@ -61,6 +62,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 	@Autowired
 	protected StatDataCollector statDataCollector;
+
+	@Autowired
+	protected LanguageContext languageContext;
 
 	protected void deleteCookies(HttpServletRequest request, HttpServletResponse response, String... cookieNames) {
 
@@ -100,10 +104,12 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 			sessionBean = getSessionBean(model);
 		}
 		Integer yearToday = LocalDate.now().getYear();
+		String uilang = languageContext.getIso2DisplayLang();
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("yearToday", yearToday);
 		model.addAttribute("feedbackType", FeedbackType.WW);
+		model.addAttribute("uilang", uilang);
 
 		return sessionBean;
 	}

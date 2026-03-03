@@ -46,7 +46,7 @@ public class AncillaryDataService {
 	@Transactional
 	public NewsArticle getLatestWordwebNewsArticle() {
 
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 		NewsArticle newsArticle = ancillaryDataDbService.getLatestWordwebNewsArticle(displayLang);
 		if (newsArticle == null) {
 			return null;
@@ -60,7 +60,7 @@ public class AncillaryDataService {
 	@Transactional
 	public List<NewsArticle> getWordwebNewsArticles() {
 
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 		return ancillaryDataDbService.getWordwebNewsArticles(displayLang);
 	}
 

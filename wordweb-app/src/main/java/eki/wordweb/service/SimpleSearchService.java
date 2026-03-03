@@ -57,7 +57,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		SearchContext searchContext = getSearchContext(searchFilter);
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 		Locale displayLocale = languageContext.getDisplayLocale();
-		String displayLang = languageContext.getDisplayLang();
+		String displayLang = languageContext.getIso3DisplayLang();
 
 		// word data
 		Word word = searchDbService.getWord(wordId);
