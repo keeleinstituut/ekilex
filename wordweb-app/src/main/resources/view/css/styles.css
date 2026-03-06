@@ -16065,9 +16065,12 @@ span.material-symbols-outlined--filled {
   align-items: baseline;
   gap: 8px;
   margin-bottom: 24px;
+  font-size: 2.125rem;
+}
+.word-suggestion-page__content-title h1 {
+  font-size: inherit;
 }
 .word-suggestion-page__count {
-  font-size: 2.125rem;
   color: var(--color-saku-suurhall);
 }
 .word-suggestion-page__content {

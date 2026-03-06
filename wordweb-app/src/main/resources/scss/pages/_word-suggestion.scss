@@ -70,10 +70,14 @@
     align-items: baseline;
     gap: 8px;
     margin-bottom: 24px;
+    font-size: 2.125rem;
+
+    & h1 {
+      font-size: inherit;
+    }
   }
 
   &__count {
-    font-size: 2.125rem;
     color: var(--color-saku-suurhall);
   }
 
