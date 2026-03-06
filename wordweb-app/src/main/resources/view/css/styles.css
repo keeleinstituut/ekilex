@@ -19,9 +19,6 @@
   .text-weight-regular {
     font-weight: 400;
   }
-  .text-weight-medium {
-    font-weight: 500;
-  }
   .text-weight-semi-bold {
     font-weight: 600;
   }
@@ -43,6 +40,9 @@
   font-weight: 400;
   line-height: normal;
   letter-spacing: 0.048px;
+}
+.text-weight-medium {
+  font-weight: 500;
 }
 :root {
   --color-gray-010: #f0f0f0;
@@ -15279,22 +15279,6 @@ body {
   font-size: 0.875rem;
   margin-bottom: 8px;
 }
-.meaning-reliability {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.625rem;
-  font-weight: 500;
-  height: 20px;
-  color: var(--color-even-darker-gray);
-  margin-left: 4px;
-}
-.meaning-reliability--green {
-  color: var(--color-success-green);
-}
-.meaning-reliability--red {
-  color: var(--color-error-red);
-}
 .search-filter__wrapper {
   position: relative;
 }
@@ -17310,6 +17294,22 @@ span.material-symbols-outlined--filled {
   line-height: 20px;
   color: var(--color-blue-300);
   padding: 0;
+}
+.term-content-btn {
+  border: 1px solid var(--color-dark-blue-75);
+  background-color: var(--color-white);
+  color: var(--color-dark-blue);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  margin: 0 0 16px 30px;
+  gap: 4px;
+}
+.term-content-btn > .btn-content {
+  font-weight: 400;
+  font-size: 0.75rem;
 }
 :root {
   --color-gray-010: #f0f0f0;
