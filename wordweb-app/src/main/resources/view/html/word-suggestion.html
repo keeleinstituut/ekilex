@@ -27,7 +27,10 @@
       </p>
     </div>
     <div class="word-suggestion-page__content">
-      <h1 th:text="#{label.wordsuggestions.title}">Teavituste ajalugu</h1>
+      <div class="word-suggestion-page__content-title">
+        <h1 th:text="#{label.wordsuggestions.title}">Sõnapakkumised</h1>
+        <span class="word-suggestion-page__count" th:text="|(${#lists.size(wordSuggestions)})|"></span>
+      </div>
       <th:block th:if="${#lists.isEmpty(wordSuggestions)}">
         <p class="word-suggestion-page__empty-description" th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</p>
         <img th:src="@{'/view/images/suggestions-empty.svg'}" alt="" width="213" height="186"/>
@@ -35,13 +38,13 @@
       <th:block th:unless="${#lists.isEmpty(wordSuggestions)}">
         <th:block th:each="wordSuggestion, wordSuggestionIter : ${wordSuggestions}">
           <div class="word-suggestion-page__item">
-            <h2 th:text="${wordSuggestion.wordValue}"></h2>
-            <p th:text="${wordSuggestion.definitionValue}"></p>
-            <p th:text="${wordSuggestion.usageValue}"></p>
-            <div>
-              <small th:text="${wordSuggestion.authorName}"></small>
-              <small th:text="${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></small>
+            <span class="word-suggestion-page__item-author word-suggestion-page__item-author--mobile" th:text="${wordSuggestion.authorName} + ' | ' + ${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></span>
+            <div class="word-suggestion-page__item-header">
+              <h2 th:text="${wordSuggestion.wordValue}"></h2>
+              <span class="word-suggestion-page__item-author word-suggestion-page__item-author--desktop" th:text="${wordSuggestion.authorName} + ' | ' + ${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></span>
             </div>
+            <p class="word-suggestion-page__definition" th:text="${wordSuggestion.definitionValue}"></p>
+            <p class="word-suggestion-page__usage" th:text="${wordSuggestion.usageValue}"></p>
           </div>
         </th:block>
       </th:block>
