@@ -103,7 +103,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 								.and(lds.MEANING_ID.eq(m.field("meaning_id", Long.class)))
 								.and(lds.DATASET_CODE.eq(ds.CODE))
 								.and(lds.DATASET_CODE.in(availableDatasetCodes)))
-				.groupBy(lds.DATASET_CODE, ds.ORDER_BY));
+				);
 
 		Condition wherewolo = searchFilterHelper.applyDatasetRestrictions(lo, searchDatasetsRestriction, null)
 				.and(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)))
@@ -265,7 +265,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lds.WORD_ID.eq(wmid.field("word_id", Long.class))
 								.and(lds.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
 								.and(lds.DATASET_CODE.eq(ds.CODE)))
-				.groupBy(lds.DATASET_CODE, ds.ORDER_BY));
+				);
 
 		Field<String[]> vwvf = DSL
 				.select(DSL.arrayAgg(w22.VALUE).orderBy(lv.ORDER_BY))
