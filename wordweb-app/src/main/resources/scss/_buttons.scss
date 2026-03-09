@@ -1,5 +1,12 @@
 .btn-icon {
-  @include button-variant(transparent, transparent, $hover-background: $gray-010, $hover-border: $gray-010, $active-background: $gray-100, $active-border: $gray-100);
+  @include button-variant(
+    transparent,
+    transparent,
+    $hover-background: $gray-010,
+    $hover-border: $gray-010,
+    $active-background: $gray-100,
+    $active-border: $gray-100
+  );
   color: $gray-300;
   @include box-shadow(none);
 }
@@ -9,14 +16,13 @@
   box-shadow: none;
 }
 
-
 // Make a button look and behave like a link
 .btn-link-dark {
   font-weight: $font-weight-normal;
   color: $body-color;
   text-decoration: underline;
 
-  @include hover () {
+  @include hover() {
     color: $gray-1000;
     text-decoration: none;
   }
@@ -42,7 +48,7 @@
   color: $gray-350;
   text-decoration: none;
 
-  @include hover () {
+  @include hover() {
     color: $gray-1000;
     text-decoration: underline;
   }
@@ -96,14 +102,14 @@
   }
 
   .collapse-icon {
-    transition: transform ease-in-out .32s;
+    transition: transform ease-in-out 0.32s;
   }
 
-  &[aria-expanded=false] .see-less-content {
+  &[aria-expanded="false"] .see-less-content {
     display: none;
   }
 
-  &[aria-expanded=true] {
+  &[aria-expanded="true"] {
     & .collapse-icon {
       transform: rotate(180deg);
     }
@@ -133,7 +139,7 @@
 }
 
 .btn-bold {
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: bold;
   color: $gray-350;
 
@@ -144,8 +150,26 @@
 
 .btn-anchor {
   font-weight: 500;
-  font-size: .875rem;
+  font-size: 0.875rem;
   line-height: 20px;
   color: var(--color-blue-300);
   padding: 0;
+}
+
+.term-content-btn {
+  border: 1px solid var(--color-dark-blue-75);
+  background-color: var(--color-white);
+  color: var(--color-dark-blue);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  margin: 0 0 16px 30px;
+  gap: 4px;
+
+  & > .btn-content {
+    font-weight: 400;
+    font-size: 0.75rem;
+  }
 }

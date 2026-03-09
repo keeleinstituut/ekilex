@@ -49,17 +49,42 @@ $font-weight-bold: 700;
 $headings-font-weight: $font-weight-normal;
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif: "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-$font-family-open-sans: "Open Sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-sans-serif:
+  "Inter",
+  -apple-system,
+  blinkmacsystemfont,
+  "Segoe UI",
+  roboto,
+  "Helvetica Neue",
+  arial,
+  "Noto Sans",
+  sans-serif,
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol",
+  "Noto Color Emoji";
+$font-family-open-sans:
+  "Open Sans",
+  -apple-system,
+  blinkmacsystemfont,
+  "Segoe UI",
+  roboto,
+  "Helvetica Neue",
+  arial,
+  "Noto Sans",
+  sans-serif,
+  "Apple Color Emoji",
+  "Segoe UI Emoji",
+  "Segoe UI Symbol",
+  "Noto Color Emoji";
 // stylelint-enable value-keyword-case
 
 $body-bg: $gray-010;
 $body-color: $gray-900;
 
-
 $font-size-base: 1rem; //16px // Assumes the browser default, typically `16px`
-$font-size-md: $font-size-base * .875; //14px
-$font-size-sm: $font-size-base * .75; //12px
+$font-size-md: $font-size-base * 0.875; //14px
+$font-size-sm: $font-size-base * 0.75; //12px
 
 $h1-font-size: $font-size-base * 1.75;
 $h2-font-size: $font-size-base * 1.642;
@@ -67,7 +92,6 @@ $h3-font-size: $font-size-base * 1.428;
 $h4-font-size: $font-size-base * 1.25; //20px
 $h5-font-size: $font-size-base * 1.125; //18px
 $h6-font-size: $font-size-base;
-
 
 $enable-shadows: true;
 
@@ -77,16 +101,15 @@ $border-color: $gray-200;
 $link-color: $blue-300;
 $input-btn-font-size-sm: $font-size-md;
 $input-border-color: $gray-300;
-$btn-disabled-opacity: .4;
+$btn-disabled-opacity: 0.4;
 $navbar-dark-color: $white;
 
 //Image gallery styles
 $sl-font-family: $font-family-sans-serif;
 $sl-navigation-color: $gray-200;
 $sl-overlay-background: $gray-1000;
-$sl-overlay-opacity: .9;
+$sl-overlay-opacity: 0.9;
 $sl-caption-background: none;
-
 
 $sl-counter-fontsize: $font-size-md;
 $sl-caption-fontsize: $font-size-md;
@@ -101,7 +124,6 @@ $sl-img-border-small: 6px solid $white;
 $sl-img-border-medium: 12px solid $white;
 $sl-img-border-large: $sl-img-border-medium;
 
-
 :root {
   --color-gray-010: #{$gray-010};
   --color-gray-100: #{$gray-100};
@@ -112,27 +134,31 @@ $sl-img-border-large: $sl-img-border-medium;
   --color-gray-500: #{$gray-500};
   --color-gray-900: #{$gray-900};
   --color-gray-1000: #{$gray-1000};
-  --color-old-lighter-gray: #C3CCD6;
-  --color-light-gray: #C4D2DD;
-  --color-bluish-gray: #E4ECEF;
-  --color-bluish-but-not-exactly-gray: #EAEEF5;
-  --color-elephant-gray: #1731481A;
+  --color-old-lighter-gray: #c3ccd6;
+  --color-light-gray: #c4d2dd;
+  --color-bluish-gray: #e4ecef;
+  --color-bluish-but-not-exactly-gray: #eaeef5;
+  --color-elephant-gray: #1731481a;
   --color-elephanter-gray: #17314840;
-  --color-grayish-white: #FAFAFA;
-  --color-lighter-gray: #AFBFCD;
-  --color-dark-gray: #98A7B4;
-  --color-darker-gray: #6A788A;
-  --color-even-darker-gray: #5A656F;
+  --color-grayish-white: #fafafa;
+  --color-lighter-gray: #afbfcd;
+  --color-dark-gray: #98a7b4;
+  --color-darker-gray: #6a788a;
+  --color-even-darker-gray: #5a656f;
   --color-notes-gray: #595959;
-  --color-icon-gray: #636B74;
+  --color-icon-gray: #636b74;
   --color-discord-gray: #596573;
   --color-2025-õigekeelsussõnaraamatu-hall-100: #547687;
-  --color-hall-taust-final-final-final-hall-500: #F9F9F9;
-  --color-cloudy-day: #7C8898;
-  --color-hylge-hall: #C1C9D4;
-  --color-meri-hylge-hall: #E3EFFB;
-  --color-linna-hall: #E7E7E7;
-  --color-linnahall: #BAD2DE40;
+  --color-hall-taust-final-final-final-hall-500: #f9f9f9;
+  --color-cloudy-day: #7c8898;
+  --color-hylge-hall: #c1c9d4;
+  --color-meri-hylge-hall: #e3effb;
+  --color-linna-hall: #e7e7e7;
+  --color-linnahall: #bad2de40;
+  --color-saku-suurhall: #8392a0;
+  --color-halleluja: #f0f4f8;
+  --color-hallitus: #555e68;
+  --color-halle-berry: #f8fafc;
   --color-white: #{$white};
   --color-blue-100: #{$blue-100};
   --color-blue-200: #{$blue-200};
@@ -140,26 +166,26 @@ $sl-img-border-large: $sl-img-border-medium;
   --color-blue-350: #{$blue-350};
   --color-blue-400: #{$blue-400};
   --color-blue-900: #{$blue-900};
-  --color-lighter-blue: #EAF3FC;
-  --color-light-blue: #D7E5F2;
-  --color-light-blue-alternate: #DCE8F5;
+  --color-lighter-blue: #eaf3fc;
+  --color-light-blue: #d7e5f2;
+  --color-light-blue-alternate: #dce8f5;
   --color-dark-blue: #173148;
-  --color-dark-blue-75: #173148BF;
+  --color-dark-blue-75: #173148bf;
   --color-red-100: #{$red-100};
   --color-red-400: #{$red-400};
-  --color-error-red: #B25C5C;
+  --color-error-red: #b25c5c;
   --color-green-100: #{$green-100};
   --color-green-400: #{$green-400};
   --color-green-700: #{$green-700};
-  --color-success-green: #2E7D32;
+  --color-success-green: #2e7d32;
   --color-money-green: #328237;
-  --color-light-green: #F7FDF9;
-  --color-dark-green: #267C6B;
+  --color-light-green: #f7fdf9;
+  --color-dark-green: #267c6b;
   --color-yellow-100: #{$yellow-100};
   --color-purple-100: #{$purple-100};
-  --color-orange: #DE6837;
+  --color-orange: #de6837;
 
-  --color-alert-yellow: #FDF0E1;
+  --color-alert-yellow: #fdf0e1;
 
   --color-outline: #000;
   --header-z-index: 1072;

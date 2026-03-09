@@ -11,17 +11,13 @@
   .text-body-two {
     color: var(--color-dark-blue);
     font-family: Inter;
-    font-size: .875rem;
+    font-size: 0.875rem;
     font-weight: 400;
     line-height: 20px;
   }
 
   .text-weight-regular {
     font-weight: 400;
-  }
-
-  .text-weight-medium {
-    font-weight: 500;
   }
 
   .text-weight-semi-bold {
@@ -44,9 +40,13 @@
 .text-caption {
   color: var(--color-dark-blue);
   font-family: Inter;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   letter-spacing: 0.048px;
+}
+
+.text-weight-medium {
+  font-weight: 500;
 }

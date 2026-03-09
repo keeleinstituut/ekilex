@@ -555,25 +555,6 @@
   }
 }
 
-.meaning-reliability {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.625rem;
-  font-weight: 500;
-  height: 20px;
-  color: var(--color-even-darker-gray);
-  margin-left: 4px;
-
-  &--green {
-    color: var(--color-success-green);
-  }
-
-  &--red {
-    color: var(--color-error-red);
-  }
-}
-
 .search-filter {
   &__wrapper {
     position: relative;

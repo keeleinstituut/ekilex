@@ -16,12 +16,10 @@
               <span th:text="#{label.public.note}" class="text-caption">Hea teada</span>
             </div>
             <div class="col-12">
-              <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
-                  <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
-                  <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
-                </th:block>
-                <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
+              <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}" th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
+                <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+                <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
+                <div th:lang="${langData.defaultLang ? null : langData.codeIso2}"><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
               </div>
             </div>
           </div>
@@ -283,10 +281,10 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="mb-3" th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
-                  <th:block th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
+                <div class="d-flex flex-column gap-1 mb-3" th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
+                  <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                     <span class="text-caption" th:text="${relationType.value}" th:id="|lexeme-related-meanings-${lexeme.lexemeId}|"></span>
-                    <ul class="list-unstyled d-inline" th:aria-describedby="|lexeme-related-meanings-${lexeme.lexemeId}|">
+                    <ul class="list-unstyled d-inline m-0" th:aria-describedby="|lexeme-related-meanings-${lexeme.lexemeId}|">
                       <li class="d-inline" th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                         <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
@@ -308,7 +306,7 @@
                         <span th:unless="${relationIter.last}" class="ml-n1" aria-hidden="true">,</span>
                       </li>
                     </ul>
-                  </th:block>
+                  </div>
                 </div>
                 <div class="row" th:unless="${#lists.isEmpty(lexeme.learnerComments)}">
                   <div class="col-6">
@@ -324,12 +322,10 @@
                   </div>
                   <div class="col-12">
                     <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
-                      <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
-                          <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
-                          <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
-                        </th:block>
-                        <div><p  class="mb-1 text-body-two text-weight-medium" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
+                      <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}" th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
+                        <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
+                        <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
+                        <div th:lang="${langData.defaultLang ? null : langData.codeIso2}"><p  class="mb-1 text-body-two text-weight-medium" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
