@@ -102,6 +102,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		final int MAX_LEV_LENGTH = 250;
 
+		wordInfix = StringUtils.substring(StringUtils.trim(wordInfix), 0, MAX_LEV_LENGTH);
 		List<String> destinLangs = searchContext.getDestinLangs();
 		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
 		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
@@ -212,6 +213,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		Table<Record4<String, Long, TypeLangDatasetPublishingRecord[], Integer>> ws = null;
 
+		searchWord = StringUtils.substring(StringUtils.trim(searchWord), 0, MAX_LEV_LENGTH);
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 		Field<String> searchWordUnaccentLowerField = DSL.lower(searchWordUnaccent);
 		Field<Integer> wsf = DSL.field(Routines
