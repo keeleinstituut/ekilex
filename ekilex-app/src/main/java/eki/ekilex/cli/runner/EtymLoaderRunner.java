@@ -34,7 +34,7 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 
 	private final String reportType = REPORT_TYPE_LANGUAGE_GROUP;
 
-	private boolean makeReport = true;
+	private boolean makeReport = false;
 
 	//@Transactional(rollbackFor = Exception.class)
 	public void execute(String dataXmlFilePath) throws Exception {
@@ -43,6 +43,10 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 
 		Count totalArticleCount = new Count();
 		Count skippedArticleCount = new Count();
+		Count variantArticleCount = new Count();
+		Count variantCount = new Count();
+		Count missingLangArticleCount = new Count();
+		Count missingWordArticleCount = new Count();
 
 		FileOutputStream reportStream = null;
 		OutputStreamWriter reportWriter = null;
@@ -55,9 +59,9 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 		Element rootElement = dataDoc.getRootElement();
 
 		if (StringUtils.contains(dataXmlFilePath, "ss1")) {
-			handleEtymSs1(rootElement, totalArticleCount, skippedArticleCount, reportWriter);
+			handleEtymSs1(rootElement, totalArticleCount, skippedArticleCount, variantArticleCount, variantCount, missingLangArticleCount, missingWordArticleCount, reportWriter);
 		} else if (StringUtils.contains(dataXmlFilePath, "vsl")) {
-			handleEtymVsl(rootElement, totalArticleCount, skippedArticleCount, reportWriter);
+			handleEtymVsl(rootElement, totalArticleCount, skippedArticleCount, variantArticleCount, variantCount, missingLangArticleCount, missingWordArticleCount, reportWriter);
 		}
 
 		if (makeReport) {
@@ -69,12 +73,20 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 
 		logger.info("Total article count: {}", totalArticleCount.getValue());
 		logger.info("Skipped article count: {}", skippedArticleCount.getValue());
+		logger.info("Variant article count: {}", variantArticleCount.getValue());
+		logger.info("Variant count: {}", variantCount.getValue());
+		logger.info("Missing lang article count: {}", missingLangArticleCount.getValue());
+		logger.info("Missing word article count: {}", missingWordArticleCount.getValue());
 	}
 
 	private void handleEtymSs1(
 			Element rootElement,
 			Count totalArticleCount,
 			Count skippedArticleCount,
+			Count variantArticleCount,
+			Count variantCount,
+			Count missingLangArticleCount,
+			Count missingWordArticleCount,
 			OutputStreamWriter reportWriter) throws Exception {
 
 		Map<String, List<String>> langGroupLanguagesMap = new HashMap<>();
@@ -94,49 +106,81 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 
+			boolean articleHasVariants = false;
+			boolean missingLang = false;
+			boolean missingWord = false;
+
 			for (Node etgNode : etgNodes) {
+
+				List<Node> etggNodes = etgNode.selectNodes("s:etgg");
+
+				if (CollectionUtils.isEmpty(etggNodes)) {
+					continue;
+				}
 
 				// keelerühmad
 				List<String> langGroups = extractTextValues(etgNode, "s:kr");
 
-				// keeled
-				List<String> languages = extractTextValues(etgNode, "s:etgg/s:k");
+				for (Node etggNode : etggNodes) {
 
-				if (CollectionUtils.isEmpty(langGroups)) {
-					continue;
-				}
-				if (CollectionUtils.isEmpty(languages)) {
-					continue;
-				}
-				if (langGroups.size() > 1) {
-					continue;
-				}
+					// keeled
+					List<String> languages = extractTextValues(etggNode, "s:k");
 
-				for (String langGroup : langGroups) {
-
-					List<String> langGroupLanguages = langGroupLanguagesMap.get(langGroup);
-					if (langGroupLanguages == null) {
-						langGroupLanguages = new ArrayList<>();
-						langGroupLanguagesMap.put(langGroup, langGroupLanguages);
+					if (CollectionUtils.isEmpty(languages)) {
+						missingLang = true;
 					}
 
-					for (String lang : languages) {
+					if (CollectionUtils.isNotEmpty(languages) && (CollectionUtils.size(langGroups) == 1)) {
 
-						if (!langGroupLanguages.contains(lang)) {
-							langGroupLanguages.add(lang);
+						for (String langGroup : langGroups) {
+
+							List<String> langGroupLanguages = langGroupLanguagesMap.get(langGroup);
+							if (langGroupLanguages == null) {
+								langGroupLanguages = new ArrayList<>();
+								langGroupLanguagesMap.put(langGroup, langGroupLanguages);
+							}
+
+							for (String lang : languages) {
+
+								if (!langGroupLanguages.contains(lang)) {
+									langGroupLanguages.add(lang);
+								}
+
+								List<String> languageLangGroups = languageLangGroupsMap.get(lang);
+								if (languageLangGroups == null) {
+									languageLangGroups = new ArrayList<>();
+									languageLangGroupsMap.put(lang, languageLangGroups);
+								}
+
+								if (!languageLangGroups.contains(langGroup)) {
+									languageLangGroups.add(langGroup);
+								}
+							}
 						}
+					}
 
-						List<String> languageLangGroups = languageLangGroupsMap.get(lang);
-						if (languageLangGroups == null) {
-							languageLangGroups = new ArrayList<>();
-							languageLangGroupsMap.put(lang, languageLangGroups);
-						}
-
-						if (!languageLangGroups.contains(langGroup)) {
-							languageLangGroups.add(langGroup);
+					// sõna ja variandid
+					List<String> wordAndVariantValues = extractTextValues(etggNode, "s:ex");
+					if (CollectionUtils.isEmpty(wordAndVariantValues)) {
+						missingWord = true;
+					} else {
+						int currentVariantCount = wordAndVariantValues.size() - 1;
+						variantCount.increment(currentVariantCount);
+						if (currentVariantCount > 0) {
+							articleHasVariants = true;
 						}
 					}
 				}
+			}
+
+			if (articleHasVariants) {
+				variantArticleCount.increment();
+			}
+			if (missingLang) {
+				missingLangArticleCount.increment();
+			}
+			if (missingWord) {
+				missingWordArticleCount.increment();
 			}
 		}
 
@@ -150,7 +194,13 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 			Element rootElement,
 			Count totalArticleCount,
 			Count skippedArticleCount,
+			Count variantArticleCount,
+			Count variantCount,
+			Count missingLangArticleCount,
+			Count missingWordArticleCount,
 			OutputStreamWriter reportWriter) throws Exception {
+
+		Count lastElementMissingWordArticleCount = new Count();
 
 		List<String> allLangAndGrValues = new ArrayList<>();
 
@@ -169,20 +219,50 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			List<String> articleLangAndGrValues = new ArrayList<>();
+			boolean articleHasVariants = false;
+			boolean missingLang = false;
+			boolean missingWord = false;
+			boolean lastElementMissingWord = false;
 
-			for (Node etgNode : etgNodes) {
+			int etgNodeCount = etgNodes.size();
+			int lastEtgNodeIndex = etgNodeCount - 1;
+			for (int etgNodeIndex = 0; etgNodeIndex < etgNodeCount; etgNodeIndex++) {
 
+				Node etgNode = etgNodes.get(etgNodeIndex);
 				List<Node> etggNodes = etgNode.selectNodes("x:etgg");
 				if (CollectionUtils.isEmpty(etggNodes)) {
 					continue;
 				}
 
-				for (Node etggNode : etggNodes) {
+				int etggNodeCount = etggNodes.size();
+				int lastEtggNodeIndex = etggNodeCount - 1;
+				for (int etggNodeIndex = 0; etggNodeIndex < etggNodeCount; etggNodeIndex++) {
+
+					Node etggNode = etggNodes.get(etggNodeIndex);
+
+					// keel ja grupp
 					List<String> langAndGrValues = extractTextValues(etggNode, "x:keel");
-					if (CollectionUtils.isNotEmpty(langAndGrValues)) {
+					if (CollectionUtils.isEmpty(langAndGrValues)) {
+						missingLang = true;
+					} else {
 						String langAndGrValuesStr = StringUtils.join(langAndGrValues, " | ");
 						if (!articleLangAndGrValues.contains(langAndGrValuesStr)) {
 							articleLangAndGrValues.add(langAndGrValuesStr);
+						}
+					}
+
+					// sõna ja variandid
+					List<String> wordAndVariantValues = extractTextValues(etggNode, "x:ex");
+					if (CollectionUtils.isEmpty(wordAndVariantValues)) {
+						missingWord = true;
+						if ((etgNodeIndex == lastEtgNodeIndex) && (etggNodeIndex == lastEtggNodeIndex)) {
+							lastElementMissingWord = true;
+						}
+					} else {
+						int currentVariantCount = wordAndVariantValues.size() - 1;
+						variantCount.increment(currentVariantCount);
+						if (currentVariantCount > 0) {
+							articleHasVariants = true;
 						}
 					}
 				}
@@ -193,6 +273,19 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 				if (!allLangAndGrValues.contains(groupLangAndGrValuesStr)) {
 					allLangAndGrValues.add(groupLangAndGrValuesStr);
 				}
+			}
+
+			if (articleHasVariants) {
+				variantArticleCount.increment();
+			}
+			if (missingLang) {
+				missingLangArticleCount.increment();
+			}
+			if (missingWord) {
+				missingWordArticleCount.increment();
+			}
+			if (lastElementMissingWord) {
+				lastElementMissingWordArticleCount.increment();
 			}
 		}
 
@@ -205,6 +298,8 @@ public class EtymLoaderRunner extends AbstractLoaderRunner {
 				reportWriter.write(reportLine);
 			}
 		}
+
+		logger.info("Last element missing word article count: {}", lastElementMissingWordArticleCount.getValue());
 	}
 
 	private void composeReportLgr(
