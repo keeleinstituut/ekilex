@@ -100,6 +100,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(
 			String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
 
+		final int MAX_LEV_LENGTH = 250;
+
 		List<String> destinLangs = searchContext.getDestinLangs();
 		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
 		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
@@ -152,7 +154,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.where(awwhere))
 				.asTable("ws");
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(wvt.field("word_value", String.class), wordInfixLowerField));
+		Field<Integer> wlf = DSL.field(Routines
+				.levenshtein1(DSL
+						.substring(wvt.field("word_value", String.class), 0, MAX_LEV_LENGTH),
+						wordInfixLowerField));
 
 		Condition wswhere = applyContainingLangComplexityDatasetFilter(wvt, searchContext, DSL.noCondition());
 
@@ -201,6 +206,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		final int D_MAX = 2;
 		final int MAX_LEV_DIST = 2;
+		final int MAX_LEV_LENGTH = 250;
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
@@ -208,16 +214,34 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 		Field<String> searchWordUnaccentLowerField = DSL.lower(searchWordUnaccent);
-		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD_VALUE, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
-		Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD_VALUE, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
+		Field<Integer> wsf = DSL.field(Routines
+				.levenshteinLessEqual1(DSL
+						.substring(w.WORD_VALUE, 0, MAX_LEV_LENGTH),
+						searchWordLowerField,
+						DSL.val(MAX_LEV_DIST)));
+		Field<Integer> awsf = DSL.field(Routines
+				.levenshteinLessEqual1(DSL
+						.substring(aw.WORD_VALUE, 0, MAX_LEV_LENGTH),
+						searchWordLowerField,
+						DSL.val(MAX_LEV_DIST)));
 
 		Condition wwhere = applyWordLangFilter(w, destinLangs, DSL.noCondition())
 				.and(w.SGROUP.eq(WORD_SEARCH_GROUP_WORD))
-				.and(Routines.levenshteinLessEqual1(w.CRIT, searchWordLowerField, DSL.val(D_MAX)).le(MAX_LEV_DIST));
+				.and(Routines
+						.levenshteinLessEqual1(
+								w.CRIT,
+								searchWordLowerField,
+								DSL.val(D_MAX))
+						.le(MAX_LEV_DIST));
 
 		Condition awwhere = applyWordLangFilter(aw, destinLangs, DSL.noCondition())
 				.and(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD))
-				.and(Routines.levenshteinLessEqual1(aw.CRIT, searchWordUnaccentLowerField, DSL.val(D_MAX)).le(MAX_LEV_DIST));
+				.and(Routines
+						.levenshteinLessEqual1(
+								aw.CRIT,
+								searchWordUnaccentLowerField,
+								DSL.val(D_MAX))
+						.le(MAX_LEV_DIST));
 
 		SelectConditionStep<Record4<String, Long, TypeLangDatasetPublishingRecord[], Integer>> wselect = DSL
 				.select(
@@ -271,7 +295,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		List<String> destinLangs = searchContext.getDestinLangs();
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
-		Condition where = w.SGROUP.eq(WORD_SEARCH_GROUP_WORD).and(w.CRIT.like(searchWordLowerField));
+		Condition where = w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
+				.and(w.CRIT.like(searchWordLowerField));
 		where = applyContainingLangComplexityDatasetFilter(w, searchContext, where);
 		where = applyWordLangFilter(w, destinLangs, where);
 

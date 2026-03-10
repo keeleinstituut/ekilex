@@ -116,7 +116,7 @@ from
 		'word' as sgroup,
 		w.comp word_value_comp,
 		w.value word_value,
-		lower(w.value) crit,
+		substring(lower(w.value), 0, 250) crit,
 		array_agg(
 			case
 				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
@@ -193,7 +193,7 @@ from
 		'as_word' as sgroup,
 		w.value word_value_comp,
 		w.value word_value,
-		lower(w.value_as_word) crit,
+		substring(lower(w.value_as_word), 0, 250) crit,
 		array_agg(
 			case
 				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
@@ -235,7 +235,7 @@ from
 		'variant' as sgroup,
 		w1.value word_value_comp,
 		w1.value word_value,
-		lower(w2.value) crit,
+		substring(lower(w2.value), 0, 250) crit,
 		array_agg(
 			case
 				when (w1.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w1.lang
@@ -286,7 +286,7 @@ from
 		'form' as sgroup,
 		w.value word_value_comp,
 		w.value word_value,
-		lower(f.value) crit,
+		substring(lower(f.value), 0, 250) crit,
 		array_agg(
 			case
 				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
