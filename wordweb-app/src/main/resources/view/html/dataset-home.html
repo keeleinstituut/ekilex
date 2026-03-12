@@ -27,7 +27,7 @@
         </div>
         <div class="row">
           <div class="col-12 mb-2 mb-md-2">
-            <span th:text="#{label.dataset.termincount(${datasetHomeData.dataset.wordCount})}">Selles sõnakogus on</span>
+            <span th:text="#{|label.dataset.wordcount.${datasetHomeData.dataset.type}|(${datasetHomeData.dataset.wordCount})}">Selles sõnakogus on</span>
           </div>
         </div>
         <div class="row">
