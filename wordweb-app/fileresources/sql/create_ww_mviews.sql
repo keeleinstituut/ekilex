@@ -260,7 +260,11 @@ dblink(
 	contact text,
 	image_url text,
 	is_superior boolean,
-	order_by bigint
+	order_by bigint,
+	last_manual_event_on timestamp,
+	word_count integer,
+	created_meaning_words json,
+	updated_meaning_words json
 );
 
 create materialized view mview_ww_classifier as

@@ -40,7 +40,7 @@ select
 	array_agg(dsw.value order by dsw.value) word_values
 from (
 	select 
-		left (w.value, 1) first_letter,
+		upper(left(w.value, 1)) first_letter,
 		w.value,
 		l.dataset_code
 	from 
@@ -49,6 +49,7 @@ from (
 		dataset ds
 	where 
 		w.value != ''
+		and w.lang = 'est'
 		and w.is_public = true
 		and l.word_id = w.id
 		and l.is_public = true
@@ -3645,7 +3646,255 @@ select
 	ds.contact,
 	ds.image_url,
 	ds.is_superior,
-	ds.order_by
+	ds.order_by,
+	(
+	select
+		max(m.manual_event_on)
+	from
+		meaning m
+	where
+		exists (
+			select
+				1
+			from
+				lexeme l
+			where
+				l.meaning_id = m.id
+				and l.is_public = true
+				and l.is_word = true
+				and l.dataset_code = ds.code
+		)
+	) last_manual_event_on,
+	(
+	select
+		count(w.id)
+	from
+		word w 
+	where
+		w.lang = 'est'
+		and exists (
+			select
+				1
+			from
+				lexeme l
+			where
+				l.word_id = w.id
+				and l.is_public = true
+				and l.is_word = true
+				and l.dataset_code = ds.code
+		)
+	) word_count,
+	(
+	select
+		json_agg(
+			json_build_object(
+				'lexemeId', l.id,
+				'meaningId', l.meaning_id,
+				'wordId', l.word_id,
+				'value', w.value,
+				'valuePrese', w.value_prese,
+				'homonymNr', w.homonym_nr,
+				'lang', w.lang,
+				'eventOn', mm.first_event_on
+			)
+			order by
+				mm.first_event_on desc,
+				w.value
+		)
+	from
+		(
+		select
+			w.meaning_id,
+			(array_agg(w.word_id order by w.priority))[1] word_id
+		from
+			(
+				(
+				select
+					l.word_id,
+					l.meaning_id,
+					1 as priority
+				from
+					word w,
+					lexeme l
+				where
+					w.lang = 'est'
+					and l.word_id = w.id
+					and l.is_word = true
+					and l.is_public = true
+					and l.dataset_code != 'eki'
+					and l.dataset_code = ds.code
+					and l.value_state_code = 'eelistermin'
+				)
+				union all
+				(
+				select
+					l.word_id,
+					l.meaning_id,
+					2 as priority
+				from
+					word w,
+					lexeme l
+				where
+					w.lang = 'est'
+					and l.word_id = w.id
+					and l.is_word = true
+					and l.is_public = true
+					and l.dataset_code != 'eki'
+					and l.dataset_code = ds.code
+					and l.value_state_code is null
+				)
+			) w
+			group by
+				w.meaning_id
+		) ww,
+		(
+			select
+				m.id meaning_id,
+				m.first_event_on
+			from (
+				select
+					m.id,
+					min(al.event_on) first_event_on
+				from
+					meaning m,
+					meaning_activity_log mal,
+					activity_log al
+				where
+					mal.meaning_id = m.id
+					and mal.activity_log_id = al.id
+					and al.owner_name = 'MEANING'
+					and al.owner_id = m.id
+					and al.entity_name = 'MEANING'
+					and al.funct_name like 'create%'
+					and exists (
+						select
+							1
+						from
+							lexeme l
+						where
+							l.meaning_id = m.id
+							and l.is_public = true
+							and l.is_word = true
+							and l.dataset_code = ds.code
+					)
+				group by
+					m.id
+			) m
+			where
+				m.first_event_on > (current_date - interval '3 years')
+		) mm,
+		word w,
+		lexeme l
+	where
+		l.word_id = w.id
+		and l.word_id = ww.word_id
+		and l.meaning_id = ww.meaning_id
+		and l.meaning_id = mm.meaning_id
+	) created_meaning_words,
+	(
+	select
+		json_agg(
+			json_build_object(
+				'lexemeId', l.id,
+				'meaningId', l.meaning_id,
+				'wordId', l.word_id,
+				'value', w.value,
+				'valuePrese', w.value_prese,
+				'homonymNr', w.homonym_nr,
+				'lang', w.lang,
+				'eventOn', mm.last_event_on
+			)
+			order by
+				mm.last_event_on desc,
+				w.value
+		)
+	from
+		(
+		select
+			w.meaning_id,
+			(array_agg(w.word_id order by w.priority))[1] word_id
+		from
+			(
+				(
+				select
+					l.word_id,
+					l.meaning_id,
+					1 as priority
+				from
+					word w,
+					lexeme l
+				where
+					w.lang = 'est'
+					and l.word_id = w.id
+					and l.is_word = true
+					and l.is_public = true
+					and l.dataset_code != 'eki'
+					and l.dataset_code = ds.code
+					and l.value_state_code = 'eelistermin'
+				)
+				union all
+				(
+				select
+					l.word_id,
+					l.meaning_id,
+					2 as priority
+				from
+					word w,
+					lexeme l
+				where
+					w.lang = 'est'
+					and l.word_id = w.id
+					and l.is_word = true
+					and l.is_public = true
+					and l.dataset_code != 'eki'
+					and l.dataset_code = ds.code
+					and l.value_state_code is null
+				)
+			) w
+			group by
+				w.meaning_id
+		) ww,
+		(
+			select
+				m.id meaning_id,
+				m.last_event_on
+			from (
+				select
+					m.id,
+					max(al.event_on) last_event_on
+				from
+					meaning m,
+					meaning_last_activity_log mlal,
+					activity_log al
+				where
+					mlal.meaning_id = m.id
+					and mlal.activity_log_id = al.id
+					and mlal.type = 'EDIT'
+					and exists (
+						select
+							1
+						from
+							lexeme l
+						where
+							l.meaning_id = m.id
+							and l.is_public = true
+							and l.is_word = true
+							and l.dataset_code = ds.code
+					)
+				group by
+					m.id
+			) m
+			where
+				m.last_event_on > (current_date - interval '3 years')
+		) mm,
+		word w,
+		lexeme l
+	where
+		l.word_id = w.id
+		and l.word_id = ww.word_id
+		and l.meaning_id = ww.meaning_id
+		and l.meaning_id = mm.meaning_id
+	) updated_meaning_words
 from 
 	dataset ds
 where 

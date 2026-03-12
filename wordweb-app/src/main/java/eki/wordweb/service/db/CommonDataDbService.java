@@ -308,6 +308,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 	public Dataset getDataset(String datasetCode) {
 
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+
 		return create
 				.select(
 						ds.CODE,
@@ -348,6 +349,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 						ds.TYPE,
 						ds.NAME,
 						ds.DESCRIPTION,
+						ds.IMAGE_URL,
 						ds.IS_SUPERIOR)
 				.from(ds)
 				.where(ds.CODE.in(codes))
@@ -373,6 +375,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 						ds.TYPE,
 						ds.NAME,
 						ds.DESCRIPTION,
+						ds.IMAGE_URL,
 						ds.IS_SUPERIOR)
 				.from(ds)
 				.orderBy(orderByFields)

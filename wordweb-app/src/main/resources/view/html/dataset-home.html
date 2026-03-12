@@ -26,8 +26,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
-            <p th:text="${datasetHomeData.dataset.description}" class="text-justify" style="white-space: pre-wrap;">Sõnakogu kirjeldus</p>
+          <div class="col-12 mb-2 mb-md-2">
+            <span th:text="#{label.dataset.termincount(${datasetHomeData.dataset.wordCount})}">Selles sõnakogus on</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-4 mb-md-4">
+            <span th:text="#{label.dataset.lastupdate}">Viimati muudetud</span>
+            <span th:text="${#temporals.format(datasetHomeData.dataset.lastManualEventOn, 'dd.MM.yyyy')}"></span>
           </div>
         </div>
         <div class="row">
@@ -35,12 +41,49 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
-        <div class="text-center mt-5 mb-2">
+        <div class="text-center mt-4 mb-4 mb-4">
           <th:block th:each="firstLetter : ${datasetHomeData.firstLetters}">
             <a th:href="@{${@viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
               <span th:text="${firstLetter}"></span>
             </a>
           </th:block>
+        </div>
+        <div class="row justify-content-center" th:if="${datasetHomeData.dataset.createdMeaningWords}">
+          <div class="col-6 mb-4 mb-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 th:text="#{label.dataset.createdmeanings}" class="card-title"></h3>
+                <div class="new-words-page__word-container">
+                  <th:block th:each="datasetWord : ${datasetHomeData.dataset.createdMeaningWords}">
+                    <a th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}">
+                      <span th:utext="${datasetWord.valuePrese}" class="new-words-page__word"></span>
+                    </a>
+                  </th:block>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center" th:if="${datasetHomeData.dataset.updatedMeaningWords}">
+          <div class="col-6 mb-4 mb-md-4">
+            <div class="card">
+              <div class="card-body">
+                <h3 th:text="#{label.dataset.updatedmeanings}" class="card-title"></h3>
+                <div class="new-words-page__word-container">
+                  <th:block th:each="datasetWord : ${datasetHomeData.dataset.updatedMeaningWords}">
+                    <a th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}">
+                      <span th:utext="${datasetWord.valuePrese}" class="new-words-page__word"></span>
+                    </a>
+                  </th:block>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+            <p th:text="${datasetHomeData.dataset.description}" class="text-justify" style="white-space: pre-wrap;">Sõnakogu kirjeldus</p>
+          </div>
         </div>
         <th:block th:if="${datasetWords != null}">
           <div class="row mb-2">

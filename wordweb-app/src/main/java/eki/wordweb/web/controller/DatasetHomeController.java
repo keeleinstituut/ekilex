@@ -41,11 +41,13 @@ public class DatasetHomeController extends AbstractController {
 			@PathVariable(name = "datasetCode") String datasetCode,
 			HttpServletRequest request,
 			Model model) {
+
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
-		if (!datasetHomeData.isValidDataset()) {
+		if (datasetHomeData == null) {
 			return REDIRECT_PREF + HOME_URI;
 		}
 		populateSearchModel(datasetHomeData, request, model);
+
 		return DATASET_HOME_PAGE;
 	}
 
@@ -57,7 +59,7 @@ public class DatasetHomeController extends AbstractController {
 			Model model) {
 
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
-		if (!datasetHomeData.isValidDataset()) {
+		if (datasetHomeData == null) {
 			return REDIRECT_PREF + HOME_URI;
 		}
 		Character firstLetter = firstLetterStr.charAt(0);
@@ -67,6 +69,7 @@ public class DatasetHomeController extends AbstractController {
 		List<String> datasetWords = datasetContentService.getDatasetWords(datasetCode, firstLetter);
 		populateSearchModel(datasetHomeData, request, model);
 		model.addAttribute("datasetWords", datasetWords);
+
 		return DATASET_HOME_PAGE;
 	}
 

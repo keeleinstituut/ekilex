@@ -29,10 +29,10 @@
             <div class="new-words-page__word-container">
               <th:block th:each="newWord : ${newWordYear.newWords}">
                 <a
-                  class="new-words-page__word"
                   th:href="@{${@viewUtil.getDetailSearchUri(newWord.value, newWord.homonymNr)}}"
-                  th:utext="${@decorUtil.getWordValueMarkup(newWord)}">
-                Sõna
+                  th:utext="${@decorUtil.getWordValueMarkup(newWord)}"
+                  class="new-words-page__word">
+                  Sõna
                 </a>
               </th:block>
             </div>

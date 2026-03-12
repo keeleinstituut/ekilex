@@ -7,11 +7,14 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwDatasetRecord;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,6 +85,26 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
      */
     public final TableField<MviewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
+    /**
+     * The column <code>public.mview_ww_dataset.last_manual_event_on</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, LocalDateTime> LAST_MANUAL_EVENT_ON = createField(DSL.name("last_manual_event_on"), SQLDataType.LOCALDATETIME(0), this, "");
+
+    /**
+     * The column <code>public.mview_ww_dataset.word_count</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, Integer> WORD_COUNT = createField(DSL.name("word_count"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_dataset.created_meaning_words</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, JSON> CREATED_MEANING_WORDS = createField(DSL.name("created_meaning_words"), SQLDataType.JSON, this, "");
+
+    /**
+     * The column <code>public.mview_ww_dataset.updated_meaning_words</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, JSON> UPDATED_MEANING_WORDS = createField(DSL.name("updated_meaning_words"), SQLDataType.JSON, this, "");
+
     private MviewWwDataset(Name alias, Table<MviewWwDatasetRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -147,11 +170,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, String, String, String, String, Boolean, Long> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row12<String, String, String, String, String, String, Boolean, Long, LocalDateTime, Integer, JSON, JSON> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }
