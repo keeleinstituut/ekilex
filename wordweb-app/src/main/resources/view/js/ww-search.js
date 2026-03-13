@@ -51,6 +51,8 @@ function fetchDetails(wordId, wordSelectUrl) {
 			closeText: '<i class="fas fa-times"></i>'
 		});
 		$("#mainContentArea").removeClass("loading");
+		const event = new CustomEvent("wordDetailsLoaded");
+		document.dispatchEvent(event);
 	}).fail(function(data) {
 		alert(messages.search_failure);
 		$("#mainContentArea").removeClass("loading");
