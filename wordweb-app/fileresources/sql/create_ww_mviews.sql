@@ -345,6 +345,7 @@ order by
 	w.lang);
 
 create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_word_menu (dataset_code, first_letter);
+create index mview_ww_dataset_code_idx on mview_ww_dataset (code);
 create index mview_ww_new_word_menu_word_id_idx on mview_ww_new_word_menu (word_id);
 create index mview_ww_new_word_menu_reg_year_idx on mview_ww_new_word_menu (reg_year);
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
