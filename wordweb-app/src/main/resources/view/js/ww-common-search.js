@@ -620,7 +620,7 @@ function addCollapseAriaAttributes() {
     // Data target is for bootstrap collapse
     button.setAttribute(
       "data-target",
-      targetIds.map((id) => `#${id}`).join(","),
+      `#${containerId} [data-dynamic-id-collapse-target]`,
     );
     // Let screen reader know which elements are controlled by the button
     button.setAttribute("aria-controls", targetIds.join(","));
