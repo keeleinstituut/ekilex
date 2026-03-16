@@ -9,7 +9,7 @@ where
 			ws.id
 		from (
 			select
-				(array_agg(ws.id) order by ws.id)[2] id
+				(array_agg(ws.id order by ws.id))[2] id
 			from
 				word_suggestion ws
 			group by

@@ -211,7 +211,7 @@ public class MorphologyDbService {
 				.execute();
 	}
 
-	public void deleteParadigmsForWord(Long wordId) {
+	public void deleteWordParadigms(Long wordId) {
 
 		mainDb
 			.deleteFrom(PARADIGM)

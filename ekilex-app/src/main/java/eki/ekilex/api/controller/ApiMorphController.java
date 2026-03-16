@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,7 +60,7 @@ public class ApiMorphController extends AbstractApiController {
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + PARADIGM_URI + SAVE_URI)
 	@ResponseBody
-	public ApiResponse saveMorphology(
+	public ApiResponse saveParadigms(
 			@RequestBody ParadigmWrapper paradigmWrapper,
 			Authentication authentication,
 			HttpServletRequest request) {
@@ -72,4 +73,20 @@ public class ApiMorphController extends AbstractApiController {
 		}
 	}
 
+	@Order(403)
+	@PreAuthorize("principal.admin")
+	@PostMapping(API_SERVICES_URI + PARADIGM_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteParadigms(
+			@RequestParam("wordId") Long wordId,
+			Authentication authentication,
+			HttpServletRequest request) {
+
+		try {
+			morphologyService.deleteWordParadigms(wordId);
+			return getOpSuccessResponse(authentication, request);
+		} catch (Exception e) {
+			return getOpFailResponse(authentication, request, e);
+		}
+	}
 }

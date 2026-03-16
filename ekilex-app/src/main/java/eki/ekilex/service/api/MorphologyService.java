@@ -120,27 +120,9 @@ public class MorphologyService implements GlobalConstant {
 				formIdMap.put(formUnit, formId);
 			}
 
-			for (Form existingWordForm : existingWordForms) {
+			deleteForms(existingWordForms, existingReservedForms, formIdMap);
 
-				Long formId = existingWordForm.getId();
-				String formValue = existingWordForm.getValue();
-				String morphCode = existingWordForm.getMorphCode();
-				FormUnit formUnit = new FormUnit(formValue, morphCode);
-				if (!formIdMap.containsKey(formUnit)) {
-					boolean isFormInUse = morphologyDbService.isFormInUse(formId);
-					if (isFormInUse) {
-						if (StringUtils.equals(morphCode, MORPH_CODE_UNKNOWN)) {
-							existingReservedForms.add(existingWordForm);
-							continue;
-						} else {
-							throw new OperationDeniedException("Can't delete form. Form \"" + formValue + " - " + morphCode + "\" is in use by a collocation");
-						}
-					}
-					morphologyDbService.deleteForm(formId);
-				}
-			}
-
-			morphologyDbService.deleteParadigmsForWord(wordId);
+			morphologyDbService.deleteWordParadigms(wordId);
 
 			for (Paradigm providedWordParadigm : providedWordParadigms) {
 
@@ -166,22 +148,23 @@ public class MorphologyService implements GlobalConstant {
 				}
 			}
 
-			if (CollectionUtils.isNotEmpty(existingReservedForms)) {
-
-				Paradigm reservedParadigm = new Paradigm();
-				Long paradigmId = morphologyDbService.createParadigm(wordId, reservedParadigm);
-
-				for (Form reservedForm : existingReservedForms) {
-
-					Long formId = reservedForm.getId();
-					ParadigmForm paradigmForm = new ParadigmForm();
-					paradigmForm.setDisplayLevel(1);
-					morphologyDbService.createParadigmForm(paradigmId, formId, paradigmForm);
-				}
-			}
+			createReservedParadigm(wordId, existingReservedForms);
 		}
 
 		logger.info("Done saving paradigms for words {}", wordIds);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteWordParadigms(Long wordId) throws Exception {
+
+		List<Form> existingWordForms = morphologyDbService.getForms(wordId);
+		List<Form> existingReservedForms = new ArrayList<>();
+
+		deleteForms(existingWordForms, existingReservedForms, null);
+
+		morphologyDbService.deleteWordParadigms(wordId);
+
+		createReservedParadigm(wordId, existingReservedForms);
 	}
 
 	private void validate(List<Paradigm> paradigms) throws ApiException {
@@ -194,6 +177,50 @@ public class MorphologyService implements GlobalConstant {
 			}
 			if (CollectionUtils.isEmpty(paradigm.getParadigmForms())) {
 				throw new ApiException("Paradigm has no forms");
+			}
+		}
+	}
+
+	private void deleteForms(
+			List<Form> existingWordForms,
+			List<Form> existingReservedForms,
+			Map<FormUnit, Long> formIdMap) throws Exception {
+
+		for (Form existingWordForm : existingWordForms) {
+
+			Long formId = existingWordForm.getId();
+			String formValue = existingWordForm.getValue();
+			String morphCode = existingWordForm.getMorphCode();
+			FormUnit formUnit = new FormUnit(formValue, morphCode);
+			boolean isValidForDelete = (formIdMap == null) || ((formIdMap != null) && !formIdMap.containsKey(formUnit));
+			if (isValidForDelete) {
+				boolean isFormInUse = morphologyDbService.isFormInUse(formId);
+				if (isFormInUse) {
+					if (StringUtils.equals(morphCode, MORPH_CODE_UNKNOWN)) {
+						existingReservedForms.add(existingWordForm);
+						continue;
+					} else {
+						throw new OperationDeniedException("Can't delete form. Form \"" + formValue + " - " + morphCode + "\" is in use by a collocation");
+					}
+				}
+				morphologyDbService.deleteForm(formId);
+			}
+		}
+	}
+
+	private void createReservedParadigm(Long wordId, List<Form> existingReservedForms) {
+
+		if (CollectionUtils.isNotEmpty(existingReservedForms)) {
+
+			Paradigm reservedParadigm = new Paradigm();
+			Long paradigmId = morphologyDbService.createParadigm(wordId, reservedParadigm);
+
+			for (Form reservedForm : existingReservedForms) {
+
+				Long formId = reservedForm.getId();
+				ParadigmForm paradigmForm = new ParadigmForm();
+				paradigmForm.setDisplayLevel(1);
+				morphologyDbService.createParadigmForm(paradigmId, formId, paradigmForm);
 			}
 		}
 	}
