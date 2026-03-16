@@ -122,6 +122,10 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 		Long feedbackLogId = wordSuggestion.getFeedbackLogId();
 		if (wordSuggestionId == null) {
 			FeedbackLog feedbackLog = feedbackDbService.getFeedbackLog(feedbackLogId);
+			WordSuggestion existingWordSuggestion = feedbackLog.getWordSuggestion();
+			if (existingWordSuggestion != null) {
+				return;
+			}
 			wordSuggestion.setCreated(feedbackLog.getCreated());
 			handlePublication(feedbackLogId, user, wordSuggestion, null);
 			feedbackDbService.createWordSuggestion(wordSuggestion);
