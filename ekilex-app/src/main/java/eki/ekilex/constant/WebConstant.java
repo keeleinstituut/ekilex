@@ -254,6 +254,10 @@ public interface WebConstant {
 
 	String CONFIRM_OP_URI = "/confirm_op";
 
+	String UPLOAD_MEDIA_FILE_URI = "/upload_media_file";
+
+	String DELETE_MEDIA_FILE_URI = "/delete_media_file";
+
 	String SOURCE_COMPONENTS_PAGE = "sourcecomp";
 
 	String SOURCE_SEARCH_URI = "/sourcesearch";

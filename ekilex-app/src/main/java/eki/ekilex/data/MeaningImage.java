@@ -14,6 +14,8 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 
 	private String url;
 
+	private String objectFilename;
+
 	private Long orderBy;
 
 	private List<SourceLink> sourceLinks;
@@ -48,6 +50,14 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getObjectFilename() {
+		return objectFilename;
+	}
+
+	public void setObjectFilename(String objectFilename) {
+		this.objectFilename = objectFilename;
 	}
 
 	public Long getOrderBy() {

@@ -16,6 +16,8 @@ import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE_LABEL;
@@ -871,6 +873,24 @@ public class LookupDbService extends AbstractDataDbService {
 						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
 								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))
 				.fetchInto(InexactSynonym.class);
+	}
+
+	public String getMeaningImageObjectFilename(Long meaningImageId) {
+		return mainDb
+				.select(MEANING_IMAGE.OBJECT_FILENAME)
+				.from(MEANING_IMAGE)
+				.where(MEANING_IMAGE.ID.eq(meaningImageId))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
+	}
+
+	public String getMeaningMediaObjectFilename(Long meaningMediaId) {
+		return mainDb
+				.select(MEANING_MEDIA.OBJECT_FILENAME)
+				.from(MEANING_MEDIA)
+				.where(MEANING_MEDIA.ID.eq(meaningMediaId))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
 	}
 
 	public boolean meaningDomainExists(Long meaningId, String domainCode, String domainOrigin) {

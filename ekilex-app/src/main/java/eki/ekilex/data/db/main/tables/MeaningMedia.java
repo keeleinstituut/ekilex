@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -98,6 +98,11 @@ public class MeaningMedia extends TableImpl<MeaningMediaRecord> {
      * The column <code>public.meaning_media.title</code>.
      */
     public final TableField<MeaningMediaRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.meaning_media.object_filename</code>.
+     */
+    public final TableField<MeaningMediaRecord, String> OBJECT_FILENAME = createField(DSL.name("object_filename"), SQLDataType.CLOB, this, "");
 
     private MeaningMedia(Name alias, Table<MeaningMediaRecord> aliased) {
         this(alias, aliased, null);
@@ -193,11 +198,11 @@ public class MeaningMedia extends TableImpl<MeaningMediaRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, Long, String, String, LocalDateTime, String, LocalDateTime, Long, String> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, Long, Long, String, String, LocalDateTime, String, LocalDateTime, Long, String, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

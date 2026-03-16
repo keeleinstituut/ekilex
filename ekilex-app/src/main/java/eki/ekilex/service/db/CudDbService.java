@@ -685,7 +685,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(MEANING_MEDIA.URL, meaningMedia.getUrl());
-		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningMedia.getTitle());
+		fieldAndValueMap.put(MEANING_MEDIA.TITLE, meaningMedia.getTitle());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_BY, meaningMedia.getModifiedBy());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_ON, meaningMedia.getModifiedOn());
 
@@ -1369,6 +1369,7 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_MEDIA.MEANING_ID,
 						MEANING_MEDIA.TITLE,
 						MEANING_MEDIA.URL,
+						MEANING_MEDIA.OBJECT_FILENAME,
 						MEANING_MEDIA.CREATED_BY,
 						MEANING_MEDIA.CREATED_ON,
 						MEANING_MEDIA.MODIFIED_BY,
@@ -1377,6 +1378,7 @@ public class CudDbService extends AbstractDataDbService {
 						meaningId,
 						meaningMedia.getTitle(),
 						meaningMedia.getUrl(),
+						meaningMedia.getObjectFilename(),
 						meaningMedia.getCreatedBy(),
 						meaningMedia.getCreatedOn(),
 						meaningMedia.getModifiedBy(),
@@ -1394,6 +1396,7 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_IMAGE.MEANING_ID,
 						MEANING_IMAGE.TITLE,
 						MEANING_IMAGE.URL,
+						MEANING_IMAGE.OBJECT_FILENAME,
 						MEANING_IMAGE.CREATED_BY,
 						MEANING_IMAGE.CREATED_ON,
 						MEANING_IMAGE.MODIFIED_BY,
@@ -1402,6 +1405,7 @@ public class CudDbService extends AbstractDataDbService {
 						meaningId,
 						meaningImage.getTitle(),
 						meaningImage.getUrl(),
+						meaningImage.getObjectFilename(),
 						meaningImage.getCreatedBy(),
 						meaningImage.getCreatedOn(),
 						meaningImage.getModifiedBy(),

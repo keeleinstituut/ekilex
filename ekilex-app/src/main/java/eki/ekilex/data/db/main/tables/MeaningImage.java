@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -98,6 +98,11 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
      * The column <code>public.meaning_image.order_by</code>.
      */
     public final TableField<MeaningImageRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.meaning_image.object_filename</code>.
+     */
+    public final TableField<MeaningImageRecord, String> OBJECT_FILENAME = createField(DSL.name("object_filename"), SQLDataType.CLOB, this, "");
 
     private MeaningImage(Name alias, Table<MeaningImageRecord> aliased) {
         this(alias, aliased, null);
@@ -193,11 +198,11 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, Long, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, Long, Long, String, String, String, LocalDateTime, String, LocalDateTime, Long, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

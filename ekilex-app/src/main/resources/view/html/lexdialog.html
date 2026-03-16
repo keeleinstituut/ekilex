@@ -2335,15 +2335,28 @@
   </div>
   <div th:id="${'addMeaningImageDlg_' + lexeme.lexemeId}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_meaning_image_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
+       class="modal" role="dialog" th:fragment="add_meaning_image_dlg" data-plugin="initMeaningMediaUploadPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
+            <input type="hidden" name="value3">
             <div class="form-group row">
               <div class="col-md-12">
+                <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
+                <div class="mb-4">
+                  <button type="button" class="btn btn-primary" data-name="meaning-media-choose-file-btn" th:text="#{media.choose.file}">Vali fail</button>
+                  <input type="file" class="d-none" data-name="meaning-media-file-input" accept=".jpg,.jpeg,.png,.svg">
+                </div>
+                <div class="mb-2" data-name="meaning-media-thumbnail-div" style="display: none;">
+                  <img class="w-50" data-name="meaning-media-upload-thumbnail" alt="">
+                </div>
+                <div class="mb-2" data-name="meaning-media-delete-buttons" style="display: none;">
+                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
+                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
+                </div>
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" required="required" autocomplete="off"></input>
               </div>
             </div>
@@ -2363,7 +2376,8 @@
   </div>
   <div th:id="${'editMeaningImageDlg_' + lexeme.lexemeId + '_' + image.id}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_meaning_image_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
+       th:data-is-object-filename="${!#strings.isEmpty(image.objectFilename)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_image_dlg" data-plugin="initEditMeaningMediaUrlReadonlyPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -2412,16 +2426,29 @@
   </div>
   <div th:id="${'addMeaningMediaDlg_' + lexeme.lexemeId}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_meaning_media_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
+       class="modal" role="dialog" th:fragment="add_meaning_media_dlg" data-plugin="initMeaningMediaUploadPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
+            <input type="hidden" name="value3">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" th:placeholder="#{lex.placeholder.media.url}" name="value" required="required"></textarea>
+                <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
+                <div class="mb-4">
+                  <button type="button" class="btn btn-primary" data-name="meaning-media-choose-file-btn" th:text="#{media.choose.file}">Vali fail</button>
+                  <input type="file" class="d-none" data-name="meaning-media-file-input" accept=".mp4">
+                </div>
+                <div class="mb-2" data-name="meaning-media-thumbnail-div" style="display: none;">
+                  <iframe data-name="meaning-media-upload-thumbnail"></iframe>
+                </div>
+                <div class="mb-2" data-name="meaning-media-delete-buttons" style="display: none;">
+                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
+                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
+                </div>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.media.url}" required="required" autocomplete="off"></input>
               </div>
             </div>
             <div class="form-group row">
@@ -2440,7 +2467,8 @@
   </div>
   <div th:id="${'editMeaningMediaDlg_' + lexeme.lexemeId + '_' + media.id}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_meaning_media_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
+       th:data-is-object-filename="${!#strings.isEmpty(media.objectFilename)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_media_dlg" data-plugin="initEditMeaningMediaUrlReadonlyPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">

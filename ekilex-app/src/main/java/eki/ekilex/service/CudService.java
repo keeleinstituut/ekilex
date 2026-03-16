@@ -19,6 +19,7 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.PermConstant;
 import eki.common.data.AsWordResult;
+import eki.ekilex.client.EkimediaClient;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
@@ -58,6 +59,9 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 	@Autowired
 	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
+
+	@Autowired
+	private EkimediaClient ekimediaClient;
 
 	// --- CREATE ---
 
@@ -373,7 +377,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createMeaningImage(Long meaningId, String url, String title, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createMeaningImage(Long meaningId, String url, String title, String objectFilename, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (StringUtils.isBlank(url)) {
 			return;
@@ -381,6 +385,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		MeaningImage meaningImage = new MeaningImage();
 		meaningImage.setTitle(title);
 		meaningImage.setUrl(url);
+		meaningImage.setObjectFilename(objectFilename);
 		applyCreateUpdate(meaningImage);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1663,6 +1668,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningImage(Long meaningImageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		String objectFilename = lookupDbService.getMeaningImageObjectFilename(meaningImageId);
+		if (StringUtils.isNotBlank(objectFilename)) {
+			ekimediaClient.deleteMediaFile(objectFilename);
+		}
+
 		Long meaningId = activityLogService.getActivityOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningImage(meaningImageId);
@@ -1671,6 +1681,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningMedia(Long meaningMediaId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String objectFilename = lookupDbService.getMeaningMediaObjectFilename(meaningMediaId);
+		if (StringUtils.isNotBlank(objectFilename)) {
+			ekimediaClient.deleteMediaFile(objectFilename);
+		}
 
 		Long meaningId = activityLogService.getActivityOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);

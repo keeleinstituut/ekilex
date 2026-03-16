@@ -801,15 +801,16 @@ create table learner_comment (
 alter sequence learner_comment_id_seq restart with 10000;
 
 create table meaning_image (
-  id bigserial primary key, 
+  id bigserial primary key,
   original_freeform_id bigint, -- to be dropped later
-  meaning_id bigint references meaning(id) on delete cascade not null, 
-  title text null, 
-  url text not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  title text null,
+  url text not null,
+  object_filename text null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
   order_by bigserial
 );
 alter sequence meaning_image_id_seq restart with 10000;
@@ -820,6 +821,7 @@ create table meaning_media (
   meaning_id bigint references meaning(id) on delete cascade not null, 
   title text null, 
   url text not null,
+  object_filename text null,
   created_by text null, 
   created_on timestamp null, 
   modified_by text null, 

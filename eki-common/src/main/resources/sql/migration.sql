@@ -45,3 +45,7 @@ where
 	)
 ;
 
+-- #2 --
+
+alter table meaning_image add column object_filename text null;
+alter table meaning_media add column object_filename text null;

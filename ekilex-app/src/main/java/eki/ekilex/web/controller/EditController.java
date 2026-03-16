@@ -95,6 +95,7 @@ public class EditController extends AbstractMutableDataPageController implements
 		String value = itemData.getValue();
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 		String value2 = itemData.getValue2();
+		String value3 = itemData.getValue3();
 		String type = itemData.getItemType();
 		String languageCode = itemData.getLanguage();
 		String datasetCode = itemData.getDataset();
@@ -208,7 +209,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createMeaningForum(id, value, user);
 			break;
 		case "meaning_image":
-			cudService.createMeaningImage(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningImage(id, value, value2, value3, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sessionBean.setMeaningImageExpanded(true);
 			break;
 		case "meaning_media":

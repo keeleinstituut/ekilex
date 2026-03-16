@@ -647,6 +647,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mi.ID,
 						mi.URL,
 						mi.TITLE,
+						mi.OBJECT_FILENAME,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_os"),
@@ -670,6 +671,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mm.ID,
 						mm.URL,
 						mm.TITLE,
+						mm.OBJECT_FILENAME,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_os"))
