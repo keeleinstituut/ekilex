@@ -10,26 +10,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eki.ekilex.data.MediaUploadResponse;
 import eki.ekilex.data.Response;
-import eki.ekilex.service.MediaUploadService;
+import eki.ekilex.service.MediaService;
 
 @ConditionalOnWebApplication
 @Controller
-public class MediaUploadController extends AbstractMutableDataPageController {
+public class MediaController extends AbstractMutableDataPageController {
 
 	@Autowired
-	private MediaUploadService mediaUploadService;
+	private MediaService mediaService;
 
 	@PostMapping(UPLOAD_MEDIA_FILE_URI)
 	@ResponseBody
 	public MediaUploadResponse uploadMediaFile(@RequestParam("file") MultipartFile file) {
 
-		return mediaUploadService.uploadMediaFile(file);
+		return mediaService.uploadMediaFile(file);
 	}
 
 	@PostMapping(DELETE_MEDIA_FILE_URI)
 	@ResponseBody
 	public Response deleteMediaFile(@RequestParam("objectFilename") String objectFilename) {
 
-		return mediaUploadService.deleteMediaFile(objectFilename);
+		return mediaService.deleteMediaFile(objectFilename);
 	}
 }

@@ -20,9 +20,9 @@ import eki.ekilex.data.MediaUploadResponse;
 import eki.ekilex.data.Response;
 
 @Component
-public class MediaUploadService {
+public class MediaService {
 
-	private static final Logger logger = LoggerFactory.getLogger(MediaUploadService.class);
+	private static final Logger logger = LoggerFactory.getLogger(MediaService.class);
 
 	private static final String[] ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "svg"};
 	private static final String[] ALLOWED_VIDEO_EXTENSIONS = {"mp4"};
