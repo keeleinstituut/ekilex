@@ -41,6 +41,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.CollocationService;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
+import eki.ekilex.service.MediaService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SynCandidateService;
 import eki.ekilex.service.SynCudService;
@@ -79,6 +80,9 @@ public class EditController extends AbstractMutableDataPageController implements
 	@Autowired
 	private ComplexOpService complexOpService;
 
+	@Autowired
+	private MediaService mediaService;
+
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
 	public Response createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
@@ -95,7 +99,6 @@ public class EditController extends AbstractMutableDataPageController implements
 		String value = itemData.getValue();
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 		String value2 = itemData.getValue2();
-		String value3 = itemData.getValue3();
 		String type = itemData.getItemType();
 		String languageCode = itemData.getLanguage();
 		String datasetCode = itemData.getDataset();
@@ -207,14 +210,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "meaning_forum":
 			cudService.createMeaningForum(id, value, user);
-			break;
-		case "meaning_image":
-			cudService.createMeaningImage(id, value, value2, value3, user, roleDatasetCode, isManualEventOnUpdateEnabled);
-			sessionBean.setMeaningImageExpanded(true);
-			break;
-		case "meaning_media":
-			cudService.createMeaningMedia(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
-			sessionBean.setMeaningMediaExpanded(true);
 			break;
 		case "meaning_freeform":
 			cudService.createMeaningFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -425,12 +420,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "meaning_relation_weight":
 			cudService.updateMeaningRelationWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_image":
-			cudService.updateMeaningImage(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_media":
-			cudService.updateMeaningMedia(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.updateMeaningFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -686,10 +675,10 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.deleteMeaningForum(id);
 			break;
 		case "meaning_image":
-			cudService.deleteMeaningImage(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			mediaService.deleteMeaningImage(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.deleteMeaningMedia(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			mediaService.deleteMeaningMedia(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.deleteMeaningFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);

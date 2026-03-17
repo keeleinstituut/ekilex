@@ -1,6 +1,6 @@
 $(function() {
 
-	$.fn.initMeaningMediaUploadPlugin = function() {
+	$.fn.initAddMeaningMediaPlugin = function() {
 		return this.each(function() {
 			const modal = $(this);
 
@@ -16,8 +16,8 @@ $(function() {
 			const thumbnailDiv = modal.find('[data-name=meaning-media-thumbnail-div]');
 			const thumbnail = modal.find('[data-name=meaning-media-upload-thumbnail]');
 			const deleteButtons = modal.find('[data-name=meaning-media-delete-buttons]');
-			const urlInput = modal.find('input[name=value]');
-			const objectFilenameInput = modal.find('input[name=value3]');
+			const urlInput = modal.find('input[name=url]');
+			const objectFilenameInput = modal.find('input[name=objectFilename]');
 			const uploadErrorBlock = modal.find('[data-id=meaning-media-upload-error]');
 			let objectFilename = null;
 
@@ -120,14 +120,14 @@ $(function() {
 		});
 	}
 
-	$.fn.initEditMeaningMediaUrlReadonlyPlugin = function() {
+	$.fn.initEditMeaningMediaPlugin = function() {
 		return this.each(function() {
 			const modal = $(this);
 			modal.on('show.bs.modal', function(e) {
 				initGenericTextEditDlg(modal);
 				alignAndFocus(e, modal);
 
-				const urlInput = modal.find('input[name=value]');
+				const urlInput = modal.find('input[name=url]');
 				const isObjectFilename = modal.attr('data-is-object-filename') === 'true';
 				if (isObjectFilename) {
 					urlInput.prop('readonly', true);

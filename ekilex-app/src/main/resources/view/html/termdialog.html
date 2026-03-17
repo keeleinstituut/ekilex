@@ -1727,16 +1727,15 @@
     </div>
   </div>
   <div th:id="${'addMeaningImageDlg_' + meaningId}" class="modal"
-        role="dialog"
-        th:fragment="add_meaning_image_dlg"
-        data-plugin="initMeaningMediaUploadPlugin">
+       role="dialog"
+       th:fragment="add_meaning_image_dlg"
+       data-plugin="initAddMeaningMediaPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
+        <form th:action="@{/create_meaning_image}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="value3">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
+            <input type="hidden" name="objectFilename">
             <div class="form-group row">
               <div class="col-md-12">
                 <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
@@ -1751,12 +1750,12 @@
                   <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
                   <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
                 </div>
-                <input type="text" class="form-control required-field" th:placeholder="#{term.placeholder.image.url}" name="value" required="required" autocomplete="off"></input>
+                <input type="text" class="form-control required-field" th:placeholder="#{term.placeholder.image.url}" name="url" required="required" autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control" th:placeholder="#{term.placeholder.image.title}" name="value2" autocomplete="off"></input>
+                <input type="text" class="form-control" th:placeholder="#{term.placeholder.image.title}" name="title" autocomplete="off">
               </div>
             </div>
             <div class="modal-footer">
@@ -1772,7 +1771,7 @@
        role="dialog"
        th:fragment="edit_meaning_image_dlg"
        th:data-is-object-filename="${!#strings.isEmpty(image.objectFilename)}"
-       data-plugin="initEditMeaningMediaUrlReadonlyPlugin">
+       data-plugin="initEditMeaningMediaPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1781,12 +1780,12 @@
             <input type="hidden" name="opCode" value="meaning_image">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off"></input>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.image.title}" th:value="${image.title}" autocomplete="off"></input>
+                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.image.title}" th:value="${image.title}" autocomplete="off">
               </div>
             </div>
             <div class="modal-footer">
@@ -1801,14 +1800,13 @@
   <div th:id="${'addMeaningMediaDlg_' + meaningId}" class="modal"
        role="dialog"
        th:fragment="add_meaning_media_dlg"
-       data-plugin="initMeaningMediaUploadPlugin">
+       data-plugin="initAddMeaningMediaPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
+        <form th:action="@{/create_meaning_media}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="value3">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
+            <input type="hidden" name="objectFilename">
             <div class="form-group row">
               <div class="col-md-12">
                 <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
@@ -1823,12 +1821,12 @@
                   <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
                   <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
                 </div>
-                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.media.url}" required="required" autocomplete="off"></input>
+                <input type="text" class="form-control required-field" name="url" th:placeholder="#{term.placeholder.media.url}" required="required" autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.media.title}" autocomplete="off"></input>
+                <input type="text" class="form-control" name="title" th:placeholder="#{term.placeholder.media.title}" autocomplete="off">
               </div>
             </div>
             <div class="modal-footer">
@@ -1844,7 +1842,7 @@
        role="dialog"
        th:fragment="edit_meaning_media_dlg"
        th:data-is-object-filename="${!#strings.isEmpty(media.objectFilename)}"
-       data-plugin="initEditMeaningMediaUrlReadonlyPlugin">
+       data-plugin="initEditMeaningMediaPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1858,7 +1856,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.media.title}" th:value="${media.title}" autocomplete="off"></input>
+                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.media.title}" th:value="${media.title}" autocomplete="off">
               </div>
             </div>
             <div class="modal-footer">

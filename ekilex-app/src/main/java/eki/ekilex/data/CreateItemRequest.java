@@ -18,8 +18,6 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	private String value2;
 
-	private String value3;
-
 	private String itemType;
 
 	private String language;
@@ -74,14 +72,6 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	public void setValue2(String value2) {
 		this.value2 = value2;
-	}
-
-	public String getValue3() {
-		return value3;
-	}
-
-	public void setValue3(String value3) {
-		this.value3 = value3;
 	}
 
 	public String getItemType() {
