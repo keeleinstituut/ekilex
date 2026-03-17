@@ -204,7 +204,8 @@
                   </div>
                 </div>
                 <div class="matches" th:unless="${#maps.isEmpty(lexeme.destinLangSynonymsByLang)}">
-                  <div class="additional-meta">
+                  <p class="m-0 text-caption" th:text="#{label.translation.matches}" th:id="|translation-matches-label-${lexeme.lexemeId}|"></p>
+                  <div class="additional-meta" th:aria-describedby="|translation-matches-label-${lexeme.lexemeId}|">
                     <th:block th:each="synEntry : ${lexeme.destinLangSynonymsByLang}"
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap" th:with="langData=${@viewUtil.getLangData(synEntry.key)}">
