@@ -1,112 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links},_,_)">
-<th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
-</th:block>
-</head>
-<body class="home-page d-flex flex-column">
-  <th:block th:replace="common-app :: update-msg"></th:block>
-  <th:block th:replace="common-app :: wcag-search"></th:block>
-  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
-  <div class="container-fluid home-page-content">
-    <div class="row">
-      <div class="col align-self-center main-content-wrapper">
-        <div class="row">
-          <div class="col-12 mb-2">
-            <img class="w-25" th:src="${datasetHomeData.dataset.imageUrl}">
-          </div>
+  <head th:replace="common-app :: common_header(_,~{::links},_,_)">
+    <th:block th:fragment="links">
+      <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
+      <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+      <script
+        type="text/javascript"
+        th:src="@{/view/js/ww-common-audio.js}"
+      ></script>
+      <script
+        type="text/javascript"
+        th:src="@{/view/js/ww-common-search.js}"
+      ></script>
+    </th:block>
+  </head>
+  <body class="dataset-page">
+    <th:block th:replace="common-app :: update-msg"></th:block>
+    <th:block th:replace="common-app :: wcag-search"></th:block>
+    <th:block
+      th:replace="common-app :: header(withSearch = ${false})"
+    ></th:block>
+    <section class="dataset-page__wrapper">
+      <div class="dataset-page__header">
+        <div>
+          <img
+            class="dataset-page__image"
+            th:src="${datasetHomeData.dataset.imageUrl}"
+            alt=""
+            th:unless="${#strings.isEmpty(datasetHomeData.dataset.imageUrl)}"
+          />
+          <h1 th:text="${datasetHomeData.dataset.name}"></h1>
         </div>
-        <div class="row">
-          <div aria-hidden="true" class="col-12 mb-1 mb-md-2">
-            <h1 th:text="${datasetHomeData.dataset.name}"></h1>
-          </div>
+        <div class="dataset-page__header-text" th:unless="${datasetWords}">
+          <span
+            th:text="#{|label.dataset.wordcount.${datasetHomeData.dataset.type}|(${datasetHomeData.dataset.wordCount})}"
+          >
+            Selles sõnakogus on
+          </span>
+          <span th:text="#{label.dataset.lastupdate}">Viimati muudetud</span>
+          <span
+            th:text="${#temporals.format(datasetHomeData.dataset.lastManualEventOn, 'dd.MM.yyyy')}"
+          ></span>
         </div>
-        <div class="row">
-          <div class="col-12 mb-2 mb-md-2">
-            <span th:text="#{|label.dataset.wordcount.${datasetHomeData.dataset.type}|(${datasetHomeData.dataset.wordCount})}">Selles sõnakogus on</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 mb-4 mb-md-4">
-            <span th:text="#{label.dataset.lastupdate}">Viimati muudetud</span>
-            <span th:text="${#temporals.format(datasetHomeData.dataset.lastManualEventOn, 'dd.MM.yyyy')}"></span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
-            <div th:replace="common-search :: search"></div>
-          </div>
-        </div>
-        <div class="text-center mt-4 mb-4 mb-4">
-          <th:block th:each="firstLetter : ${datasetHomeData.firstLetters}">
-            <a th:href="@{${@viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
-              <span th:text="${firstLetter}"></span>
-            </a>
-          </th:block>
-        </div>
-        <div class="row justify-content-center" th:if="${datasetHomeData.dataset.createdMeaningWords}">
-          <div class="col-6 mb-4 mb-md-4">
-            <div class="card">
-              <div class="card-body">
-                <h3 th:text="#{label.dataset.createdmeanings}" class="card-title"></h3>
-                <div class="new-words-page__word-container">
-                  <th:block th:each="datasetWord : ${datasetHomeData.dataset.createdMeaningWords}">
-                    <a th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}">
-                      <span th:utext="${datasetWord.valuePrese}" class="new-words-page__word"></span>
-                    </a>
-                  </th:block>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row justify-content-center" th:if="${datasetHomeData.dataset.updatedMeaningWords}">
-          <div class="col-6 mb-4 mb-md-4">
-            <div class="card">
-              <div class="card-body">
-                <h3 th:text="#{label.dataset.updatedmeanings}" class="card-title"></h3>
-                <div class="new-words-page__word-container">
-                  <th:block th:each="datasetWord : ${datasetHomeData.dataset.updatedMeaningWords}">
-                    <a th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}">
-                      <span th:utext="${datasetWord.valuePrese}" class="new-words-page__word"></span>
-                    </a>
-                  </th:block>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
-            <p th:text="${datasetHomeData.dataset.description}" class="text-justify" style="white-space: pre-wrap;">Sõnakogu kirjeldus</p>
-          </div>
-        </div>
-        <th:block th:if="${datasetWords != null}">
-          <div class="row mb-2">
-            <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
-              <hr />
-              <th:block th:each="word : ${datasetWords}">
-                <div class="text-left">
-                  <a th:href="@{${@viewUtil.getDetailSearchUri(word, datasetHomeData.dataset.code)}}" th:text="${word}"></a>
-                </div>
-              </th:block>
-            </div>
-          </div>
-        </th:block>
       </div>
-    </div>
-  </div>
-  <div th:replace="common-app :: footer-content"></div>
-  <div th:replace="feedback :: feedback-form"></div>
-  <script th:inline="javascript">
-  	var currentPage = /*[[@{/}]]*/"/";
-  	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
-  	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
-  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-  </script>
-</body>
+      <div th:replace="common-search :: search"></div>
+      <ul class="dataset-page__letters">
+        <li th:each="firstLetter : ${datasetHomeData.firstLetters}">
+          <a
+            th:href="@{${@viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}"
+            th:text="${firstLetter}"
+          >
+          </a>
+        </li>
+      </ul>
+      <div class="dataset-page__word-blocks" th:unless="${datasetWords}">
+        <div class="dataset-page__word-block">
+          <img th:src="@{/view/images/happy-quote-left.svg}" alt="" />
+          <div class="dataset-page__word-block-content">
+            <h2 th:text="#{label.dataset.createdmeanings}"></h2>
+            <ul class="dataset-page__word-block-words">
+              <li
+                th:each="datasetWord : ${datasetHomeData.dataset.createdMeaningWords}"
+              >
+                <a
+                  th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}"
+                  th:utext="${datasetWord.valuePrese}"
+                >
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="dataset-page__word-block">
+          <img th:src="@{/view/images/happy-quote-right.svg}" alt="" />
+          <div class="dataset-page__word-block-content">
+            <h2 th:text="#{label.dataset.updatedmeanings}"></h2>
+            <ul class="dataset-page__word-block-words">
+              <li
+                th:each="datasetWord : ${datasetHomeData.dataset.updatedMeaningWords}"
+              >
+                <a
+                  th:href="@{${@viewUtil.getDetailSearchUri(datasetWord.value, datasetWord.homonymNr, datasetWord.lang, datasetHomeData.dataset.code)}}"
+                  th:utext="${datasetWord.valuePrese}"
+                >
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p
+        th:text="${datasetHomeData.dataset.description}"
+        class="dataset-page__description"
+        th:unless="${datasetWords}"
+      >
+        Sõnakogu kirjeldus
+      </p>
+      <ul class="dataset-page__word-list" th:if="${datasetWords}">
+        <li th:each="word : ${datasetWords}">
+          <a
+            th:href="@{${@viewUtil.getDetailSearchUri(word, datasetHomeData.dataset.code)}}"
+            th:text="${word}"
+          ></a>
+        </li>
+      </ul>
+    </section>
+    <div th:replace="common-app :: footer-content"></div>
+    <div th:replace="feedback :: feedback-form"></div>
+    <script th:inline="javascript">
+      var currentPage = /*[[@{/}]]*/ "/";
+      var searchWordFragUrl =
+        /*[[@{/searchwordfrag/unif}]]*/ "/searchwordfrag/unif";
+      var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/ "/worddetails/unif";
+      var speechRecognitionServiceUrl =
+        /*[[${speechRecognitionServiceUrl}]]*/ "/";
+    </script>
+  </body>
 </html>
