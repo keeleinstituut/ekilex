@@ -254,6 +254,14 @@ public interface WebConstant {
 
 	String CONFIRM_OP_URI = "/confirm_op";
 
+	String CREATE_MEANING_IMAGE_URI = "/create_meaning_image";
+
+	String CREATE_MEANING_MEDIA_URI = "/create_meaning_media";
+
+	String UPDATE_MEANING_IMAGE_URI = "/update_meaning_image";
+
+	String UPDATE_MEANING_MEDIA_URI = "/update_meaning_media";
+
 	String UPLOAD_MEDIA_FILE_URI = "/upload_media_file";
 
 	String DELETE_MEDIA_FILE_URI = "/delete_media_file";
