@@ -68,14 +68,27 @@ public class AncillaryDataDbService implements SystemConstant, GlobalConstant {
 				.fetchInto(NewWord.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_GENERIC, key = "#root.methodName")
-	public List<WordSuggestion> getWordSuggestions() {
+	@Cacheable(value = CACHE_KEY_GENERIC, key = "{#root.methodName, #offset, #limit}")
+	public List<WordSuggestion> getWordSuggestions(int offset, int limit) {
 
 		MviewWwWordSuggestion ws = MVIEW_WW_WORD_SUGGESTION.as("ws");
 
 		return create
 				.selectFrom(ws)
 				.orderBy(ws.CREATED.desc())
+				.offset(offset)
+				.limit(limit)
 				.fetchInto(WordSuggestion.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_GENERIC, key = "#root.methodName")
+	public int getWordSuggestionsCount() {
+
+		MviewWwWordSuggestion ws = MVIEW_WW_WORD_SUGGESTION.as("ws");
+
+		return create
+				.selectCount()
+				.from(ws)
+				.fetchSingleInto(int.class);
 	}
 }

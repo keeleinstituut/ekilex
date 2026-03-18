@@ -1,6 +1,5 @@
 package eki.wordweb.web.controller;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -19,7 +19,7 @@ import eki.common.constant.FeedbackType;
 import eki.common.data.AppResponse;
 import eki.common.data.ExtendedFeedback;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.WordSuggestion;
+import eki.wordweb.data.WordSuggestionPage;
 import eki.wordweb.service.FeedbackService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -35,10 +35,12 @@ public class WordSuggestionController extends AbstractController {
 	private MessageSource messageSource;
 
 	@GetMapping(WORD_SUGGESTION_URI)
-	public String wordSuggestion(Model model) {
+	public String wordSuggestion(
+			@RequestParam(name = "pageNum", required = false, defaultValue = "1") int pageNum,
+			Model model) {
 
-		List<WordSuggestion> wordSuggestions = ancillaryDataService.getWordSuggestions();
-		model.addAttribute("wordSuggestions", wordSuggestions);
+		WordSuggestionPage wordSuggestionPage = ancillaryDataService.getWordSuggestions(pageNum);
+		model.addAttribute("wordSuggestionsPage", wordSuggestionPage);
 		populateCommonModel(model);
 
 		return WORD_SUGGESTION_PAGE;

@@ -29,14 +29,14 @@
     <div class="word-suggestion-page__content">
       <div class="word-suggestion-page__content-title">
         <h1 th:text="#{label.wordsuggestions.title}">Sõnapakkumised</h1>
-        <span class="word-suggestion-page__count" th:text="|(${#lists.size(wordSuggestions)})|"></span>
+        <span class="word-suggestion-page__count" th:text="|(${wordSuggestionsPage.totalCount})|"></span>
       </div>
-      <th:block th:if="${#lists.isEmpty(wordSuggestions)}">
+      <th:block th:if="${#lists.isEmpty(wordSuggestionsPage.wordSuggestions)}">
         <p class="word-suggestion-page__empty-description" th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</p>
         <img th:src="@{'/view/images/suggestions-empty.svg'}" alt="" width="213" height="186"/>
       </th:block>
-      <th:block th:unless="${#lists.isEmpty(wordSuggestions)}">
-        <th:block th:each="wordSuggestion, wordSuggestionIter : ${wordSuggestions}">
+      <th:block th:unless="${#lists.isEmpty(wordSuggestionsPage.wordSuggestions)}">
+        <th:block th:each="wordSuggestion : ${wordSuggestionsPage.wordSuggestions}">
           <div class="word-suggestion-page__item">
             <span class="word-suggestion-page__item-author word-suggestion-page__item-author--mobile" th:text="${wordSuggestion.authorName} + ' | ' + ${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></span>
             <div class="word-suggestion-page__item-header">
@@ -48,6 +48,16 @@
           </div>
         </th:block>
       </th:block>
+      <nav class="word-suggestion-page__paging" th:if="${wordSuggestionsPage.showPaging}" aria-label="Pagination">
+        <div class="word-suggestion-page__paging-inner">
+          <a th:if="${wordSuggestionsPage.currentPage > 1}" th:href="@{/wordsuggestion(pageNum=${wordSuggestionsPage.currentPage - 1})}" class="word-suggestion-page__paging-arrow" rel="prev" aria-label="Previous">‹</a>
+          <th:block th:each="pageNum : ${#numbers.sequence(wordSuggestionsPage.startPage, wordSuggestionsPage.endPage)}">
+            <a th:if="${pageNum != wordSuggestionsPage.currentPage}" th:href="@{/wordsuggestion(pageNum=${pageNum})}" class="word-suggestion-page__paging-num" th:text="${pageNum}">1</a>
+            <span th:if="${pageNum == wordSuggestionsPage.currentPage}" class="word-suggestion-page__paging-num word-suggestion-page__paging-num--current" th:text="${pageNum}" aria-current="page">1</span>
+          </th:block>
+          <a th:if="${wordSuggestionsPage.currentPage < wordSuggestionsPage.totalPages}" th:href="@{/wordsuggestion(pageNum=${wordSuggestionsPage.currentPage + 1})}" class="word-suggestion-page__paging-arrow" rel="next" aria-label="Next">›</a>
+        </div>
+      </nav>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>

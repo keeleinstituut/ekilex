@@ -13,12 +13,17 @@ import eki.wordweb.data.NewWord;
 import eki.wordweb.data.NewWordYear;
 import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.WordSuggestion;
+import eki.wordweb.data.WordSuggestionPage;
 import eki.wordweb.service.db.AncillaryDataDbService;
 import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.WordConversionUtil;
 
 @Component
 public class AncillaryDataService {
+
+	private static final int WORD_SUGGESTION_PAGE_SIZE = 20;
+
+	private static final int WORD_SUGGESTION_MAX_PAGE_NUMBERS = 9;
 
 	@Autowired
 	private AncillaryDataDbService ancillaryDataDbService;
@@ -65,7 +70,52 @@ public class AncillaryDataService {
 	}
 
 	@Transactional
-	public List<WordSuggestion> getWordSuggestions() {
-		return ancillaryDataDbService.getWordSuggestions();
+	public WordSuggestionPage getWordSuggestions(int pageNum) {
+
+		int totalCount = ancillaryDataDbService.getWordSuggestionsCount();
+		int totalPages = computeTotalPages(totalCount);
+		int currentPage = Math.max(1, Math.min(pageNum, totalPages));
+		int startPage = computeStartPage(currentPage, totalPages);
+		int endPage = computeEndPage(startPage, totalPages);
+		int offset = (currentPage - 1) * WORD_SUGGESTION_PAGE_SIZE;
+		boolean showPaging = totalPages > 1;
+
+		List<WordSuggestion> wordSuggestions = ancillaryDataDbService.getWordSuggestions(offset, WORD_SUGGESTION_PAGE_SIZE);
+
+		WordSuggestionPage wordSuggestionPage = new WordSuggestionPage();
+		wordSuggestionPage.setWordSuggestions(wordSuggestions);
+		wordSuggestionPage.setCurrentPage(currentPage);
+		wordSuggestionPage.setTotalPages(totalPages);
+		wordSuggestionPage.setTotalCount(totalCount);
+		wordSuggestionPage.setStartPage(startPage);
+		wordSuggestionPage.setEndPage(endPage);
+		wordSuggestionPage.setShowPaging(showPaging);
+
+		return wordSuggestionPage;
+	}
+
+	private int computeTotalPages(int totalCount) {
+
+		if (totalCount == 0) {
+			return 1;
+		}
+		double totalPagesDecimal = (double) totalCount / WORD_SUGGESTION_PAGE_SIZE;
+		return (int) Math.ceil(totalPagesDecimal);
+	}
+
+	private int computeStartPage(int currentPage, int totalPages) {
+
+		if (totalPages <= WORD_SUGGESTION_MAX_PAGE_NUMBERS) {
+			return 1;
+		}
+		return Math.max(1, Math.min(currentPage - WORD_SUGGESTION_MAX_PAGE_NUMBERS / 2, totalPages - WORD_SUGGESTION_MAX_PAGE_NUMBERS + 1));
+	}
+
+	private int computeEndPage(int startPage, int totalPages) {
+
+		if (totalPages <= WORD_SUGGESTION_MAX_PAGE_NUMBERS) {
+			return totalPages;
+		}
+		return Math.min(totalPages, startPage + WORD_SUGGESTION_MAX_PAGE_NUMBERS - 1);
 	}
 }
