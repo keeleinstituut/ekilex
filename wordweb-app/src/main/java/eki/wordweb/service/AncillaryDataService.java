@@ -70,7 +70,14 @@ public class AncillaryDataService {
 	}
 
 	@Transactional
-	public WordSuggestionPage getWordSuggestions(int pageNum) {
+	public WordSuggestionPage getWordSuggestions(String pageNumStr) {
+
+		int pageNum;
+		try {
+			pageNum = Integer.parseInt(pageNumStr);
+		} catch (NumberFormatException e) {
+			pageNum = 1;
+		}
 
 		int totalCount = ancillaryDataDbService.getWordSuggestionsCount();
 		int totalPages = computeTotalPages(totalCount);

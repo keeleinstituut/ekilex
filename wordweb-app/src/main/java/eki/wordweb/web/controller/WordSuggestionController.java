@@ -36,7 +36,7 @@ public class WordSuggestionController extends AbstractController {
 
 	@GetMapping(WORD_SUGGESTION_URI)
 	public String wordSuggestion(
-			@RequestParam(name = "pageNum", required = false, defaultValue = "1") int pageNum,
+			@RequestParam(name = "pageNum", required = false, defaultValue = "1") String pageNum,
 			Model model) {
 
 		WordSuggestionPage wordSuggestionPage = ancillaryDataService.getWordSuggestions(pageNum);
