@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -29,8 +31,14 @@ public class ApiMediaController implements ApiConstant {
 	@Autowired
 	private MediaService mediaService;
 
+	@GetMapping(PING_URI)
+	public Long getTimeStamp() {
+		return System.currentTimeMillis();
+	}
+
 	@PostMapping(value = API_SERVICES_URI + MEDIA_FILE_URI + CREATE_URI, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ResponseBody
+	@PreAuthorize("isAuthenticated()")
 	public MediaFileRef createMediaFile(
 			@RequestPart("filename") String filename,
 			@RequestPart("content") byte[] content,
@@ -52,6 +60,7 @@ public class ApiMediaController implements ApiConstant {
 
 	@PostMapping(value = API_SERVICES_URI + MEDIA_FILE_URI + DELETE_URI)
 	@ResponseBody
+	@PreAuthorize("isAuthenticated()")
 	public String deleteMediaFile(
 			@RequestParam("objectFilename") String objectFilename,
 			Principal principal) throws Exception {
