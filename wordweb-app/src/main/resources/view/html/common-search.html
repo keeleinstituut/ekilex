@@ -171,9 +171,9 @@
     <div class="variants" th:if="${wordData.word.lexemeVariants}">
       <span class="text-caption" th:text="#{label.word.variant}">Variant</span>
       <ul class="list-unstyled mb-0 ml-2 d-inline-flex gap-1 flex-wrap">
-        <li class="d-inline-flex" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
+        <li class="d-inline-flex align-items-baseline" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
           <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
-          <span class="ml-1 text-uppercase" th:text="${lexemeVariant.variantType.value}" th:if="${lexemeVariant.variantType}"></span>
+          <span class="ml-1 text-uppercase text-caption" th:text="${lexemeVariant.variantType.value}" th:if="${lexemeVariant.variantType}"></span>
           <span th:unless="${lexemeVariantIter.last}" aria-hidden="true">,</span>
         </li>
       </ul>
