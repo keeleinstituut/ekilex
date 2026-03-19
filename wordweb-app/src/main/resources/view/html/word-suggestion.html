@@ -50,12 +50,12 @@
       </th:block>
       <nav class="word-suggestion-page__paging" th:if="${wordSuggestionsPage.showPaging}" aria-label="Pagination">
         <div class="word-suggestion-page__paging-inner">
-          <a th:if="${wordSuggestionsPage.currentPage > 1}" th:href="@{/wordsuggestion(pageNum=${wordSuggestionsPage.currentPage - 1})}" class="word-suggestion-page__paging-arrow" rel="prev" aria-label="Previous">‹</a>
+          <a th:if="${wordSuggestionsPage.currentPage > 1}" th:href="@{|/wordsuggestion/${wordSuggestionsPage.currentPage - 1}|}" class="word-suggestion-page__paging-arrow" rel="prev" aria-label="Previous">‹</a>
           <th:block th:each="pageNum : ${#numbers.sequence(wordSuggestionsPage.startPage, wordSuggestionsPage.endPage)}">
-            <a th:if="${pageNum != wordSuggestionsPage.currentPage}" th:href="@{/wordsuggestion(pageNum=${pageNum})}" class="word-suggestion-page__paging-num" th:text="${pageNum}">1</a>
+            <a th:if="${pageNum != wordSuggestionsPage.currentPage}" th:href="@{|/wordsuggestion/${pageNum}|}" class="word-suggestion-page__paging-num" th:text="${pageNum}">1</a>
             <span th:if="${pageNum == wordSuggestionsPage.currentPage}" class="word-suggestion-page__paging-num word-suggestion-page__paging-num--current" th:text="${pageNum}" aria-current="page">1</span>
           </th:block>
-          <a th:if="${wordSuggestionsPage.currentPage < wordSuggestionsPage.totalPages}" th:href="@{/wordsuggestion(pageNum=${wordSuggestionsPage.currentPage + 1})}" class="word-suggestion-page__paging-arrow" rel="next" aria-label="Next">›</a>
+          <a th:if="${wordSuggestionsPage.currentPage < wordSuggestionsPage.totalPages}" th:href="@{|/wordsuggestion/${wordSuggestionsPage.currentPage + 1}|}" class="word-suggestion-page__paging-arrow" rel="next" aria-label="Next">›</a>
         </div>
       </nav>
     </div>

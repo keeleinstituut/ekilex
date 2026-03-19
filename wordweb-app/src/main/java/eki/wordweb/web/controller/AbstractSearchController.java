@@ -23,16 +23,6 @@ public abstract class AbstractSearchController extends AbstractController {
 		redirectAttributes.addFlashAttribute(SEARCH_FORM, isSearchForm);
 	}
 
-	protected Integer nullSafe(String value) {
-		if (StringUtils.isBlank(value)) {
-			return null;
-		}
-		if (!StringUtils.isNumeric(value)) {
-			return null;
-		}
-		return Integer.valueOf(value);
-	}
-
 	protected String cleanupMain(String value) {
 
 		value = StringUtils.trim(value);

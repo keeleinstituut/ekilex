@@ -185,4 +185,14 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 		return cookieMap;
 	}
+
+	protected Integer nullSafe(String value) {
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		if (!StringUtils.isNumeric(value)) {
+			return null;
+		}
+		return Integer.valueOf(value);
+	}
 }

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -34,11 +34,18 @@ public class WordSuggestionController extends AbstractController {
 	@Autowired
 	private MessageSource messageSource;
 
-	@GetMapping(WORD_SUGGESTION_URI)
+	@GetMapping({
+			WORD_SUGGESTION_URI,
+			WORD_SUGGESTION_URI + "/{pageNum}"
+	})
 	public String wordSuggestion(
-			@RequestParam(name = "pageNum", required = false, defaultValue = "1") String pageNum,
+			@PathVariable(value = "pageNum", required = false) String pageNumStr,
 			Model model) {
 
+		Integer pageNum = nullSafe(pageNumStr);
+		if (pageNum == null) {
+			pageNum = 1;
+		}
 		WordSuggestionPage wordSuggestionPage = ancillaryDataService.getWordSuggestions(pageNum);
 		model.addAttribute("wordSuggestionsPage", wordSuggestionPage);
 		populateCommonModel(model);
