@@ -254,7 +254,7 @@
       <div th:replace="components :: paging(${termSearchResult})"></div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
+  <div class="row no-gutters" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.domain}">Valdkond</span>
       <button type="button" class="btn badge badge-success float-right mr-4" th:title="#{common.add.new}"
@@ -540,7 +540,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}" th:fragment="term_meaning_note">
+  <div class="row no-gutters" th:fragment="term_meaning_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
@@ -1268,7 +1268,7 @@
     </div>
   </div>
   <div th:fragment="lexeme_source_link">
-    <div class="row mt-2 no-gutters" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
+    <div class="row mt-2 no-gutters">
       <hr/>
       <div class="col pr-0 col-w13rem">
         <span class="lbl" th:text="#{term.source.link}">Allikaviide</span>
@@ -1319,7 +1319,7 @@
       </div>
     </div>
   </div>
-  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.usages)}" th:fragment="lexeme_usage">
+  <div class="row no-gutters" th:fragment="lexeme_usage">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.usage}">Kasutusnäide</span>
@@ -1452,7 +1452,7 @@
       </table>
     </div>
   </div>
-  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.noteLangGroups)}" th:fragment="lexeme_note">
+  <div class="row no-gutters" th:fragment="lexeme_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span th:text="#{term.lexeme.note}" class="lbl"></span>
