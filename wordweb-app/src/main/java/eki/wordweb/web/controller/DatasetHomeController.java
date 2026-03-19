@@ -46,7 +46,10 @@ public class DatasetHomeController extends AbstractController {
 		if (datasetHomeData == null) {
 			return REDIRECT_PREF + HOME_URI;
 		}
+		boolean showStat = !StringUtils.equals(DATASET_EKI, datasetCode);
 		populateSearchModel(datasetHomeData, request, model);
+		model.addAttribute("showStat", showStat);
+		model.addAttribute("showDescription", Boolean.TRUE);
 
 		return DATASET_HOME_PAGE;
 	}
@@ -69,6 +72,8 @@ public class DatasetHomeController extends AbstractController {
 		List<String> datasetWords = datasetContentService.getDatasetWords(datasetCode, firstLetter);
 		populateSearchModel(datasetHomeData, request, model);
 		model.addAttribute("datasetWords", datasetWords);
+		model.addAttribute("showStat", Boolean.FALSE);
+		model.addAttribute("showDescription", Boolean.FALSE);
 
 		return DATASET_HOME_PAGE;
 	}
