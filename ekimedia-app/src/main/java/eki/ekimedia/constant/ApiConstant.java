@@ -2,9 +2,9 @@ package eki.ekimedia.constant;
 
 public interface ApiConstant {
 
-	String PING_URI = "/ping";
-
 	String API_SERVICES_URI = "/api";
+
+	String PING_URI = "/ping";
 
 	String MEDIA_FILE_URI = "/mediafile";
 
