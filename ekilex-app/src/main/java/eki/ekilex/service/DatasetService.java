@@ -152,6 +152,9 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	private void handleLanguageMul(Dataset dataset) {
 
 		List<Classifier> languages = dataset.getLanguages();
+		if (CollectionUtils.isEmpty(languages)) {
+			return;
+		}
 		boolean isLanguageMulPresent = languages.stream()
 				.map(Classifier::getCode)
 				.anyMatch(langCode -> StringUtils.equals(langCode, lANGUAGE_CODE_MUL));

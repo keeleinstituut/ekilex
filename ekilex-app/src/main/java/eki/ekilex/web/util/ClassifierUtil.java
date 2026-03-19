@@ -14,7 +14,7 @@ public class ClassifierUtil {
 	public String toJson(Classifier classifier) {
 		ReflectionToStringBuilder jsonBuilder = new ReflectionToStringBuilder(classifier, ToStringStyle.JSON_STYLE);
 		jsonBuilder.setExcludeNullValues(true);
-		jsonBuilder.setExcludeFieldNames("datasets", "value", "jsonStr");
+		jsonBuilder.setExcludeFieldNames("datasets", "value", "valueComment", "jsonStr");
 		return jsonBuilder.toString();
 	}
 

@@ -5,6 +5,8 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MORPH;
 import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
@@ -21,6 +23,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSON;
+import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
 import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocMemberOrder;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
@@ -46,6 +50,9 @@ import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.records.CollocationMemberRecord;
+import eki.ekilex.data.db.main.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.util.QueryHelper;
 
 @Component
@@ -338,6 +345,23 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.execute();
 	}
 
+	// TODO example, remove
+	public void cloneLexemePoses(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<LexemePosRecord> sourceLexemePoses = mainDb
+				.selectFrom(LEXEME_POS)
+				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(LEXEME_POS.ORDER_BY)
+				.fetch();
+		sourceLexemePoses.stream()
+				.map(LexemePosRecord::copy)
+				.forEach(targetLexemePos -> {
+					targetLexemePos.setLexemeId(targetLexemeId);
+					targetLexemePos.changed(LEXEME_POS.ORDER_BY, false);
+					targetLexemePos.store();
+				});
+	}
+
 	public Long createCollocMember(CollocMember collocMember) {
 
 		return mainDb
@@ -500,4 +524,67 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.orElse(null);
 	}
 
+	public WordLexemeMeaningIdTuple copyEmptyCollocLexemeAndMeaning(Long lexemeId) {
+
+		LexemeRecord sourceLexeme = mainDb
+				.selectFrom(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingle();
+
+		Long wordId = sourceLexeme.getWordId();
+		String datasetCode = sourceLexeme.getDatasetCode();
+
+		Integer sourceWordMaxLevel = mainDb
+				.select(DSL.max(LEXEME.LEVEL1))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchOptionalInto(Integer.class)
+				.orElse(0);
+
+		Long targetMeaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
+				.fetchOne()
+				.getId();
+
+		LexemeRecord targetLexeme = sourceLexeme.copy();
+		targetLexeme.setMeaningId(targetMeaningId);
+		targetLexeme.setLevel1(sourceWordMaxLevel + 1);
+		targetLexeme.setLevel2(0);
+		targetLexeme.changed(LEXEME.ORDER_BY, false);
+		targetLexeme.store();
+
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
+		wordLexemeMeaningId.setWordId(wordId);
+		wordLexemeMeaningId.setLexemeId(targetLexeme.getId());
+		wordLexemeMeaningId.setMeaningId(targetMeaningId);
+
+		return wordLexemeMeaningId;
+	}
+
+	public void copyCollocationMembersAndReplaceOne(
+			Long sourceCollocLexemeId,
+			Long targetCollocLexemeId,
+			Long sourceMemberLexemeId,
+			Long targetMemberLexemeId) {
+
+		Result<CollocationMemberRecord> sourceCollocMembers = mainDb
+				.selectFrom(COLLOCATION_MEMBER)
+				.where(COLLOCATION_MEMBER.COLLOC_LEXEME_ID.eq(sourceCollocLexemeId))
+				.orderBy(COLLOCATION_MEMBER.MEMBER_ORDER)
+				.fetch();
+
+		for (CollocationMemberRecord sourceCollocMemberRecord : sourceCollocMembers) {
+
+			CollocationMemberRecord targetCollocMemberRecord = sourceCollocMemberRecord.copy();
+			targetCollocMemberRecord.setCollocLexemeId(targetCollocLexemeId);
+			if (sourceCollocMemberRecord.getMemberLexemeId().equals(sourceMemberLexemeId)) {
+				targetCollocMemberRecord.setMemberLexemeId(targetMemberLexemeId);
+			}
+			targetCollocMemberRecord.store();
+		}
+	}
 }

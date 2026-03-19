@@ -27,6 +27,7 @@ import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.CollocWeight;
 import eki.ekilex.data.Response;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CollocationDbService;
 
@@ -167,6 +168,30 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 		collocationDbService.moveCollocMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId);
 		activityLogService.createActivityLog(sourceLexemeActivityLog, sourceCollocMemberLexemeId, ActivityEntity.LEXEME);
 		activityLogService.createActivityLog(targetLexemeActivityLog, targetCollocMemberLexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void copyCollocAndReplaceMember(
+			List<Long> sourceCollocLexemeIds,
+			Long sourceMemberLexemeId,
+			Long targetMemberLexemeId,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(sourceCollocLexemeIds)) {
+			return;
+		}
+		if (sourceMemberLexemeId.equals(targetMemberLexemeId)) {
+			return;
+		}
+
+		for (Long sourceCollocLexemeId : sourceCollocLexemeIds) {
+
+			WordLexemeMeaningIdTuple collocLexemeMeaningCopyId = collocationDbService.copyEmptyCollocLexemeAndMeaning(sourceCollocLexemeId);
+			Long targetCollocLexemeId = collocLexemeMeaningCopyId.getLexemeId();
+			collocationDbService.copyCollocationMembersAndReplaceOne(sourceCollocLexemeId, targetCollocLexemeId, sourceMemberLexemeId, targetMemberLexemeId);
+			activityLogService.createActivityLog("copyCollocAndMember", targetCollocLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
 	}
 
 	@Transactional(rollbackFor = Exception.class)
