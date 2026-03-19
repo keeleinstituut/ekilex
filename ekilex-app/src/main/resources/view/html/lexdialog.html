@@ -2339,6 +2339,9 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_meaning_image}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{media.title.add.image}">Lisa pilt</h5>
+          </div>
           <div class="modal-body">
             <input type="hidden" name="meaningId" th:value="${lexeme.meaningId}">
             <input type="hidden" name="objectFilename">
@@ -2380,10 +2383,16 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_meaning_image}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{media.title.edit.image}">Muuda pilti</h5>
+          </div>
           <div class="modal-body">
             <input type="hidden" name="meaningImageId" th:value="${image.id}">
             <div class="form-group row">
               <div class="col-md-12">
+                <div class="mb-2">
+                  <img class="w-50" alt="" th:src="${image.url}">
+                </div>
                 <input type="text" class="form-control required-field" name="url" th:placeholder="#{lex.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off">
               </div>
             </div>
@@ -2428,6 +2437,9 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_meaning_media}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{media.title.add.media}">Lisa meedia</h5>
+          </div>
           <div class="modal-body">
             <input type="hidden" name="meaningId" th:value="${lexeme.meaningId}">
             <input type="hidden" name="objectFilename">
@@ -2469,10 +2481,16 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_meaning_media}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{media.title.edit.media}">Muuda meediat</h5>
+          </div>
           <div class="modal-body">
             <input type="hidden" name="meaningMediaId" th:value="${media.id}">
             <div class="form-group row">
               <div class="col-md-12">
+                <div class="mb-2">
+                  <iframe th:src="${media.url}"></iframe>
+                </div>
                 <input type="text" class="form-control required-field" name="url" th:placeholder="#{lex.placeholder.media.url}" th:value="${media.url}" required="required" autocomplete="off">
               </div>
             </div>

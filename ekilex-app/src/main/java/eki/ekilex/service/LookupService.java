@@ -219,7 +219,7 @@ public class LookupService extends AbstractWordSearchService {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
-		String meaningdatasetname = datasetNameMap.get(datasetCode);
+		String meaningDatasetName = datasetNameMap.get(datasetCode);
 		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
@@ -235,7 +235,7 @@ public class LookupService extends AbstractWordSearchService {
 		TermCreateWordAndMeaningDetails details = new TermCreateWordAndMeaningDetails();
 		details.setMeaningId(meaningId);
 		details.setDatasetCode(datasetCode);
-		details.setDatasetName(meaningdatasetname);
+		details.setDatasetName(meaningDatasetName);
 		details.setDatasetLanguages(datasetLanguages);
 		details.setMeaningDomains(meaningDomains);
 		details.setMeaningDefinitions(meaningDefinitions);
@@ -256,7 +256,7 @@ public class LookupService extends AbstractWordSearchService {
 		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
-		String meaningdatasetname = datasetNameMap.get(datasetCode);
+		String meaningDatasetName = datasetNameMap.get(datasetCode);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		permCalculator.filterVisibility(user, meaningDefinitions);
@@ -267,7 +267,7 @@ public class LookupService extends AbstractWordSearchService {
 		details.setLexemeId(lexemeId);
 		details.setMeaningId(meaningId);
 		details.setDatasetCode(datasetCode);
-		details.setDatasetName(meaningdatasetname);
+		details.setDatasetName(meaningDatasetName);
 		details.setMeaningDomains(meaningDomains);
 		details.setMeaningDefinitions(meaningDefinitions);
 		details.setOriginalWordValuePrese(originalWordValuePrese);
