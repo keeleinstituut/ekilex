@@ -49,3 +49,76 @@ where
 
 alter table meaning_image add column object_filename text null;
 alter table meaning_media add column object_filename text null;
+
+-- #3 --
+
+update 
+"language" ln
+set datasets = array_cat(ln.datasets, dsl.dataset_codes)
+from (
+	select
+		dsl.lang,
+		array_agg(dsl.code) dataset_codes
+	from (
+		select
+			ds.code,
+			coalesce(w.lang, 'est') lang
+		from
+			dataset ds
+			left outer join lexeme l on l.dataset_code = ds.code
+			left outer join word w on w.id = l.word_id
+		where
+			not exists (
+				select
+					1
+				from
+					(
+					select
+						unnest(ln.datasets) dataset_code
+					from
+						"language" ln 
+					) ln
+				where
+					ln.dataset_code = ds.code 
+			)
+		group by
+			ds.code,
+			w.lang
+		order by
+			ds.order_by 
+	) dsl
+	group by
+		dsl.lang
+) dsl
+where
+	dsl.lang = ln.code
+;
+
+update 
+"language" ln
+set datasets = lds.dataset_codes
+from (
+	select
+		lds.lang,
+		array_agg(lds.dataset_code order by lds.dataset_code) dataset_codes
+	from (
+		select
+			ln.code lang,
+			unnest(ln.datasets) dataset_code
+		from
+			"language" ln
+		group by
+			lang,
+			dataset_code
+		order by
+			lang,
+			dataset_code
+	) lds
+	group by
+		lds.lang
+) lds
+where
+	lds.lang = ln.code
+;
+
+

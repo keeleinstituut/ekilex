@@ -121,7 +121,7 @@ public class VariantService implements SystemConstant, GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeVariant", headwordLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		int variantWordHomNr = cudDbService.getWordNextHomonymNr(variantWordValue, lang);
 		Long variantWordId = cudDbService.createWord(variantWordValue, variantWordValuePrese, variantWordValueAsWord, lang, variantWordHomNr);
-		Long variantLexemeId = cudDbService.createLexeme(variantWordId, meaningId, datasetCode, 1, null, PUBLICITY_PUBLIC);
+		Long variantLexemeId = cudDbService.createLexeme(variantWordId, meaningId, datasetCode, 1, null, true, false, PUBLICITY_PUBLIC);
 		Long lexemeVariantId = variantDbService.createLexemeVariant(headwordLexemeId, variantLexemeId, variantTypeCode);
 		activityLogService.createActivityLog(activityLog, lexemeVariantId, ActivityEntity.LEXEME_VARIANT);
 

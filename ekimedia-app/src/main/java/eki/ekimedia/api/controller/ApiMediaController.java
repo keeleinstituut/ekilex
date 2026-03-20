@@ -36,9 +36,9 @@ public class ApiMediaController implements ApiConstant {
 		return System.currentTimeMillis();
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = API_SERVICES_URI + MEDIA_FILE_URI + CREATE_URI, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ResponseBody
-	@PreAuthorize("isAuthenticated()")
 	public MediaFileRef createMediaFile(
 			@RequestPart("filename") String filename,
 			@RequestPart("content") byte[] content,
@@ -58,9 +58,9 @@ public class ApiMediaController implements ApiConstant {
 		return mediaService.createMediaFile(origin, mediaFileContent);
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = API_SERVICES_URI + MEDIA_FILE_URI + DELETE_URI)
 	@ResponseBody
-	@PreAuthorize("isAuthenticated()")
 	public String deleteMediaFile(
 			@RequestParam("objectFilename") String objectFilename,
 			Principal principal) throws Exception {

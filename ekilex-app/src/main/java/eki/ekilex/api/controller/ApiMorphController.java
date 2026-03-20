@@ -44,10 +44,10 @@ public class ApiMorphController extends AbstractApiController {
 	}
 
 	@Order(402)
-	@GetMapping(API_SERVICES_URI + FORM_URI + SEARCH_URI + "/{form}")
+	@GetMapping(API_SERVICES_URI + FORM_URI + SEARCH_URI + "/{formValue}")
 	@ResponseBody
 	public List<FormWord> formSearch(
-			@PathVariable("form") String formValue,
+			@PathVariable("formValue") String formValue,
 			Authentication authentication,
 			HttpServletRequest request) throws Exception {
 
@@ -73,7 +73,7 @@ public class ApiMorphController extends AbstractApiController {
 		}
 	}
 
-	@Order(403)
+	@Order(404)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + PARADIGM_URI + DELETE_URI)
 	@ResponseBody

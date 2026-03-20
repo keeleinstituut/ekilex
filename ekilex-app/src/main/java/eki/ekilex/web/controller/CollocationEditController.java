@@ -1,12 +1,15 @@
 package eki.ekilex.web.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CollocConjunct;
 import eki.ekilex.data.CollocMember;
@@ -79,20 +83,35 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(COLLOC_MEMBER_MOVE_URI)
+	@PostMapping(COLLOC_MEMBER_MOVE_OR_COPY_URI)
 	@ResponseBody
-	public String moveCollocMember(
+	public Response moveOrCopyCollocMember(
+			@RequestParam("opName") String opName,
 			@RequestParam("collocLexemeIds") List<Long> collocLexemeIds,
 			@RequestParam("sourceCollocMemberLexemeId") Long sourceCollocMemberLexemeId,
 			@RequestParam("targetCollocMemberLexemeId") Long targetCollocMemberLexemeId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		logger.debug("Making collocation members \"{}\"", opName);
+
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getRoleDatasetCode();
+		String message = null;
 
-		collocationService.moveCollocMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER1;
+		if (StringUtils.equalsIgnoreCase(opName, "move")) {
+			collocationService.moveCollocMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			message = messageSource.getMessage("colloc.message.collocs.movemember", new Object[0], locale);
+		} else if (StringUtils.equalsIgnoreCase(opName, "copy")) {
+			collocationService.copyCollocAndReplaceMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			message = messageSource.getMessage("colloc.message.collocs.copymember", new Object[0], locale);
+		} else {
+			message = "n/a";
+		}
+		Response response = new Response();
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(message);
+		return response;
 	}
 
 	@PostMapping(COLLOC_MEMBER_FORM_SEARCH_URI)

@@ -40,38 +40,52 @@ $.fn.collocMemberOrderPlugin = function() {
 	})
 }
 
-$.fn.collocMemberMovePlugin = function() {
+$.fn.collocMemberMoveOrCopyPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const collocMemberMoveForm = obj.closest('form');
-			const collocMemberMoveModal = collocMemberMoveForm.closest('.modal');
-			const actionUrl = collocMemberMoveForm.attr('action');
-			const successCallback = collocMemberMoveModal.attr("data-callback");
+			const opName = obj.val();
+			const collocMemberMoveOrCopyForm = obj.closest('form');
+			const collocMemberMoveOrCopyModal = collocMemberMoveOrCopyForm.closest('.modal');
+			const actionUrl = collocMemberMoveOrCopyForm.attr('action');
+			const successCallback = collocMemberMoveOrCopyModal.attr("data-callback");
 			let successCallbackFunc = createCallback(successCallback);
 
 			let collocLexemeIdArr = [];
 			$.each($("input[name='collocLexemeIds']:checked"), function() {
 				collocLexemeIdArr.push($(this).val());
 			});
+			if (collocLexemeIdArr.length == 0) {
+				collocMemberMoveOrCopyModal.modal('hide');
+				return;
+			}
 			let collocLexemeIds = collocLexemeIdArr.join(",");
-			collocMemberMoveForm.find('input[name="collocLexemeIds"]').val(collocLexemeIds);
+			collocMemberMoveOrCopyForm.find('input[name="collocLexemeIds"]').val(collocLexemeIds);
+			collocMemberMoveOrCopyForm.find('input[name="opName"]').val(opName);
+
+			openWaitDlg();
 
 			$.ajax({
 				url: actionUrl,
-				data: collocMemberMoveForm.serialize(),
+				data: collocMemberMoveOrCopyForm.serialize(),
 				method: 'POST'
-			}).done(function() {
-				collocMemberMoveModal.modal('hide');
-				successCallbackFunc();
-			}).fail(function(data) {
-				console.log(data);
+			}).done(function(response) {
+				closeWaitDlg();
+				if (response.status == 'OK') {
+					collocMemberMoveOrCopyModal.modal('hide');
+					successCallbackFunc();
+					openMessageDlg(response.message);
+				} else {
+					openAlertDlg(messages["common.error"]);
+				}
+			}).fail(function(response) {
+				closeWaitDlg();
+				console.log(response);
 				openAlertDlg(messages["common.error"]);
 			});
 		})
 	});
 }
-
 
 $.fn.collocPosGroupTogglePlugin = function() {
 	return this.each(function() {

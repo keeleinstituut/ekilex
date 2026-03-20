@@ -880,8 +880,6 @@ public class CudDbService extends AbstractDataDbService {
 			String lang,
 			String datasetCode) throws Exception {
 
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
-
 		int homonymNr = 0;
 		boolean isPublic = false;
 
@@ -914,9 +912,9 @@ public class CudDbService extends AbstractDataDbService {
 				.fetchOne()
 				.getId();
 
-		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, isPublic);
-		;
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, true, false, isPublic);
 
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
 		wordLexemeMeaningId.setMeaningId(meaningId);
@@ -934,7 +932,6 @@ public class CudDbService extends AbstractDataDbService {
 			boolean isPublic,
 			Long meaningId) throws Exception {
 
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		int homonymNr = getWordNextHomonymNr(value, lang);
 
 		Long wordId = mainDb
@@ -966,8 +963,9 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 
-		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, isPublic);
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, true, false, isPublic);
 
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
 		wordLexemeMeaningId.setMeaningId(meaningId);
@@ -1510,7 +1508,15 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, int lexemeLevel1, String valueStateCode, boolean isPublic) {
+	public Long createLexeme(
+			Long wordId,
+			Long meaningId,
+			String datasetCode,
+			int lexemeLevel1,
+			String valueStateCode,
+			boolean isWord,
+			boolean isCollocation,
+			boolean isPublic) {
 
 		Long lexemeId = mainDb
 				.insertInto(
@@ -1531,12 +1537,13 @@ public class CudDbService extends AbstractDataDbService {
 						lexemeLevel1,
 						1,
 						valueStateCode,
-						Boolean.TRUE,
-						Boolean.FALSE,
+						isWord,
+						isCollocation,
 						isPublic)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
+
 		return lexemeId;
 	}
 
@@ -1565,7 +1572,7 @@ public class CudDbService extends AbstractDataDbService {
 				return wordLexemeMeaningId;
 			}
 		}
-		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, lexemeLevel1, valueStateCode, isPublic);
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, lexemeLevel1, valueStateCode, true, false, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
