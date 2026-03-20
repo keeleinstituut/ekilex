@@ -1376,7 +1376,8 @@ create table word_suggestion (
 	author_name text not null,
 	author_email text not null,
 	is_public boolean default false,
-	publication_date date
+	publication_date date,
+  published_word_value text null
 );
 alter sequence word_suggestion_id_seq restart with 10000;
 

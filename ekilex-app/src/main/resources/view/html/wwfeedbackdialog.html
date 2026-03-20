@@ -58,6 +58,16 @@
                 <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" data-plugin="publishedWordToggleCheckbox">
+                <span th:text="#{feedback.wordsuggestion.published}">Sõnapakkumine ÜSi lisatud</span>
+              </label>
+            </div>
+            <div class="form-group d-none" data-name="published-word-value-div">
+              <label class="col-form-label" th:text="#{feedback.wordsuggestion.published.value}">Sõnavorm ÜSis</label>
+              <input type="text" name="publishedWordValue" class="form-control" autocomplete="off">
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" data-plugin="feedbackActionBtn" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
@@ -99,6 +109,16 @@
                 <input class="form-check-input" type="checkbox" name="public" value="true" th:checked="${feedbackLog.wordSuggestion.public}">
                 <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" data-plugin="publishedWordToggleCheckbox" th:checked="${!#strings.isEmpty(feedbackLog.wordSuggestion.publishedWordValue)}">
+                <span th:text="#{feedback.wordsuggestion.published}">Sõnapakkumine ÜSi lisatud</span>
+              </label>
+            </div>
+            <div class="form-group" th:classappend="${!#strings.isEmpty(feedbackLog.wordSuggestion.publishedWordValue)} ? '' : ' d-none'" data-name="published-word-value-div">
+              <label class="col-form-label" th:text="#{feedback.wordsuggestion.published.value}">Sõnavorm ÜSis</label>
+              <input type="text" name="publishedWordValue" th:value="${feedbackLog.wordSuggestion.publishedWordValue}" class="form-control" autocomplete="off">
             </div>
           </div>
           <div class="modal-footer">

@@ -848,7 +848,8 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 								DSL.key("authorName").value(ws.AUTHOR_NAME),
 								DSL.key("authorEmail").value(ws.AUTHOR_EMAIL),
 								DSL.key("public").value(ws.IS_PUBLIC),
-								DSL.key("publicationDate").value(ws.PUBLICATION_DATE)))
+								DSL.key("publicationDate").value(ws.PUBLICATION_DATE),
+								DSL.key("publishedWordValue").value(ws.PUBLISHED_WORD_VALUE)))
 				.from(ws)
 				.where(
 						ws.FEEDBACK_LOG_ID.eq(fl.ID)

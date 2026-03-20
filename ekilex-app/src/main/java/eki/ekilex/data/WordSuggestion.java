@@ -40,6 +40,8 @@ public class WordSuggestion extends AbstractDataObject {
 	@JsonDeserialize(using = LocalDateDeserialiser.class)
 	private LocalDate publicationDate;
 
+	private String publishedWordValue;
+
 	public Long getId() {
 		return id;
 	}
@@ -120,4 +122,11 @@ public class WordSuggestion extends AbstractDataObject {
 		this.publicationDate = publicationDate;
 	}
 
+	public String getPublishedWordValue() {
+		return publishedWordValue;
+	}
+
+	public void setPublishedWordValue(String publishedWordValue) {
+		this.publishedWordValue = publishedWordValue;
+	}
 }

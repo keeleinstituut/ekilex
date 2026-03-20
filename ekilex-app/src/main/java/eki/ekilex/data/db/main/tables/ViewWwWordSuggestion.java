@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -74,12 +74,17 @@ public class ViewWwWordSuggestion extends TableImpl<ViewWwWordSuggestionRecord> 
      */
     public final TableField<ViewWwWordSuggestionRecord, String> AUTHOR_NAME = createField(DSL.name("author_name"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.view_ww_word_suggestion.published_word_value</code>.
+     */
+    public final TableField<ViewWwWordSuggestionRecord, String> PUBLISHED_WORD_VALUE = createField(DSL.name("published_word_value"), SQLDataType.CLOB, this, "");
+
     private ViewWwWordSuggestion(Name alias, Table<ViewWwWordSuggestionRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwWordSuggestion(Name alias, Table<ViewWwWordSuggestionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_suggestion\" as  SELECT id AS word_suggestion_id,\n    created,\n    word_value,\n    definition_value,\n    usage_value,\n    author_name\n   FROM word_suggestion ws\n  WHERE ((is_public = true) AND (publication_date <= CURRENT_DATE))\n  ORDER BY created DESC;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_suggestion\" as  SELECT ws.id AS word_suggestion_id,\n    ws.created,\n    ws.word_value,\n    ws.definition_value,\n    ws.usage_value,\n    ws.author_name,\n    ws.published_word_value\n   FROM word_suggestion ws\n  WHERE ((ws.is_public = true) AND (ws.publication_date <= CURRENT_DATE))\n  ORDER BY ws.created DESC;"));
     }
 
     /**
@@ -139,11 +144,11 @@ public class ViewWwWordSuggestion extends TableImpl<ViewWwWordSuggestionRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, LocalDateTime, String, String, String, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

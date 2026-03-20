@@ -98,6 +98,9 @@
                     <span class="badge badge-light" th:title="#{feedback.public}" th:if="${feedbackLog.wordSuggestion.public}">
                       <i class="fa fa-check text-info" aria-hidden="true"></i>
                     </span>
+                    <span class="badge badge-light" th:title="#{feedback.wordsuggestion.published}" th:if="${!#strings.isEmpty(feedbackLog.wordSuggestion.publishedWordValue)}">
+                      <i class="fa fa-floppy-o text-secondary" aria-hidden="true"></i>
+                    </span>
                   </th:block>
                 </td>
                 <td class="breakWords pr-3">

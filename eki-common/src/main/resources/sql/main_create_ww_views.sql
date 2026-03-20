@@ -4253,7 +4253,8 @@ select
 	ws.word_value,
 	ws.definition_value,
 	ws.usage_value,
-	ws.author_name
+	ws.author_name,
+	ws.published_word_value
 from
 	word_suggestion ws
 where

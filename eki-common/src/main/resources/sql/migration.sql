@@ -121,4 +121,8 @@ where
 	lds.lang = ln.code
 ;
 
+-- #4 --
 
+alter table word_suggestion add column published_word_value text null;
+
+-- Loo uuesti ekilexi baasi vaated (main_create_ww_views.sql)

@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -99,6 +99,11 @@ public class WordSuggestion extends TableImpl<WordSuggestionRecord> {
      * The column <code>public.word_suggestion.publication_date</code>.
      */
     public final TableField<WordSuggestionRecord, LocalDate> PUBLICATION_DATE = createField(DSL.name("publication_date"), SQLDataType.LOCALDATE, this, "");
+
+    /**
+     * The column <code>public.word_suggestion.published_word_value</code>.
+     */
+    public final TableField<WordSuggestionRecord, String> PUBLISHED_WORD_VALUE = createField(DSL.name("published_word_value"), SQLDataType.CLOB, this, "");
 
     private WordSuggestion(Name alias, Table<WordSuggestionRecord> aliased) {
         this(alias, aliased, null);
@@ -194,11 +199,11 @@ public class WordSuggestion extends TableImpl<WordSuggestionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, LocalDateTime, String, String, String, String, String, Boolean, LocalDate> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, Long, LocalDateTime, String, String, String, String, String, Boolean, LocalDate, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

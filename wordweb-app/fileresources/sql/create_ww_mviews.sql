@@ -304,7 +304,8 @@ dblink(
 	word_value text,
 	definition_value text,
 	usage_value text,
-	author_name text
+	author_name text,
+  published_word_value text
 );
 
 create materialized view mview_ww_counts as

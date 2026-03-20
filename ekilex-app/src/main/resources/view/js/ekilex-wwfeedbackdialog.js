@@ -29,6 +29,40 @@ $(function() {
 			});
 		});
 	}
+
+	$.fn.publishedWordToggleCheckbox = function() {
+		const publishedWordToggleCheckbox = $(this);
+		const form = publishedWordToggleCheckbox.closest('form');
+		const suggestedWordValueInput = form.find("input[name='wordValue']");
+		const publishedWordValueDiv = form.find('[data-name="published-word-value-div"]');
+		const publishedWordValueInput = publishedWordValueDiv.find("input[name='publishedWordValue']");
+
+		setPublishedWordFieldVisible(publishedWordToggleCheckbox.is(':checked'));
+
+		publishedWordToggleCheckbox.on('change', function() {
+			const isVisible = $(this).is(':checked');
+			if (isVisible) {
+				prefillPublishedWordValue();
+			}
+			setPublishedWordFieldVisible(isVisible);
+		});
+
+		function prefillPublishedWordValue() {
+			const currentValue = publishedWordValueInput.val();
+			if (currentValue) {
+				return;
+			}
+			const suggestedWordValue = suggestedWordValueInput.val();
+			if (suggestedWordValue) {
+				publishedWordValueInput.val(suggestedWordValue);
+			}
+		}
+
+		function setPublishedWordFieldVisible(isVisible) {
+			publishedWordValueDiv.toggleClass('d-none', !isVisible);
+			publishedWordValueInput.prop('disabled', !isVisible);
+		}
+	}
 });
 
 

@@ -206,7 +206,8 @@ public class FeedbackDbService {
 						WORD_SUGGESTION.AUTHOR_NAME,
 						WORD_SUGGESTION.AUTHOR_EMAIL,
 						WORD_SUGGESTION.IS_PUBLIC,
-						WORD_SUGGESTION.PUBLICATION_DATE)
+						WORD_SUGGESTION.PUBLICATION_DATE,
+						WORD_SUGGESTION.PUBLISHED_WORD_VALUE)
 				.values(
 						wordSuggestion.getFeedbackLogId(),
 						wordSuggestion.getCreated(),
@@ -216,7 +217,8 @@ public class FeedbackDbService {
 						wordSuggestion.getAuthorName(),
 						wordSuggestion.getAuthorEmail(),
 						wordSuggestion.isPublic(),
-						wordSuggestion.getPublicationDate())
+						wordSuggestion.getPublicationDate(),
+						wordSuggestion.getPublishedWordValue())
 				.execute();
 	}
 
@@ -231,6 +233,7 @@ public class FeedbackDbService {
 				.set(WORD_SUGGESTION.AUTHOR_EMAIL, wordSuggestion.getAuthorEmail())
 				.set(WORD_SUGGESTION.IS_PUBLIC, wordSuggestion.isPublic())
 				.set(WORD_SUGGESTION.PUBLICATION_DATE, wordSuggestion.getPublicationDate())
+				.set(WORD_SUGGESTION.PUBLISHED_WORD_VALUE, wordSuggestion.getPublishedWordValue())
 				.where(WORD_SUGGESTION.ID.eq(wordSuggestion.getId()))
 				.execute();
 	}

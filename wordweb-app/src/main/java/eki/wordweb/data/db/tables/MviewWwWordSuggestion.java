@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -73,6 +73,11 @@ public class MviewWwWordSuggestion extends TableImpl<MviewWwWordSuggestionRecord
      * The column <code>public.mview_ww_word_suggestion.author_name</code>.
      */
     public final TableField<MviewWwWordSuggestionRecord, String> AUTHOR_NAME = createField(DSL.name("author_name"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_suggestion.published_word_value</code>.
+     */
+    public final TableField<MviewWwWordSuggestionRecord, String> PUBLISHED_WORD_VALUE = createField(DSL.name("published_word_value"), SQLDataType.CLOB, this, "");
 
     private MviewWwWordSuggestion(Name alias, Table<MviewWwWordSuggestionRecord> aliased) {
         this(alias, aliased, null);
@@ -139,11 +144,11 @@ public class MviewWwWordSuggestion extends TableImpl<MviewWwWordSuggestionRecord
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, LocalDateTime, String, String, String, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
