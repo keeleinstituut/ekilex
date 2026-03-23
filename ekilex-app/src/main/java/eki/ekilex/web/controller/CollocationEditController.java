@@ -83,13 +83,45 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(COLLOC_MEMBER_MOVE_OR_COPY_URI)
+	@PostMapping(COLLOC_MEMBER_MOVE_OR_COPY_SELECTED_URI)
 	@ResponseBody
-	public Response moveOrCopyCollocMember(
+	public Response moveOrCopySelectedCollocMembers(
 			@RequestParam("opName") String opName,
 			@RequestParam("collocLexemeIds") List<Long> collocLexemeIds,
-			@RequestParam("sourceCollocMemberLexemeId") Long sourceCollocMemberLexemeId,
-			@RequestParam("targetCollocMemberLexemeId") Long targetCollocMemberLexemeId,
+			@RequestParam("sourceMemberLexemeId") Long sourceMemberLexemeId,
+			@RequestParam("targetMemberLexemeId") Long targetMemberLexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+
+		logger.debug("Making collocation members \"{}\"", opName);
+
+		Locale locale = LocaleContextHolder.getLocale();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getRoleDatasetCode();
+		String message = null;
+
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
+			message = messageSource.getMessage("colloc.message.nomembers", new Object[0], locale);
+		} else if (StringUtils.equalsIgnoreCase(opName, "move")) {
+			collocationService.moveCollocMembers(collocLexemeIds, sourceMemberLexemeId, targetMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			message = messageSource.getMessage("colloc.message.collocs.movemember", new Object[0], locale);
+		} else if (StringUtils.equalsIgnoreCase(opName, "copy")) {
+			collocationService.copyCollocsAndReplaceMembers(collocLexemeIds, sourceMemberLexemeId, targetMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			message = messageSource.getMessage("colloc.message.collocs.copymember", new Object[0], locale);
+		} else {
+			message = "n/a";
+		}
+		Response response = new Response();
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(message);
+		return response;
+	}
+
+	@PostMapping(COLLOC_MEMBER_MOVE_OR_COPY_ALL_URI)
+	@ResponseBody
+	public Response moveOrCopyAllCollocMembers(
+			@RequestParam("opName") String opName,
+			@RequestParam("sourceMemberLexemeId") Long sourceMemberLexemeId,
+			@RequestParam("targetMemberLexemeId") Long targetMemberLexemeId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Making collocation members \"{}\"", opName);
@@ -100,10 +132,10 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		String message = null;
 
 		if (StringUtils.equalsIgnoreCase(opName, "move")) {
-			collocationService.moveCollocMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			collocationService.moveCollocMembers(null, sourceMemberLexemeId, targetMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 			message = messageSource.getMessage("colloc.message.collocs.movemember", new Object[0], locale);
 		} else if (StringUtils.equalsIgnoreCase(opName, "copy")) {
-			collocationService.copyCollocAndReplaceMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			collocationService.copyCollocsAndReplaceMembers(null, sourceMemberLexemeId, targetMemberLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 			message = messageSource.getMessage("colloc.message.collocs.copymember", new Object[0], locale);
 		} else {
 			message = "n/a";

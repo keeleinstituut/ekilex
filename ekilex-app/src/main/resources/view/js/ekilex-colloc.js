@@ -40,7 +40,7 @@ $.fn.collocMemberOrderPlugin = function() {
 	})
 }
 
-$.fn.collocMemberMoveOrCopyPlugin = function() {
+$.fn.collocMemberMoveOrCopySelectedPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
@@ -61,6 +61,42 @@ $.fn.collocMemberMoveOrCopyPlugin = function() {
 			}
 			let collocLexemeIds = collocLexemeIdArr.join(",");
 			collocMemberMoveOrCopyForm.find('input[name="collocLexemeIds"]').val(collocLexemeIds);
+			collocMemberMoveOrCopyForm.find('input[name="opName"]').val(opName);
+
+			openWaitDlg();
+
+			$.ajax({
+				url: actionUrl,
+				data: collocMemberMoveOrCopyForm.serialize(),
+				method: 'POST'
+			}).done(function(response) {
+				closeWaitDlg();
+				if (response.status == 'OK') {
+					collocMemberMoveOrCopyModal.modal('hide');
+					successCallbackFunc();
+					openMessageDlg(response.message);
+				} else {
+					openAlertDlg(messages["common.error"]);
+				}
+			}).fail(function(response) {
+				closeWaitDlg();
+				console.log(response);
+				openAlertDlg(messages["common.error"]);
+			});
+		})
+	});
+}
+
+$.fn.collocMemberMoveOrCopyAllPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const opName = obj.val();
+			const collocMemberMoveOrCopyForm = obj.closest('form');
+			const collocMemberMoveOrCopyModal = collocMemberMoveOrCopyForm.closest('.modal');
+			const actionUrl = collocMemberMoveOrCopyForm.attr('action');
+			const successCallback = collocMemberMoveOrCopyModal.attr("data-callback");
+			let successCallbackFunc = createCallback(successCallback);
 			collocMemberMoveOrCopyForm.find('input[name="opName"]').val(opName);
 
 			openWaitDlg();

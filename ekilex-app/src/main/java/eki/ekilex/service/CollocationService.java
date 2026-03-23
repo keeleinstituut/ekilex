@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,7 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.CollocConjunct;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
+import eki.ekilex.data.CollocMemberId;
 import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.CollocWeight;
@@ -149,48 +151,56 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void moveCollocMember(
+	public void moveCollocMembers(
 			List<Long> collocLexemeIds,
-			Long sourceCollocMemberLexemeId,
-			Long targetCollocMemberLexemeId,
-			String roleDatasetCode,
-			boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		if (CollectionUtils.isEmpty(collocLexemeIds)) {
-			return;
-		}
-		if (sourceCollocMemberLexemeId.equals(targetCollocMemberLexemeId)) {
-			return;
-		}
-
-		ActivityLogData sourceLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMember", sourceCollocMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		ActivityLogData targetLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMember", targetCollocMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		collocationDbService.moveCollocMember(collocLexemeIds, sourceCollocMemberLexemeId, targetCollocMemberLexemeId);
-		activityLogService.createActivityLog(sourceLexemeActivityLog, sourceCollocMemberLexemeId, ActivityEntity.LEXEME);
-		activityLogService.createActivityLog(targetLexemeActivityLog, targetCollocMemberLexemeId, ActivityEntity.LEXEME);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void copyCollocAndReplaceMember(
-			List<Long> sourceCollocLexemeIds,
 			Long sourceMemberLexemeId,
 			Long targetMemberLexemeId,
 			String roleDatasetCode,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		if (CollectionUtils.isEmpty(sourceCollocLexemeIds)) {
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
+			List<CollocMemberId> collocMemberIds = collocationDbService.getCollocMemberIds(sourceMemberLexemeId);
+			collocLexemeIds = collocMemberIds.stream().map(CollocMemberId::getCollocLexemeId).collect(Collectors.toList());
+		}
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
 			return;
 		}
 		if (sourceMemberLexemeId.equals(targetMemberLexemeId)) {
 			return;
 		}
 
-		for (Long sourceCollocLexemeId : sourceCollocLexemeIds) {
+		ActivityLogData sourceLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMembers", sourceMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData targetLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMembers", targetMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		collocationDbService.moveCollocMember(collocLexemeIds, sourceMemberLexemeId, targetMemberLexemeId);
+		activityLogService.createActivityLog(sourceLexemeActivityLog, sourceMemberLexemeId, ActivityEntity.LEXEME);
+		activityLogService.createActivityLog(targetLexemeActivityLog, targetMemberLexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void copyCollocsAndReplaceMembers(
+			List<Long> collocLexemeIds,
+			Long sourceMemberLexemeId,
+			Long targetMemberLexemeId,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
+			List<CollocMemberId> collocMemberIds = collocationDbService.getCollocMemberIds(sourceMemberLexemeId);
+			collocLexemeIds = collocMemberIds.stream().map(CollocMemberId::getCollocLexemeId).collect(Collectors.toList());
+		}
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
+			return;
+		}
+		if (sourceMemberLexemeId.equals(targetMemberLexemeId)) {
+			return;
+		}
+
+		for (Long sourceCollocLexemeId : collocLexemeIds) {
 
 			WordLexemeMeaningIdTuple collocLexemeMeaningCopyId = collocationDbService.copyEmptyCollocLexemeAndMeaning(sourceCollocLexemeId);
 			Long targetCollocLexemeId = collocLexemeMeaningCopyId.getLexemeId();
 			collocationDbService.copyCollocationMembersAndReplaceOne(sourceCollocLexemeId, targetCollocLexemeId, sourceMemberLexemeId, targetMemberLexemeId);
-			activityLogService.createActivityLog("copyCollocAndMember", targetCollocLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+			activityLogService.createActivityLog("copyCollocsAndReplaceMembers", targetCollocLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 	}
 

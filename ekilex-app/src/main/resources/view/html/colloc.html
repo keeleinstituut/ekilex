@@ -11,18 +11,30 @@
             <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
           </div>
           <div class="col pl-0">
-            <button class="btn badge badge-secondary btn-toggle"
+            <button type="button"
                     data-plugin="sectionExpandPlugin"
                     data-section-name="lexeme_colloc"
-                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                    class="btn badge badge-secondary btn-toggle">
               <i class="fa fa-angle-right" th:unless="${sessionBean.lexemeCollocExpanded}"></i>
               <i class="fa fa-angle-down" th:if="${sessionBean.lexemeCollocExpanded}"></i>
+            </button>
+          </div>
+          <div class="col">
+            <div th:replace="collocdialog :: colloc_member_move_or_copy_all_dlg"></div>
+            <button type="button"
+                    th:title="#{lex.collocation.member.moveorcopy}"
+                    data-toggle="modal"
+                    th:data-target="|#collocMemberMoveOrCopyAllDlg_${lexeme.lexemeId}|"
+                    sec:authorize="#vars.lexeme.crudGrant"
+                    class="btn btn-sm badge badge-secondary colloc-move__toggle float-right mt-1">
+              <i class="fa fa-folder" aria-hidden="true"></i>
             </button>
           </div>
         </div>
         <th:block th:if="${sessionBean.lexemeCollocExpanded}">
           <div class="mt-2">
-            <div th:replace="collocdialog :: colloc_member_move_or_copy_dlg"></div>
+            <div th:replace="collocdialog :: colloc_member_move_or_copy_selected_dlg"></div>
             <th:block th:replace="colloc :: primary_colloc"></th:block>
             <th:block th:replace="colloc :: secondary_colloc"></th:block>
           </div>
@@ -53,7 +65,7 @@
             </button>
             <button type="button" class="btn btn-sm badge badge-secondary colloc-move__toggle mb-2" th:title="#{lex.collocation.member.moveorcopy}"
                     data-toggle="modal"
-                    th:data-target="|#collocMemberMoveOrCopyDlg_${lexeme.lexemeId}|"
+                    th:data-target="|#collocMemberMoveOrCopySelectedDlg_${lexeme.lexemeId}|"
                     sec:authorize="#vars.lexeme.crudGrant">
               <i class="fa fa-folder" aria-hidden="true"></i>
             </button>
@@ -84,7 +96,7 @@
           </button>
           <button type="button" class="btn btn-sm badge badge-secondary colloc-move__toggle" th:title="#{lex.collocation.member.moveorcopy}"
                   data-toggle="modal"
-                  th:data-target="|#collocMemberMoveOrCopyDlg_${lexeme.lexemeId}|"
+                  th:data-target="|#collocMemberMoveOrCopySelectedDlg_${lexeme.lexemeId}|"
                   sec:authorize="#vars.lexeme.crudGrant">
             <i class="fa fa-folder" aria-hidden="true"></i>
           </button>

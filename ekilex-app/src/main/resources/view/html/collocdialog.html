@@ -2,59 +2,89 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <th:block th:fragment="collocation">
-    <div th:id="|collocMemberMoveOrCopyDlg_${lexeme.lexemeId}|"
-         th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-         class="modal" role="dialog" th:fragment="colloc_member_move_or_copy_dlg">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form th:action="@{/colloc_member_move_or_copy}" method="post">
-            <div class="modal-header">
-              <h5 class="modal-title" th:text="#{lex.collocation.member.moveorcopy}">Vaheta kollokatsiooni liikmete tähendus või kopeeri...</h5>
-              <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
-                <span aria-hidden="true">&times;</span>
-              </button>
+  <div th:id="|collocMemberMoveOrCopySelectedDlg_${lexeme.lexemeId}|"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="colloc_member_move_or_copy_selected_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/colloc_member_move_or_copy_selected}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.collocation.member.moveorcopy.selected}">Vaheta kollokatsiooni liikmete tähendus või kopeeri...</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="sourceMemberLexemeId" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="collocLexemeIds">
+            <input type="hidden" name="opName">
+            <div class="form-group">
+              <th:block th:each="collocMemberMeaning : ${lexeme.collocationMemberMeanings}">
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" 
+                         name="targetMemberLexemeId"
+                         th:value="${collocMemberMeaning.lexemeId}"
+                         th:checked="${collocMemberMeaning.lexemeId == lexeme.lexemeId}">
+                  <label class="form-check-label">
+                    <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
+                      <span th:text="${definitionValue}"></span>
+                      <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
+                    </th:block>
+                  </label>
+                </div>
+              </th:block>
             </div>
-            <div class="modal-body">
-              <input type="hidden" name="sourceCollocMemberLexemeId" th:value="${lexeme.lexemeId}">
-              <input type="hidden" name="collocLexemeIds">
-              <input type="hidden" name="opName">
-              <div class="form-group">
-                <th:block th:each="collocMemberMeaning : ${lexeme.collocationMemberMeanings}">
-                  <div class="form-check">
-                    <input type="radio" class="form-check-input" 
-                           name="targetCollocMemberLexemeId"
-                           th:value="${collocMemberMeaning.lexemeId}"
-                           th:checked="${collocMemberMeaning.lexemeId == lexeme.lexemeId}">
-                    <label class="form-check-label">
-                      <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
-                        <span th:text="${definitionValue}"></span>
-                        <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
-                      </th:block>
-                    </label>
-                  </div>
-                </th:block>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopyPlugin" value="copy" th:text="#{lex.collocation.copy}">Kopeeri</button>
-              <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopyPlugin" value="move" th:text="#{lex.collocation.move}">Vaheta</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopySelectedPlugin" value="copy" th:text="#{lex.collocation.copy}">Kopeeri</button>
+            <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopySelectedPlugin" value="move" th:text="#{lex.collocation.move}">Vaheta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
       </div>
     </div>
-    <script th:inline="javascript">
-      $('[data-toggle=delete-colloc-member-confirm]').confirmation({
-        btnOkLabel : /*[[#{common.yes}]]*/'Jah',
-        btnCancelLabel : /*[[#{common.no}]]*/'Ei',
-        title : /*[[#{lex.collocation.confirm.delete.member}]]*/'Kinnita kustutamine',
-        html : true,
-        onConfirm : executeDelete
-      });
-    </script>
-  </th:block>
+  </div>
+  <div th:id="|collocMemberMoveOrCopyAllDlg_${lexeme.lexemeId}|"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="colloc_member_move_or_copy_all_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/colloc_member_move_or_copy_all}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.collocation.member.moveorcopy.all}">Vaheta kollokatsiooni liikmete tähendus või kopeeri...</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="sourceMemberLexemeId" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opName">
+            <div class="form-group">
+              <th:block th:each="collocMemberMeaning : ${lexeme.collocationMemberMeanings}">
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" 
+                         name="targetMemberLexemeId"
+                         th:value="${collocMemberMeaning.lexemeId}"
+                         th:checked="${collocMemberMeaning.lexemeId == lexeme.lexemeId}">
+                  <label class="form-check-label">
+                    <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
+                      <span th:text="${definitionValue}"></span>
+                      <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
+                    </th:block>
+                  </label>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopyAllPlugin" value="copy" th:text="#{lex.collocation.copy}">Kopeeri</button>
+            <button type="button" class="btn btn-primary" data-plugin="collocMemberMoveOrCopyAllPlugin" value="move" th:text="#{lex.collocation.move}">Vaheta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="|editCollocMemberPosGroupDlg_${collocMember.id}|"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_colloc_member_pos_group_dlg"

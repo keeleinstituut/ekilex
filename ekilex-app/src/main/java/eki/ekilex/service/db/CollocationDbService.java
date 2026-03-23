@@ -33,6 +33,7 @@ import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
+import eki.ekilex.data.CollocMemberId;
 import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -87,10 +88,10 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.orElse(null);
 	}
 
-	public List<CollocMember> getCollocationMembers(Long lexemeId, String classifierLabelLang) {
+	public List<CollocMember> getCollocationMembers(Long collocLexemeId, String classifierLabelLang) {
 
 		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
-		Condition where = cm.COLLOC_LEXEME_ID.eq(lexemeId);
+		Condition where = cm.COLLOC_LEXEME_ID.eq(collocLexemeId);
 		Table<?> cmst = queryHelper.getCollocMemberFullJoinTable(cm, where, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		return mainDb
@@ -99,7 +100,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(CollocMember.class);
 	}
 
-	public List<eki.ekilex.data.CollocPosGroup> getPrimaryCollocations(Long lexemeId, String classifierLabelLang) {
+	public List<eki.ekilex.data.CollocPosGroup> getPrimaryCollocations(Long memberLexemeId, String classifierLabelLang) {
 
 		PosGroup pg = POS_GROUP.as("pg");
 		PosGroupLabel pgl = POS_GROUP_LABEL.as("pgl");
@@ -118,7 +119,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.select(cm3.ID)
 				.from(cm3)
 				.where(
-						cm3.MEMBER_LEXEME_ID.eq(lexemeId)
+						cm3.MEMBER_LEXEME_ID.eq(memberLexemeId)
 								.and(cm3.COLLOC_LEXEME_ID.eq(cl.ID)))
 				.limit(1)
 				.asField();
@@ -137,7 +138,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 						.orderBy(cm1.GROUP_ORDER))
 				.from(cw, cl, cm1)
 				.where(
-						cm1.MEMBER_LEXEME_ID.eq(lexemeId)
+						cm1.MEMBER_LEXEME_ID.eq(memberLexemeId)
 								.and(cm1.POS_GROUP_CODE.eq(pg.CODE))
 								.and(cm1.REL_GROUP_CODE.eq(rg.CODE))
 								.and(cm1.COLLOC_LEXEME_ID.eq(cl.ID))
@@ -161,7 +162,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 						.select(cm.ID)
 						.from(cm)
 						.where(
-								cm.MEMBER_LEXEME_ID.eq(lexemeId)
+								cm.MEMBER_LEXEME_ID.eq(memberLexemeId)
 										.and(cm.POS_GROUP_CODE.eq(pg.CODE))
 										.and(cm.REL_GROUP_CODE.eq(rg.CODE))))
 				.asField();
@@ -180,14 +181,14 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 						.select(cm.ID)
 						.from(cm)
 						.where(
-								cm.MEMBER_LEXEME_ID.eq(lexemeId)
+								cm.MEMBER_LEXEME_ID.eq(memberLexemeId)
 										.and(cm.POS_GROUP_CODE.eq(pg.CODE))))
 				.orderBy(pg.ORDER_BY)
 				.fetchInto(eki.ekilex.data.CollocPosGroup.class);
 
 	}
 
-	public List<eki.ekilex.data.Colloc> getSecondaryCollocations(Long lexemeId) {
+	public List<eki.ekilex.data.Colloc> getSecondaryCollocations(Long memberLexemeId) {
 
 		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
 		CollocationMember cm3 = COLLOCATION_MEMBER.as("cm3");
@@ -201,7 +202,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.select(cm3.ID)
 				.from(cm3)
 				.where(
-						cm3.MEMBER_LEXEME_ID.eq(lexemeId)
+						cm3.MEMBER_LEXEME_ID.eq(memberLexemeId)
 								.and(cm3.COLLOC_LEXEME_ID.eq(cl.ID)))
 				.limit(1)
 				.asField();
@@ -216,7 +217,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 						hwmemidf.as("headword_colloc_member_id"))
 				.from(cw, cl, cm1)
 				.where(
-						cm1.MEMBER_LEXEME_ID.eq(lexemeId)
+						cm1.MEMBER_LEXEME_ID.eq(memberLexemeId)
 								.and(cm1.POS_GROUP_CODE.isNull())
 								.and(cm1.COLLOC_LEXEME_ID.eq(cl.ID))
 								.and(cl.WORD_ID.eq(cw.ID)))
@@ -224,7 +225,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(eki.ekilex.data.Colloc.class);
 	}
 
-	public List<CollocMemberMeaning> getCollocationMemberMeanings(Long collocMemberLexemeId) {
+	public List<CollocMemberMeaning> getCollocationMemberMeanings(Long memberLexemeId) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -248,12 +249,48 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 								.select(l1.ID)
 								.from(l1)
 								.where(
-										l1.ID.eq(collocMemberLexemeId)
+										l1.ID.eq(memberLexemeId)
 												.and(l1.WORD_ID.eq(l2.WORD_ID))
 												.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))))
 				.orderBy(l2.LEVEL1, l2.LEVEL2)
 				.fetchInto(CollocMemberMeaning.class);
 
+	}
+
+	public List<CollocMemberId> getCollocMemberIds(Long memberLexemeId) {
+
+		PosGroup pg = POS_GROUP.as("pg");
+		RelGroup rg = REL_GROUP.as("rg");
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+
+		return mainDb
+				.select(
+						cm.ID,
+						cm.COLLOC_LEXEME_ID,
+						cm.MEMBER_LEXEME_ID)
+				.from(cm, pg, rg)
+				.where(
+						cm.MEMBER_LEXEME_ID.eq(memberLexemeId)
+								.and(cm.POS_GROUP_CODE.eq(pg.CODE))
+								.and(cm.REL_GROUP_CODE.eq(rg.CODE)))
+				.orderBy(
+						pg.ORDER_BY,
+						rg.ORDER_BY,
+						cm.GROUP_ORDER,
+						cm.MEMBER_ORDER,
+						cm.ID)
+				.unionAll(DSL
+						.select(
+								cm.ID,
+								cm.COLLOC_LEXEME_ID,
+								cm.MEMBER_LEXEME_ID)
+						.from(cm)
+						.where(
+								cm.MEMBER_LEXEME_ID.eq(memberLexemeId)
+										.and(cm.POS_GROUP_CODE.isNull())
+										.and(cm.REL_GROUP_CODE.isNull()))
+						.orderBy(cm.ID))
+				.fetchInto(CollocMemberId.class);
 	}
 
 	public void deleteLexemeCollocMembers(Long lexemeId) {

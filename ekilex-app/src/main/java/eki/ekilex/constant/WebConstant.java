@@ -106,7 +106,9 @@ public interface WebConstant {
 
 	String LEXEME_COLLOCATION_URI = "/lexemecolloc";
 
-	String COLLOC_MEMBER_MOVE_OR_COPY_URI = "/colloc_member_move_or_copy";
+	String COLLOC_MEMBER_MOVE_OR_COPY_SELECTED_URI = "/colloc_member_move_or_copy_selected";
+
+	String COLLOC_MEMBER_MOVE_OR_COPY_ALL_URI = "/colloc_member_move_or_copy_all";
 
 	String COLLOC_MEMBER_FORM_SEARCH_URI = "/colloc_member_form_search";
 
