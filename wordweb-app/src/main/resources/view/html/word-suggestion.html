@@ -40,7 +40,16 @@
           <div class="word-suggestion-page__item">
             <span class="word-suggestion-page__item-author word-suggestion-page__item-author--mobile" th:text="${wordSuggestion.authorName} + ' | ' + ${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></span>
             <div class="word-suggestion-page__item-header">
-              <h2 th:text="${wordSuggestion.wordValue}"></h2>
+              <h2 class="d-flex flex-wrap align-items-center">
+                <th:block th:if="${wordSuggestion.isPublishedWord}">
+                  <a th:href="@{${@viewUtil.getWordSuggestionSearchUri(wordSuggestion.publishedWordValue)}}" th:text="${wordSuggestion.wordValue}"></a>
+                  <span class="badge badge-pill badge-success text-uppercase ml-2">
+                    <i class="fas fa-star mr-1" aria-hidden="true"></i>
+                    <span th:text="#{label.wordsuggestion.published.badge}">Ühendsõnastikku lisatud</span>
+                  </span>
+                </th:block>
+                <span th:unless="${wordSuggestion.isPublishedWord}" th:text="${wordSuggestion.wordValue}"></span>
+              </h2>
               <span class="word-suggestion-page__item-author word-suggestion-page__item-author--desktop" th:text="${wordSuggestion.authorName} + ' | ' + ${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></span>
             </div>
             <p class="word-suggestion-page__definition" th:text="${wordSuggestion.definitionValue}"></p>
