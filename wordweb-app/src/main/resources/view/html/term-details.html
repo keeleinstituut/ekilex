@@ -20,7 +20,7 @@
           <span th:text="#{label.tooltip.last_modified}"></span>
           <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
         </div>
-          <a
+        <a
           class="meaning-data__link d-block w-100 text-left d-lg-none"
           th:href="|@{/ds}/${lexeme.datasetCode}|"
           target="_blank"
@@ -39,15 +39,14 @@
       </a>
     </div>
     <section th:aria-labelledby="|term-meaning-data-title-${lexeme.meaningId}|" th:id="|term-meaning-data-${lexeme.meaningId}|">
-      <div class="meaning" th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
-            hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}">
-        <th:block th:if="${hasDomains}">
+      <div class="meaning">
+        <th:block th:unless="${#lists.isEmpty(lexeme.domains)}">
           <div class="mb-2 d-flex flex-wrap gap-2">
             <span class="text-caption" th:text="#{label.meaning.domain}"></span>
             <span class="lang-code text-caption lang-code--unrestricted" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
           </div>
         </th:block>
-        <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
+        <th:block th:unless="${#maps.isEmpty(lexeme.meaningLexemesByLang)}">
           <div class="display-flex" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}" th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}">
             <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</button>
             <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
@@ -66,14 +65,15 @@
           type="button"
           aria-expanded="false"
           data-toggle="collapse"
-          th:data-dynamic-id-collapse-container="|term-meaning-data-${lexeme.meaningId}|">
+          th:data-dynamic-id-collapse-container="|term-meaning-data-${lexeme.meaningId}|"
+          th:if="${lexeme.termContentExists}">
           <span class="material-symbols-outlined collapse-icon" aria-hidden="true">keyboard_arrow_down</span>
-          <span class="btn-content see-more-content" th:text="#{label.term.show_more}"></span>
+          <span class="btn-content see-more-content" th:text="#{label.term.show_more}">Näita kogu mõistet</span>
           <span class="btn-content see-less-content" th:text="#{button.see.less}"></span>
         </button>
         <div class="collapse" data-dynamic-id-collapse-target>
-          <div class="definition-row" th:if="${hasDomains} OR ${hasDefinitionsByLang}">
-            <th:block th:if="${hasDefinitionsByLang}">
+          <div class="definition-row" th:if="${lexeme.termContentExists}">
+            <th:block th:unless="${#maps.isEmpty(lexeme.definitionsByLang)}">
               <section class="display-flex" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}" th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}">
                 <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</button>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
@@ -89,7 +89,7 @@
                         <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.id}">
                           <span class="definition-value text-body-regular text-weight-semi-bold">
                             <span th:utext="${definition.valuePrese}" th:lang="${langData.defaultLang ? null : langData.codeIso2}"></span>
-                            <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
+                            <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
                               <span class="definition-sources">
                                 <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
                                   <th:block th:replace="common-app :: source-link"></th:block>
@@ -98,7 +98,7 @@
                             </th:block>
                           </span>
                         </div>
-                        <div class="mt-2" th:if="${not #lists.isEmpty(definition.notes)}">
+                        <div class="mt-2" th:unless="${#lists.isEmpty(definition.notes)}">
                           <div class="d-flex">
                             <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
                           </div>
@@ -123,7 +123,7 @@
                 </div>
               </section>
             </th:block>
-            <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
+            <th:block th:unless="${#maps.isEmpty(lexeme.meaningNotesByLang)}">
               <section class="display-flex lang-code__border" th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}" th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
                 <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</button>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
@@ -134,7 +134,7 @@
                       <div class="d-flex" th:id="${'note-entry-text-' + note.id}">
                         <div>
                           <span class="text-body-two" th:utext="${note.valuePrese}" th:lang="${langData.defaultLang ? null : langData.codeIso2}"></span>
-                          <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                          <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
                             <span class="definition-sources">
                               <span th:each="sourceLink : ${note.sourceLinks}">
                                 <th:block th:replace="common-app :: source-link"></th:block>
@@ -148,7 +148,7 @@
                 </div>
               </section>
             </th:block>
-            <th:block th:if="${not #lists.isEmpty(lexeme.meaningImages)}">
+            <th:block th:unless="${#lists.isEmpty(lexeme.meaningImages)}">
               <div class="mt-3 gallery-image__wrapper">
                 <th:block th:each="meaningImage : ${lexeme.meaningImages}">
                   <div>
@@ -156,7 +156,7 @@
                       <img class="homonym-image m-0 p-0" th:src="${meaningImage.url}" th:title="${meaningImage.title}">
                       <span class="gallery-image__title" th:utext="${meaningImage.title}"></span>
                     </a>
-                    <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
+                    <th:block th:unless="${#lists.isEmpty(meaningImage.sourceLinks)}">
                       <div th:each="sourceLink : ${meaningImage.sourceLinks}">
                         <th:block th:replace="common-app :: source-link"></th:block>
                       </div>
@@ -165,7 +165,7 @@
                 </th:block>
               </div>
             </th:block>
-            <th:block th:if="${not #lists.isEmpty(lexeme.meaningMedias)}">
+            <th:block th:unless="${#lists.isEmpty(lexeme.meaningMedias)}">
               <div class="mt-3 display-flex flex-wrap row">
                 <th:block th:each="media : ${lexeme.meaningMedias}">
                   <div class="col-12 col-md-4 mb-3">
@@ -177,7 +177,7 @@
                 </th:block>
               </div>
             </th:block>
-            <th:block th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+            <th:block th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
               <div class="related-meanings mb-2">
                 <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                   <span class="mr-2 text-caption" th:text="${relationType.value}"></span>
@@ -187,7 +187,7 @@
                         <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
-                        <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
+                        <th:block th:unless="${#lists.isEmpty(relation.lexRegisters)}">
                           <th:block th:each="register, rIter : ${relation.lexRegisters}">
                             <span class="rections register">
                               <span th:text="${register.value}" class="text-uppercase text-small"></span>
@@ -202,7 +202,7 @@
                 </div>
               </div>
             </th:block>
-            <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
+            <th:block th:unless="${#maps.isEmpty(lexeme.meaningLexemesByLang)}">
               <div class="display-flex" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}" th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}">
                 <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</button>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
@@ -218,13 +218,13 @@
                       </button>
                     </th:block>
                     <span class="lang-code lang-code--unrestricted text-caption text-weight-medium" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
+                    <th:block th:unless="${#lists.isEmpty(meaningLexeme.registers)}">
                       <span class="text-caption search__helper-text" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
                       <span class="text-caption search__helper-text">, </span>
                     </th:block>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                    <th:block th:unless="${#lists.isEmpty(meaningLexeme.wordTypes)}">
                       <span class="text-caption search__helper-text" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
                     </th:block>
                     <div class="text-small" th:if="${meaningLexeme.reliability != null}">
@@ -235,20 +235,20 @@
                       <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 4} ? 'text-warning': ''"></span>
                       <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 5} ? 'text-warning': ''"></span>
                     </div>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
+                    <th:block th:unless="${#lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
                       <span class="definition-sources">
                         <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                           <th:block th:replace="common-app :: source-link"></th:block>
                         </th:block>
                       </span>
                     </th:block>
-                    <div th:if="${not #lists.isEmpty(meaningLexeme.regions)}">
+                    <div th:unless="${#lists.isEmpty(meaningLexeme.regions)}">
                       <span class="domain register mr-1 mb-1" th:each="region,regionIter : ${meaningLexeme.regions}" th:text="${region.value + (regionIter.last ? '' : ', ')}"></span>
                     </div>
                     <div th:if="${meaningLexeme.gender != null && !meaningLexeme.showWordDataAsHidden}">
                       <span th:text="${meaningLexeme.gender.value}"></span>
                     </div>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.usages)}">
+                    <th:block th:unless="${#lists.isEmpty(meaningLexeme.usages)}">
                       <div class="dependencies mt-2">
                         <div class="dependence-group">
                           <div class="d-flex">
@@ -268,7 +268,7 @@
                                       <span class="icon icon-speaker icon--small"></span>
                                     </button>
                                   </span>
-                                  <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                                  <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
                                     <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                                       <span class="definition-sources">
                                         <th:block th:replace="common-app :: source-link"></th:block>
@@ -294,7 +294,7 @@
                                         <span class="icon icon-speaker icon--small"></span>
                                       </button>
                                     </span>
-                                    <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                                    <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
                                       <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                                         <th:block th:replace="common-app :: source-link"></th:block>
                                       </span>
@@ -319,7 +319,7 @@
                         </div>
                       </div>
                     </th:block>
-                    <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
+                    <th:block th:unless="${#maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                       <div>
                         <div class="d-flex">
                           <span class="word-notes__note text-caption" th:text="#{label.public.note}">Hea teada</span>
@@ -331,7 +331,7 @@
                                 <div class="d-flex" th:id="|note-entry-text-${note.id}|">
                                   <div>
                                     <span class="text-body-two" th:utext="${note.valuePrese}"></span>
-                                    <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                                    <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
                                       <span class="definition-sources">
                                         <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                           <th:block th:replace="common-app :: source-link"></th:block>

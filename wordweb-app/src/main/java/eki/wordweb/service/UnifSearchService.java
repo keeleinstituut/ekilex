@@ -114,6 +114,7 @@ public class UnifSearchService extends AbstractSearchService {
 
 		// term conv
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
+			lexemeConversionUtil.flagTermContentExists(termLexemes);
 			lexemeConversionUtil.sortTermLexemes(termLexemes, word);
 		}
 

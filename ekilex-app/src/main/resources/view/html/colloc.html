@@ -23,10 +23,11 @@
           <div class="col">
             <div th:replace="collocdialog :: colloc_member_move_or_copy_all_dlg"></div>
             <button type="button"
-                    th:title="#{lex.collocation.member.moveorcopy}"
+                    th:title="#{lex.collocation.member.moveorcopy.all}"
                     data-toggle="modal"
                     th:data-target="|#collocMemberMoveOrCopyAllDlg_${lexeme.lexemeId}|"
                     sec:authorize="#vars.lexeme.crudGrant"
+                    th:if="${lexeme.collocationMemberMeaningCandidacyExist}"
                     class="btn btn-sm badge badge-secondary colloc-move__toggle float-right mt-1">
               <i class="fa fa-folder" aria-hidden="true"></i>
             </button>
