@@ -299,6 +299,11 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return uri;
 	}
 
+	public String getWordSuggestionSearchUri(String wordValue) {
+		String uri = webUtil.composeAndEncodeDetailSearchUri(LANGUAGE_CODE_EST, DATASET_EKI, wordValue, null, null);
+		return uri;
+	}
+
 	public String getDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
 		String uri = webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
 		return uri;
