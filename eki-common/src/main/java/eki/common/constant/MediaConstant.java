@@ -1,0 +1,32 @@
+package eki.common.constant;
+
+public interface MediaConstant {
+
+	String FILE_EXT_JPG = "jpg";
+
+	String FILE_EXT_JPEG = "jpeg";
+
+	String FILE_EXT_PNG = "png";
+
+	String FILE_EXT_SVG = "svg";
+
+	String FILE_EXT_WAV = "wav";
+
+	String FILE_EXT_MP3 = "mp3";
+
+	String FILE_EXT_MP4 = "mp4";
+
+	String[] IMAGE_FILE_EXTENSIONS = {FILE_EXT_JPG, FILE_EXT_JPEG, FILE_EXT_PNG, FILE_EXT_SVG};
+
+	String[] AUDIO_FILE_EXTENSIONS = {FILE_EXT_WAV, FILE_EXT_MP3};
+
+	String[] VIDEO_FILE_EXTENSIONS = {FILE_EXT_MP4};
+
+	String[] SUPPORTED_MEDIA_FILE_EXTENSIONS = {FILE_EXT_JPG, FILE_EXT_JPEG, FILE_EXT_PNG, FILE_EXT_SVG, FILE_EXT_WAV, FILE_EXT_MP3, FILE_EXT_MP4};
+
+	int MAX_IMAGE_FILE_SIZE_MB = 10;
+
+	int MAX_AUDIO_FILE_SIZE_MB = 20;
+
+	int MAX_VIDEO_FILE_SIZE_MB = 500;
+}
