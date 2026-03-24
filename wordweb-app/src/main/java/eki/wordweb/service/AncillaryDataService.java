@@ -82,12 +82,6 @@ public class AncillaryDataService {
 
 		List<WordSuggestion> wordSuggestions = ancillaryDataDbService.getWordSuggestions(offset, WORD_SUGGESTION_PAGE_SIZE);
 
-		for (WordSuggestion wordSuggestion : wordSuggestions) {
-			if (StringUtils.isNotBlank(wordSuggestion.getPublishedWordValue())) {
-				wordSuggestion.setPublishedWord(true);
-			}
-		}
-
 		WordSuggestionPage wordSuggestionPage = new WordSuggestionPage();
 		wordSuggestionPage.setWordSuggestions(wordSuggestions);
 		wordSuggestionPage.setCurrentPage(currentPage);

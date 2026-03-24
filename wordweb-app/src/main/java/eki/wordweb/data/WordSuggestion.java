@@ -29,8 +29,6 @@ public class WordSuggestion extends AbstractDataObject {
 
 	private String publishedWordValue;
 
-	private boolean isPublishedWord;
-
 	public Long getWordSuggestionId() {
 		return wordSuggestionId;
 	}
@@ -85,13 +83,5 @@ public class WordSuggestion extends AbstractDataObject {
 
 	public void setPublishedWordValue(String publishedWordValue) {
 		this.publishedWordValue = publishedWordValue;
-	}
-
-	public boolean isPublishedWord() {
-		return isPublishedWord;
-	}
-
-	public void setPublishedWord(boolean publishedWord) {
-		this.isPublishedWord = publishedWord;
 	}
 }
