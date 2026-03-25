@@ -16,7 +16,7 @@
     <div class="dataset-page__header">
       <div>
         <img class="dataset-page__image" th:src="${datasetHomeData.dataset.imageUrl}" alt="" th:unless="${#strings.isEmpty(datasetHomeData.dataset.imageUrl)}" />
-        <h1 th:text="${datasetHomeData.dataset.name}"></h1>
+        <a th:href="|@{/ds}/${datasetHomeData.dataset.code}|" th:text="${datasetHomeData.dataset.name}">Sōnakogu</a>
       </div>
       <div class="dataset-page__header-text" th:if="${showDescription}">
         <span th:text="#{|label.dataset.wordcount.${datasetHomeData.dataset.type}|(${datasetHomeData.dataset.wordCount})}"> Selles sõnakogus on </span>
