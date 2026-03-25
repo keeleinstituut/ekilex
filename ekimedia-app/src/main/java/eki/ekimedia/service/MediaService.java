@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eki.common.constant.MediaConstant;
 import eki.common.data.MediaFileContent;
 import eki.common.data.MediaFileRef;
 import eki.common.data.ValidationResult;
@@ -19,9 +20,7 @@ import eki.ekimedia.data.MediaFileUpload;
 import eki.ekimedia.service.db.MediaDbService;
 
 @Component
-public class MediaService implements InitializingBean, SystemConstant {
-
-	private static final String[] SUPPORTED_MEDIA_FILE_EXT = {"jpg", "jpeg", "png", "svg", "wav", "mp3", "mp4"};
+public class MediaService implements InitializingBean, SystemConstant, MediaConstant {
 
 	@Value("${aws.public.url}")
 	private String awsPublicUrl;
@@ -55,16 +54,34 @@ public class MediaService implements InitializingBean, SystemConstant {
 			return new ValidationResult(false, "Missing file extension");
 		}
 		filenameExt = filenameExt.toLowerCase();
-		if (!ArrayUtils.contains(SUPPORTED_MEDIA_FILE_EXT, filenameExt)) {
+		if (!ArrayUtils.contains(SUPPORTED_MEDIA_FILE_EXTENSIONS, filenameExt)) {
 			return new ValidationResult(false, "Unsupported file extension");
 		}
 		if (content == null) {
 			return new ValidationResult(false, "Missing file content");
 		}
-		if (content.length == 0) {
+		int contentLength = content.length;
+		if (contentLength == 0) {
 			return new ValidationResult(false, "Missing file content");
 		}
+		if (ArrayUtils.contains(IMAGE_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(contentLength, MAX_IMAGE_FILE_SIZE_MB)) {
+				return new ValidationResult(false, "Exceeded file size restriction");
+			}
+		} else if (ArrayUtils.contains(AUDIO_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(contentLength, MAX_AUDIO_FILE_SIZE_MB)) {
+				return new ValidationResult(false, "Exceeded file size restriction");
+			}
+		} else if (ArrayUtils.contains(VIDEO_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(contentLength, MAX_VIDEO_FILE_SIZE_MB)) {
+				return new ValidationResult(false, "Exceeded file size restriction");
+			}
+		}
 		return new ValidationResult(true);
+	}
+
+	private boolean isContentOversized(int contentLength, int contentLimit) {
+		return (contentLength >= (contentLimit * 1024 * 1024));
 	}
 
 	@Transactional(rollbackFor = Exception.class)

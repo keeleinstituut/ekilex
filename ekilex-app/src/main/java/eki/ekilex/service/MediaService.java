@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.MediaConstant;
 import eki.common.data.MediaFileContent;
 import eki.common.data.MediaFileRef;
 import eki.ekilex.client.EkimediaClient;
@@ -28,15 +29,9 @@ import eki.ekilex.data.MediaUploadResponse;
 import eki.ekilex.data.Response;
 
 @Component
-public class MediaService extends AbstractCudService {
+public class MediaService extends AbstractCudService implements MediaConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaService.class);
-
-	private static final String[] ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "svg"};
-	private static final String[] ALLOWED_VIDEO_EXTENSIONS = {"mp4"};
-	private static final String[] ALLOWED_MEDIA_EXTENSIONS = ArrayUtils.addAll(ALLOWED_IMAGE_EXTENSIONS, ALLOWED_VIDEO_EXTENSIONS);
-
-	private static final int MAX_MEDIA_FILE_SIZE_MB = 500;
 
 	@Autowired
 	private EkimediaClient ekimediaClient;
@@ -236,47 +231,70 @@ public class MediaService extends AbstractCudService {
 		MediaUploadResponse response = new MediaUploadResponse();
 
 		if (file == null || file.isEmpty()) {
+			String message = messageSource.getMessage("media.upload.error.missing.file", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
-			String userMessage = messageSource.getMessage("media.upload.error.missing.file", new Object[0], locale);
-			response.setMessage(userMessage);
+			response.setMessage(message);
 			return response;
 		}
 
 		String originalFilename = file.getOriginalFilename();
 		if (StringUtils.isBlank(originalFilename)) {
+			String message = messageSource.getMessage("media.upload.error.missing.filename", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
-			String userMessage = messageSource.getMessage("media.upload.error.missing.filename", new Object[0], locale);
-			response.setMessage(userMessage);
+			response.setMessage(message);
 			return response;
 		}
 
 		String filenameExt = StringUtils.substringAfterLast(originalFilename, ".");
 		if (StringUtils.isBlank(filenameExt)) {
-			response.setStatus(ResponseStatus.ERROR);
 			String userMessage = messageSource.getMessage("media.upload.error.missing.file.extension", new Object[0], locale);
+			response.setStatus(ResponseStatus.ERROR);
 			response.setMessage(userMessage);
 			return response;
 		}
 
 		filenameExt = filenameExt.toLowerCase();
-		if (!ArrayUtils.contains(ALLOWED_MEDIA_EXTENSIONS, filenameExt)) {
+		if (!ArrayUtils.contains(SUPPORTED_MEDIA_FILE_EXTENSIONS, filenameExt)) {
+			String[] messageArgs = new String[] {StringUtils.join(SUPPORTED_MEDIA_FILE_EXTENSIONS, ", ")};
+			String message = messageSource.getMessage("media.upload.error.unsupported.file.extension", messageArgs, locale);
 			response.setStatus(ResponseStatus.ERROR);
-			String[] messageArgs = new String[] {StringUtils.join(ALLOWED_MEDIA_EXTENSIONS, ", ")};
-			String userMessage = messageSource.getMessage("media.upload.error.unsupported.file.extension", messageArgs, locale);
-			response.setMessage(userMessage);
+			response.setMessage(message);
 			return response;
 		}
 
-		if (file.getSize() > MAX_MEDIA_FILE_SIZE_MB * 1024 * 1024) {
-			response.setStatus(ResponseStatus.ERROR);
-			String[] messageArgs = new String[] {String.valueOf(MAX_MEDIA_FILE_SIZE_MB)};
-			String userMessage = messageSource.getMessage("media.upload.error.file.size.exceeded", messageArgs, locale);
-			response.setMessage(userMessage);
-			return response;
+		long fileSize = file.getSize();
+		if (ArrayUtils.contains(IMAGE_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(fileSize, MAX_IMAGE_FILE_SIZE_MB)) {
+				String[] messageArgs = new String[] {String.valueOf(MAX_IMAGE_FILE_SIZE_MB)};
+				String message = messageSource.getMessage("media.upload.error.file.size.exceeded", messageArgs, locale);
+				response.setStatus(ResponseStatus.ERROR);
+				response.setMessage(message);
+				return response;
+			}
+		} else if (ArrayUtils.contains(AUDIO_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(fileSize, MAX_AUDIO_FILE_SIZE_MB)) {
+				String[] messageArgs = new String[] {String.valueOf(MAX_AUDIO_FILE_SIZE_MB)};
+				String message = messageSource.getMessage("media.upload.error.file.size.exceeded", messageArgs, locale);
+				response.setStatus(ResponseStatus.ERROR);
+				response.setMessage(message);
+				return response;
+			}
+		} else if (ArrayUtils.contains(VIDEO_FILE_EXTENSIONS, filenameExt)) {
+			if (isContentOversized(fileSize, MAX_VIDEO_FILE_SIZE_MB)) {
+				String[] messageArgs = new String[] {String.valueOf(MAX_VIDEO_FILE_SIZE_MB)};
+				String message = messageSource.getMessage("media.upload.error.file.size.exceeded", messageArgs, locale);
+				response.setStatus(ResponseStatus.ERROR);
+				response.setMessage(message);
+				return response;
+			}
 		}
 
 		response.setStatus(ResponseStatus.OK);
 		return response;
+	}
+
+	private boolean isContentOversized(long fileSize, int fileSizeLimit) {
+		return (fileSize >= (fileSizeLimit * 1024 * 1024));
 	}
 
 	private Response composeResponse(ResponseStatus responseStatus) {

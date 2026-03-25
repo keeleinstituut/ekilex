@@ -138,6 +138,10 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 
 	private void handlePublication(Long feedbackLogId, EkiUser user, WordSuggestion providedWordSuggestion, WordSuggestion existingWordSuggestion) {
 
+		String publishedWordValue = providedWordSuggestion.getPublishedWordValue();
+		if (StringUtils.isBlank(publishedWordValue)) {
+			providedWordSuggestion.setPublishedWordValue(null);
+		}
 		boolean isPublic = providedWordSuggestion.isPublic();
 		LocalDate publicationDate;
 		if (existingWordSuggestion == null) {

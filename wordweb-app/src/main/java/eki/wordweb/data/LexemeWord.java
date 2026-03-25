@@ -135,11 +135,13 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	private Map<String, List<LexemeWord>> meaningLexemesByLang;
 
+	private boolean emptyLexeme;
+
 	private boolean missingMatchWords;
 
 	private boolean collocExists;
 
-	private boolean emptyLexeme;
+	private boolean termContentExists;
 
 	private boolean valueStatePreferred;
 
@@ -615,6 +617,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 		this.meaningLexemesByLang = meaningLexemesByLang;
 	}
 
+	public boolean isEmptyLexeme() {
+		return emptyLexeme;
+	}
+
+	public void setEmptyLexeme(boolean emptyLexeme) {
+		this.emptyLexeme = emptyLexeme;
+	}
+
 	public boolean isMissingMatchWords() {
 		return missingMatchWords;
 	}
@@ -631,12 +641,12 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 		this.collocExists = collocExists;
 	}
 
-	public boolean isEmptyLexeme() {
-		return emptyLexeme;
+	public boolean isTermContentExists() {
+		return termContentExists;
 	}
 
-	public void setEmptyLexeme(boolean emptyLexeme) {
-		this.emptyLexeme = emptyLexeme;
+	public void setTermContentExists(boolean termContentExists) {
+		this.termContentExists = termContentExists;
 	}
 
 	public boolean isValueStatePreferred() {

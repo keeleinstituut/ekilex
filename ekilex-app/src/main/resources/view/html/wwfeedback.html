@@ -94,14 +94,14 @@
                 <td>
                   <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.created, 'dd.MM.yyyy HH:mm')}"></span>
                   <span class="badge badge-info" th:text="#{|enum.feedbacktype.${feedbackLog.feedbackType}|}"></span>
-                  <th:block th:if="${feedbackLog.wordSuggestion}">
+                  <div th:if="${feedbackLog.wordSuggestion}" class="text-nowrap">
                     <span class="badge badge-light" th:title="#{feedback.public}" th:if="${feedbackLog.wordSuggestion.public}">
                       <i class="fa fa-check text-info" aria-hidden="true"></i>
                     </span>
-                    <span class="badge badge-light" th:title="#{feedback.wordsuggestion.published}" th:if="${!#strings.isEmpty(feedbackLog.wordSuggestion.publishedWordValue)}">
-                      <i class="fa fa-floppy-o text-secondary" aria-hidden="true"></i>
+                    <span class="badge badge-light" th:title="#{feedback.wordsuggestion.published}" th:if="${feedbackLog.wordSuggestion.publishedWordValue}">
+                      <i class="fa fa-star text-info" aria-hidden="true"></i>
                     </span>
-                  </th:block>
+                  </div>
                 </td>
                 <td class="breakWords pr-3">
                   <div th:if="${feedbackLog.senderEmail}" class="ml-1">

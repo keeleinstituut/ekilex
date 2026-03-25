@@ -155,6 +155,40 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				&& CollectionUtils.isEmpty(lexemeWord.getRelatedLexemes());
 	}
 
+	public void flagTermContentExists(List<LexemeWord> lexemeWords) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
+			return;
+		}
+		lexemeWords.forEach(lexeme -> {
+			boolean termContentExists = isTermContentExists(lexeme);
+			lexeme.setTermContentExists(termContentExists);
+		});
+	}
+
+	private boolean isTermContentExists(LexemeWord lexemeWord) {
+
+		return CollectionUtils.isNotEmpty(lexemeWord.getDefinitions())
+				|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningNotes())
+				|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningImages())
+				|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningMedias())
+				|| CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())
+				|| isTermSubContentExists(lexemeWord.getMeaningLexemes());
+	}
+
+	private boolean isTermSubContentExists(List<LexemeWord> meaningLexemes) {
+		if (CollectionUtils.isEmpty(meaningLexemes)) {
+			return false;
+		}
+		return meaningLexemes.stream().anyMatch(lexeme -> {
+			return CollectionUtils.isNotEmpty(lexeme.getRegisterCodes())
+					|| CollectionUtils.isNotEmpty(lexeme.getWordTypeCodes())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemeSourceLinks())
+					|| CollectionUtils.isNotEmpty(lexeme.getRegionCodes())
+					|| CollectionUtils.isNotEmpty(lexeme.getUsages())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemeNotes());
+		});
+	}
+
 	public List<LexemeWord> arrangeHierarchy(Long wordId, List<LexemeWord> allLexemes) {
 
 		List<LexemeWord> lexemeWords = allLexemes.stream()

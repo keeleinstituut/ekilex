@@ -27,6 +27,8 @@ public class WordSuggestion extends AbstractDataObject {
 
 	private String authorName;
 
+	private String publishedWordValue;
+
 	public Long getWordSuggestionId() {
 		return wordSuggestionId;
 	}
@@ -75,4 +77,11 @@ public class WordSuggestion extends AbstractDataObject {
 		this.authorName = authorName;
 	}
 
+	public String getPublishedWordValue() {
+		return publishedWordValue;
+	}
+
+	public void setPublishedWordValue(String publishedWordValue) {
+		this.publishedWordValue = publishedWordValue;
+	}
 }
