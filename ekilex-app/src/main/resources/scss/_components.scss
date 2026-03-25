@@ -14,7 +14,7 @@
 
   & span {
     font-weight: 600;
-    font-size: .5rem;
+    font-size: 0.5rem;
     color: var(--color-dark-blue);
   }
 
@@ -49,7 +49,6 @@
   }
 }
 
-
 .action-dropdown {
   display: inline-flex;
   align-items: center;
@@ -58,7 +57,7 @@
   position: relative;
   margin-left: auto;
 
-  &~.publishing {
+  & ~ .publishing {
     margin-left: 8px;
   }
 
@@ -90,7 +89,7 @@
     width: var(--icon-size);
     height: var(--icon-size);
 
-    &>* {
+    & > * {
       pointer-events: none;
     }
   }
@@ -101,7 +100,7 @@
   border: none;
   padding: 0;
   font-weight: 600;
-  font-size: var(--plain-action-font-size, .75rem);
+  font-size: var(--plain-action-font-size, 0.75rem);
   color: var(--color-dark-blue);
   text-align: left;
 
@@ -109,7 +108,6 @@
     color: var(--color-light-red);
   }
 }
-
 
 .input-text {
   display: flex;
@@ -127,7 +125,7 @@
     border: 1px solid var(--color-dark-blue-75);
     border-radius: 8px;
     color: var(--color-dark-blue);
-    font-size: .875rem;
+    font-size: 0.875rem;
 
     & input {
       width: 100%;
@@ -157,12 +155,11 @@
     align-items: center;
 
     --icon-size: 24px;
-    --icon-variation-settings: 'FILL' 1;
+    --icon-variation-settings: "FILL" 1;
     --icon-color: var(--color-icon-gray);
     border: none;
   }
 }
-
 
 .input-checkbox {
   padding: 12px;
@@ -196,7 +193,7 @@
     border-radius: 3px;
     --icon-size: 18px;
     --icon-color: var(--color-white);
-    --icon-variation-settings: 'WEIGHT' 700;
+    --icon-variation-settings: "WEIGHT" 700;
     & span {
       display: none;
     }
@@ -227,7 +224,6 @@
   }
 }
 
-
 .hover-container {
   &:hover {
     & .hover-container__item {
@@ -237,5 +233,100 @@
 
   &__item {
     display: none;
+  }
+}
+
+.segmented-switch {
+  display: inline-flex;
+  border-radius: 2px;
+  overflow: hidden;
+  gap: 4px;
+  background-color: var(--color-gray-200);
+  width: max-content;
+  padding: 2px;
+
+  &__option {
+    position: relative;
+    display: flex;
+    margin: 0;
+    padding: 8px;
+    cursor: pointer;
+
+    & input {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+
+    & span {
+      font-size: 0.875rem;
+      color: var(--color-dark-blue);
+      user-select: none;
+    }
+
+    &:not(:has(input:checked)) {
+      background-color: var(--color-white);
+    }
+
+    &:focus-within {
+      outline: 1px solid var(--color-black);
+    }
+  }
+}
+
+.input-text-new {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-gray-350);
+  border-radius: 2px;
+  padding: 4px 8px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & label {
+    margin: 0;
+  }
+}
+
+.input-media {
+  position: relative;
+  &__action {
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--color-gray-350);
+    border-radius: 2px;
+    padding: 4px 8px;
+    gap: 8px;
+
+    background: none;
+    width: 100%;
+  }
+
+  &__name {
+    font-size: 0.875rem;
+    color: var(--color-gray-900);
+  }
+
+  &__edge {
+    display: flex;
+    gap: 4px;
+    color: var(--color-blue-400-v2);
+    --icon-size: 1.125rem;
+    font-size: 0.875rem;
+    align-items: center;
+  }
+
+  & input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
   }
 }
