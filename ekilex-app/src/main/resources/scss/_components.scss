@@ -286,10 +286,9 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-  }
-
-  & label {
-    margin: 0;
+    & label {
+      margin: 0;
+    }
   }
 }
 

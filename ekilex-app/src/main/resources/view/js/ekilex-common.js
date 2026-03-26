@@ -264,7 +264,7 @@ function initGenericTextAddDlg(addDlg) {
 		const item = $(this);
 		item.val(item.find('option').first().val());
 	});
-	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+	addDlg.find('button[type="submit"]').off('click.genericTextDlg').on('click.genericTextDlg', function(e) {
 		submitDialog(e, addDlg, messages["common.data.add.error"]);
 	});
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
