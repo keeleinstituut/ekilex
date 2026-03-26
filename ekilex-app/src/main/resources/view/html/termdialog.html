@@ -1733,38 +1733,55 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_meaning_image}" method="post">
-          <div class="modal-header">
-            <h5 class="modal-title" th:text="#{media.title.add.image}">Lisa pilt</h5>
-          </div>
-          <div class="modal-body">
+          <th:block th:replace="components :: modal_header(title = #{media.title.add.image})"></th:block>
+          <div class="custom-modal__body" data-segment-container>
             <input type="hidden" name="meaningId" th:value="${meaningId}">
             <input type="hidden" name="objectFilename">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
-                <div class="mb-4">
-                  <button type="button" class="btn btn-primary" data-name="meaning-media-choose-file-btn" th:text="#{media.choose.file}">Vali fail</button>
-                  <input type="file" class="d-none" data-name="meaning-media-file-input" accept=".jpg,.jpeg,.png,.svg">
-                </div>
-                <div class="mb-2" data-name="meaning-media-thumbnail-div" style="display: none;">
-                  <img class="w-50" data-name="meaning-media-upload-thumbnail" alt="">
-                </div>
-                <div class="mb-2" data-name="meaning-media-delete-buttons" style="display: none;">
-                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
-                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
-                </div>
-                <input type="text" class="form-control required-field" th:placeholder="#{term.placeholder.image.url}" name="url" required="required" autocomplete="off">
+            <input type="hidden" name="url">
+            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="d-flex flex-column gap-1">
+              <h2 th:text="#{media.image.source.type}">Pildi tüüp</h2>
+              <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.image.source.type}" th:aria-controls="|addMeaningImageDlg_${meaningId}_filePanel, addMeaningImageDlg_${meaningId}_urlPanel|">
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'imageSourceType',
+                  label = #{media.source.file},
+                  value = 'file',
+                  checked = ${true}
+                  )"></th:block>
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'imageSourceType',
+                  label = #{media.source.url},
+                  value = 'url',
+                  checked = ${false}
+                  )"></th:block>
               </div>
             </div>
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input type="text" class="form-control" th:placeholder="#{term.placeholder.image.title}" name="title" autocomplete="off">
-              </div>
+            <div data-segment-panel="file" th:id="|addMeaningImageDlg_${meaningId}_filePanel|">
+              <th:block th:replace="components :: input_media(
+                id = ${'addMeaningImageFileInput_' + meaningId},
+                label = #{media.source.file},
+                mediaName = '',
+                inputName = 'imageSourceType',
+                accept = '.jpg,.jpeg,.png,.svg')"></th:block>
             </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+
+            <div data-segment-panel="url" hidden aria-hidden="true" th:id="|addMeaningImageDlg_${meaningId}_urlPanel|">
+              <th:block th:replace="components :: input_text_new(
+                id = ${'addMeaningImageUrlInput_' + meaningId},
+                label = #{media.source.url},
+                placeholder = #{term.placeholder.image.url}
+                )"></th:block>
             </div>
+
+            <img class="w-50 d-none" data-media-thumbnail alt="">
+
+            <th:block th:replace="components :: input_text_new(
+              id = ${'addMeaningImageTitleInput_' + meaningId},
+              label = #{term.placeholder.image.title},
+              name = 'title'
+              )"></th:block>
+
+            <th:block th:replace="components :: modal_footer(submitLabel = #{common.add})"></th:block>
           </div>
         </form>
       </div>
@@ -1778,29 +1795,70 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_meaning_image}" method="post">
-          <div class="modal-header">
-            <h5 class="modal-title" th:text="#{media.title.edit.image}">Muuda pilti</h5>
-          </div>
-          <div class="modal-body">
+          <th:block th:replace="components :: modal_header(title = #{media.title.edit.image})"></th:block>
+          <div class="custom-modal__body" data-segment-container>
             <input type="hidden" name="meaningImageId" th:value="${image.id}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <div class="mb-2">
-                  <img class="w-50" alt="" th:src="${image.url}">
-                </div>
-                <input type="text" class="form-control required-field" name="url" th:placeholder="#{term.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off">
+            <input type="hidden" name="objectFilename" th:value="${image.objectFilename}">
+            <input type="hidden" name="url" th:value="${image.url}">
+            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="d-flex flex-column gap-1">
+              <span th:text="#{media.image.source.type}">Pildi tüüp</span>
+              <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.image.source.type}" th:aria-controls="|editMeaningMediaDlg_${meaningId}_filePanel, editMeaningMediaDlg_${meaningId}_urlPanel|">
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'imageSourceType',
+                  label = #{media.image.source.file},
+                  value = 'file',
+                  checked = ${!#strings.isEmpty(image.objectFilename)}
+                  )"></th:block>
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'imageSourceType',
+                  label = #{media.image.source.url},
+                  value = 'url',
+                  checked = ${#strings.isEmpty(image.objectFilename)}
+                  )"></th:block>
               </div>
             </div>
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input type="text" class="form-control" name="title" th:placeholder="#{term.placeholder.image.title}" th:value="${image.title}" autocomplete="off">
-              </div>
+
+            <div data-segment-panel="file"
+                 th:hidden="${#strings.isEmpty(image.objectFilename)}"
+                 th:aria-hidden="${#strings.isEmpty(image.objectFilename)}"
+                 th:id="|editMeaningMediaDlg_${meaningId}_filePanel|">
+              <th:fragment th:replace="components :: input_media(
+                id = ${'meaningImageFileInput_' + meaningId + '_' + image.id},
+                label=#{media.image.source.file},
+                mediaName = ${image.objectFilename},
+                inputName = 'imageSourceType',
+                accept = '.jpg,.jpeg,.png,.svg')"></th:fragment>
             </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+
+            <div
+              data-segment-panel="url"
+              data-url-panel
+              th:hidden="${!#strings.isEmpty(image.objectFilename)}"
+              th:aria-hidden="${!#strings.isEmpty(image.objectFilename)}"
+              th:id="|editMeaningMediaDlg_${meaningId}_urlPanel|">
+                 <th:block th:replace="components :: input_text_new(
+                  id = ${'meaningImageUrlInput_' + meaningId + '_' + image.id},
+                  label = #{media.image.source.url},
+                  placeholder = #{term.placeholder.image.url},
+                  value = ${image.url}
+                 )"></th:block>
+            </div>
+
+            <div>
+              <img class="w-50" data-media-thumbnail alt="" th:src="${image.url}">
+            </div>
+
+            <div>
+              <th:block th:replace="components :: input_text_new(
+                id = ${'meaningImageTitleInput_' + meaningId + '_' + image.id},
+                  label = #{term.placeholder.image.title},
+                  value = ${image.title},
+                  name = 'title'
+                )"></th:block>
             </div>
           </div>
+          <th:block th:replace="components :: modal_footer(submitLabel = #{common.save})"></th:block>
         </form>
       </div>
     </div>
@@ -1812,38 +1870,54 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_meaning_media}" method="post">
-          <div class="modal-header">
-            <h5 class="modal-title" th:text="#{media.title.add.media}">Lisa meedia</h5>
-          </div>
-          <div class="modal-body">
+          <th:block th:replace="components :: modal_header(title = #{media.title.add.media})"></th:block>
+          <div class="custom-modal__body" data-segment-container>
             <input type="hidden" name="meaningId" th:value="${meaningId}">
+            <input type="hidden" name="url">
             <input type="hidden" name="objectFilename">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <div class="alert alert-danger alert--form d-none mb-4" data-id="meaning-media-upload-error" role="alert"></div>
-                <div class="mb-4">
-                  <button type="button" class="btn btn-primary" data-name="meaning-media-choose-file-btn" th:text="#{media.choose.file}">Vali fail</button>
-                  <input type="file" class="d-none" data-name="meaning-media-file-input" accept=".mp4">
-                </div>
-                <div class="mb-2" data-name="meaning-media-thumbnail-div" style="display: none;">
-                  <iframe data-name="meaning-media-upload-thumbnail"></iframe>
-                </div>
-                <div class="mb-2" data-name="meaning-media-delete-buttons" style="display: none;">
-                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-delete-file-btn" th:text="#{common.delete}">Kustuta</button>
-                  <button type="button" class="btn btn-default btn-sm" data-name="meaning-media-replace-file-btn" th:text="#{media.replace.file}">Asenda</button>
-                </div>
-                <input type="text" class="form-control required-field" name="url" th:placeholder="#{term.placeholder.media.url}" required="required" autocomplete="off">
+            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="d-flex flex-column gap-1">
+              <span th:text="#{media.source.type}">Meedia tüüp</span>
+              <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.source.type}" th:aria-controls="|addMeaningMediaDlg_${meaningId}_filePanel, addMeaningMediaDlg_${meaningId}_urlPanel|">
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'mediaSourceType',
+                  label = #{media.source.file},
+                  value = 'file',
+                  checked = ${true}
+                  )"></th:block>
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'mediaSourceType',
+                  label = #{media.source.url},
+                  value = 'url',
+                  checked = ${false}
+                  )"></th:block>
               </div>
             </div>
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input type="text" class="form-control" name="title" th:placeholder="#{term.placeholder.media.title}" autocomplete="off">
-              </div>
+            <div data-segment-panel="file" th:id="|addMeaningMediaDlg_${meaningId}_filePanel|">
+              <th:block th:replace="components :: input_media(
+                id = ${'addMeaningMediaFileInput_' + meaningId},
+                label = #{media.source.file},
+                mediaName = '',
+                inputName = 'mediaSourceType',
+                accept = '.mp4')"></th:block>
             </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+
+            <div data-segment-panel="url" hidden aria-hidden="true" th:id="|addMeaningMediaDlg_${meaningId}_urlPanel|">
+              <th:block th:replace="components :: input_text_new(
+                id = ${'addMeaningMediaUrlInput_' + meaningId},
+                label = #{media.source.url},
+                placeholder = #{lex.placeholder.media.url}
+                )"></th:block>
             </div>
+            <div>
+              <iframe class="d-none" data-media-thumbnail></iframe>
+            </div>
+            <th:block th:replace="components :: input_text_new(
+              id = ${'addMeaningMediaTitleInput_' + meaningId},
+              label = #{lex.placeholder.media.title},
+              name = 'title'
+              )"></th:block>
+            <th:block th:replace="components :: modal_footer"></th:block>
           </div>
         </form>
       </div>
@@ -1857,29 +1931,70 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_meaning_media}" method="post">
-          <div class="modal-header">
-            <h5 class="modal-title" th:text="#{media.title.edit.media}">Muuda meediat</h5>
-          </div>
-          <div class="modal-body">
+          <th:block th:replace="components :: modal_header(title = #{media.title.edit.media})"></th:block>
+          <div class="custom-modal__body" data-segment-container>
             <input type="hidden" name="meaningMediaId" th:value="${media.id}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <div class="mb-2">
-                  <iframe th:src="${media.url}"></iframe>
-                </div>
-                <input type="text" class="form-control required-field" name="url" th:placeholder="#{term.placeholder.media.url}" th:value="${media.url}" required="required" autocomplete="off">
+            <input type="hidden" name="objectFilename" th:value="${media.objectFilename}">
+            <input type="hidden" name="url" th:value="${media.url}">
+            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="d-flex flex-column gap-1">
+              <span th:text="#{media.source.type}">Meedia tüüp</span>
+              <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.source.type}" th:aria-controls="|editMeaningMediaDlg_${meaningId}_filePanel, editMeaningMediaDlg_${meaningId}_urlPanel|">
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'mediaSourceType',
+                  label = #{media.source.file},
+                  value = 'file',
+                  checked = ${!#strings.isEmpty(media.objectFilename)}
+                  )"></th:block>
+                <th:block th:replace="components :: segmented_switch_option(
+                  inputName = 'mediaSourceType',
+                  label = #{media.source.url},
+                  value = 'url',
+                  checked = ${#strings.isEmpty(media.objectFilename)}
+                  )"></th:block>
               </div>
             </div>
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input type="text" class="form-control" name="title" th:placeholder="#{term.placeholder.media.title}" th:value="${media.title}" autocomplete="off">
-              </div>
+
+            <div data-segment-panel="file"
+                 th:hidden="${#strings.isEmpty(media.objectFilename)}"
+                 th:aria-hidden="${#strings.isEmpty(media.objectFilename)}"
+                 th:id="|editMeaningMediaDlg_${meaningId}_filePanel|">
+              <th:fragment th:replace="components :: input_media(
+                id = ${'meaningMediaFileInput_' + meaningId + '_' + media.id},
+                label=#{media.source.file},
+                mediaName = ${media.objectFilename},
+                inputName = 'mediaSourceType',
+                accept = '.mp4')"></th:fragment>
             </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+
+            <div
+              data-segment-panel="url"
+              data-url-panel
+              th:hidden="${!#strings.isEmpty(media.objectFilename)}"
+              th:aria-hidden="${!#strings.isEmpty(media.objectFilename)}"
+              th:id="|editMeaningMediaDlg_${meaningId}_urlPanel|">
+                 <th:block th:replace="components :: input_text_new(
+                  id = ${'meaningMediaUrlInput_' + meaningId + '_' + media.id},
+                  label = #{media.source.url},
+                  placeholder = #{term.placeholder.media.url},
+                  value = ${media.url}
+                 )"></th:block>
+            </div>
+
+            <div>
+              <iframe data-media-thumbnail th:src="${media.url}"></iframe>
+            </div>
+
+            <div>
+              <th:block th:replace="components :: input_text_new(
+                id = ${'meaningMediaTitleInput_' + meaningId + '_' + media.id},
+                  label = #{term.placeholder.media.title},
+                  value = ${media.title},
+                  name = 'title'
+                )"></th:block>
             </div>
           </div>
+          <th:block th:replace="components :: modal_footer(submitLabel = #{common.save})"></th:block>
         </form>
       </div>
     </div>
