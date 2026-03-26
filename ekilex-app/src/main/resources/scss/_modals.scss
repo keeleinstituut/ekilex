@@ -1,0 +1,27 @@
+.custom-modal {
+    &__title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0;
+        color: var(--color-black);
+    }
+    &__close {
+        width: 24px;
+        height: 24px;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 1.5rem;
+        color: var(--color-black);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 16px;
+    }
+}

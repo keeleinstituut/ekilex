@@ -41,9 +41,10 @@
     color: var(--color-dark-blue);
     font-weight: 500;
 
-    & h1 {
+    & a {
       font-size: 1.25rem;
       margin: 0;
+      font-weight: 400;
     }
 
     @include media-breakpoint-up(md) {

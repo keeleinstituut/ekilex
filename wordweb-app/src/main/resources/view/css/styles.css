@@ -16220,9 +16220,10 @@ span.material-symbols-outlined--filled {
   color: var(--color-dark-blue);
   font-weight: 500;
 }
-.dataset-page__header h1 {
+.dataset-page__header a {
   font-size: 1.25rem;
   margin: 0;
+  font-weight: 400;
 }
 @media (min-width: 768px) {
   .dataset-page__header {

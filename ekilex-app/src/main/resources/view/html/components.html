@@ -739,5 +739,42 @@
     </span>
     <span th:utext="${inputLabel}"></span>
   </label>
+  <div class="modal-header" th:fragment="modal_header">
+    <h1 class="custom-modal__title" th:text="${title}">Pealkiri</h1>
+    <button class="custom-modal__close" type="button" data-dismiss="modal" th:title="#{common.close}">
+      <span class="material-symbols-outlined" aria-hidden="true">close</span>
+    </button>
+  </div>
+  <div class="modal-footer" th:fragment="modal_footer">
+    <button type="submit" class="btn btn-primary" th:text="${submitLabel?: #messages.msg('common.save')}">Salvesta</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" th:text="${cancelLabel?: #messages.msg('common.cancel')}">Katkesta</button>
+  </div>
+  <label class="segmented-switch__option" th:fragment="segmented_switch_option">
+    <input type="radio" th:name="${inputName}" th:value="${value}" th:checked="${checked}" th:data-segment-target="${value}">
+    <span th:text="${label}"></span>
+  </label>
+  <div th:fragment="input_text_new" class="input-text-new__container" >
+    <label th:for="${id}" th:text="${label}"></label>
+    <input class="input-text-new"
+      th:type="${type ?: 'text'}"
+      th:id="${id}"
+      th:name="${name}"
+      th:value="${value ?: ''}"
+      th:placeholder="${placeholder ?: ''}"
+      th:autocomplete="${autocomplete ?: 'off'}"
+      th:autofocus="${autofocus}"
+      th:required="${required}">
+  </div>
+  <div th:fragment="input_media" class="input-media" data-media-input>
+    <label th:text="${label}" th:for="|${id}-input|"></label>
+    <button type="button" class="input-media__action" data-media-btn>
+      <span class="input-media__name" data-media-name th:text="${mediaName}"></span>
+      <div class="input-media__edge">
+        <span class="material-symbols-outlined" aria-hidden="true">upload</span>
+        <span th:text="#{media.choose.attachment}">Vali manus</span>
+      </div>
+    </button>
+    <input type="file" class="input-media__file" th:id="|${id}-input|" th:name="${inputName}" data-media-file accept=".jpg,.jpeg,.png,.svg">
+  </div>
 </body>
 </html>
