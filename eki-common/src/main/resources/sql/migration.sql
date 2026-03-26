@@ -126,3 +126,30 @@ where
 alter table word_suggestion add column published_word_value text null;
 
 -- Loo uuesti ekilexi baasi vaated (main_create_ww_views.sql)
+
+-- #5 --
+
+create table language_group (
+	id bigserial primary key,
+	parent_language_group_id bigint references language_group(id) on delete cascade, 
+	name text not null,
+	unique(name)
+);
+alter sequence language_group_id_seq restart with 10000;
+
+create index language_group_parent_language_group_id_idx on language_group(parent_language_group_id);
+create index language_group_name_idx on language_group(name);
+
+create table language_group_member (
+	id bigserial primary key,
+	language_group_id bigint references language_group(id) on delete cascade not null, 
+	lang char(3) references language(code) not null,
+	unique(language_group_id, lang)
+);
+alter sequence language_group_member_id_seq restart with 10000;
+
+create index language_group_member_language_group_id_idx on language_group_member(language_group_id);
+create index language_group_member_lang_idx on language_group_member(lang);
+
+
+

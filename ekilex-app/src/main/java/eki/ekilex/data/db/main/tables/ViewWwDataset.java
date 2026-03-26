@@ -7,11 +7,14 @@ package eki.ekilex.data.db.main.tables;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.ViewWwDatasetRecord;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,12 +85,32 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
      */
     public final TableField<ViewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
+    /**
+     * The column <code>public.view_ww_dataset.last_manual_event_on</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, LocalDateTime> LAST_MANUAL_EVENT_ON = createField(DSL.name("last_manual_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.word_count</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, Long> WORD_COUNT = createField(DSL.name("word_count"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.created_meaning_words</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, JSON> CREATED_MEANING_WORDS = createField(DSL.name("created_meaning_words"), SQLDataType.JSON, this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.updated_meaning_words</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, JSON> UPDATED_MEANING_WORDS = createField(DSL.name("updated_meaning_words"), SQLDataType.JSON, this, "");
+
     private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT code,\n    type,\n    name,\n    description,\n    contact,\n    image_url,\n    is_superior,\n    order_by\n   FROM dataset ds\n  WHERE (is_public = true)\n  ORDER BY order_by;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT code,\n    type,\n    name,\n    description,\n    contact,\n    image_url,\n    is_superior,\n    order_by,\n    ( SELECT max(m.manual_event_on) AS max\n           FROM meaning m\n          WHERE (EXISTS ( SELECT 1\n                   FROM lexeme l\n                  WHERE ((l.meaning_id = m.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = (ds.code)::text))))) AS last_manual_event_on,\n    ( SELECT count(w.id) AS count\n           FROM word w\n          WHERE ((w.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                   FROM lexeme l\n                  WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = (ds.code)::text)))))) AS word_count,\n    ( SELECT json_agg(json_build_object('lexemeId', wlm.lexeme_id, 'meaningId', wlm.meaning_id, 'wordId', wlm.word_id, 'value', wlm.value, 'valuePrese', wlm.value_prese, 'homonymNr', wlm.homonym_nr, 'lang', wlm.lang, 'eventOn', wlm.first_event_on) ORDER BY wlm.first_event_on DESC, wlm.value) AS json_agg\n           FROM ( SELECT l.id AS lexeme_id,\n                    l.meaning_id,\n                    l.word_id,\n                    w.value,\n                    w.value_prese,\n                    w.homonym_nr,\n                    w.lang,\n                    mm.first_event_on\n                   FROM ( SELECT w_1.meaning_id,\n                            (array_agg(w_1.word_id ORDER BY w_1.priority))[1] AS word_id\n                           FROM ( SELECT l_1.word_id,\n                                    l_1.meaning_id,\n                                    1 AS priority\n                                   FROM word w_2,\n                                    lexeme l_1\n                                  WHERE ((w_2.lang = 'est'::bpchar) AND (l_1.word_id = w_2.id) AND (l_1.is_word = true) AND (l_1.is_public = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text) AND ((l_1.value_state_code)::text = 'eelistermin'::text))\n                                UNION ALL\n                                 SELECT l_1.word_id,\n                                    l_1.meaning_id,\n                                    2 AS priority\n                                   FROM word w_2,\n                                    lexeme l_1\n                                  WHERE ((w_2.lang = 'est'::bpchar) AND (l_1.word_id = w_2.id) AND (l_1.is_word = true) AND (l_1.is_public = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text) AND (l_1.value_state_code IS NULL))) w_1\n                          GROUP BY w_1.meaning_id) ww,\n                    ( SELECT m.id AS meaning_id,\n                            m.first_event_on\n                           FROM ( SELECT m_1.id,\n                                    min(al.event_on) AS first_event_on\n                                   FROM meaning m_1,\n                                    meaning_activity_log mal,\n                                    activity_log al\n                                  WHERE ((mal.meaning_id = m_1.id) AND (mal.activity_log_id = al.id) AND (al.owner_name = 'MEANING'::text) AND (al.owner_id = m_1.id) AND (al.entity_name = 'MEANING'::text) AND (al.funct_name ~~ 'create%'::text) AND (EXISTS ( SELECT 1\n   FROM lexeme l_1\n  WHERE ((l_1.meaning_id = m_1.id) AND (l_1.is_public = true) AND (l_1.is_word = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text)))))\n                                  GROUP BY m_1.id) m\n                          WHERE (m.first_event_on > (CURRENT_DATE - '3 years'::interval))) mm,\n                    word w,\n                    lexeme l\n                  WHERE ((l.word_id = w.id) AND (l.word_id = ww.word_id) AND (l.meaning_id = ww.meaning_id) AND (l.meaning_id = mm.meaning_id))\n                  ORDER BY mm.first_event_on DESC, w.value\n                 LIMIT 20) wlm) AS created_meaning_words,\n    ( SELECT json_agg(json_build_object('lexemeId', wlm.lexeme_id, 'meaningId', wlm.meaning_id, 'wordId', wlm.word_id, 'value', wlm.value, 'valuePrese', wlm.value_prese, 'homonymNr', wlm.homonym_nr, 'lang', wlm.lang, 'eventOn', wlm.last_event_on) ORDER BY wlm.last_event_on DESC, wlm.value) AS json_agg\n           FROM ( SELECT l.id AS lexeme_id,\n                    l.meaning_id,\n                    l.word_id,\n                    w.value,\n                    w.value_prese,\n                    w.homonym_nr,\n                    w.lang,\n                    mm.last_event_on\n                   FROM ( SELECT w_1.meaning_id,\n                            (array_agg(w_1.word_id ORDER BY w_1.priority))[1] AS word_id\n                           FROM ( SELECT l_1.word_id,\n                                    l_1.meaning_id,\n                                    1 AS priority\n                                   FROM word w_2,\n                                    lexeme l_1\n                                  WHERE ((w_2.lang = 'est'::bpchar) AND (l_1.word_id = w_2.id) AND (l_1.is_word = true) AND (l_1.is_public = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text) AND ((l_1.value_state_code)::text = 'eelistermin'::text))\n                                UNION ALL\n                                 SELECT l_1.word_id,\n                                    l_1.meaning_id,\n                                    2 AS priority\n                                   FROM word w_2,\n                                    lexeme l_1\n                                  WHERE ((w_2.lang = 'est'::bpchar) AND (l_1.word_id = w_2.id) AND (l_1.is_word = true) AND (l_1.is_public = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text) AND (l_1.value_state_code IS NULL))) w_1\n                          GROUP BY w_1.meaning_id) ww,\n                    ( SELECT m.id AS meaning_id,\n                            m.last_event_on\n                           FROM ( SELECT m_1.id,\n                                    max(al.event_on) AS last_event_on\n                                   FROM meaning m_1,\n                                    meaning_last_activity_log mlal,\n                                    activity_log al\n                                  WHERE ((mlal.meaning_id = m_1.id) AND (mlal.activity_log_id = al.id) AND ((mlal.type)::text = 'EDIT'::text) AND (EXISTS ( SELECT 1\n   FROM lexeme l_1\n  WHERE ((l_1.meaning_id = m_1.id) AND (l_1.is_public = true) AND (l_1.is_word = true) AND ((l_1.dataset_code)::text <> 'eki'::text) AND ((l_1.dataset_code)::text = (ds.code)::text)))))\n                                  GROUP BY m_1.id) m\n                          WHERE (m.last_event_on > (CURRENT_DATE - '3 years'::interval))) mm,\n                    word w,\n                    lexeme l\n                  WHERE ((l.word_id = w.id) AND (l.word_id = ww.word_id) AND (l.meaning_id = ww.meaning_id) AND (l.meaning_id = mm.meaning_id))\n                  ORDER BY mm.last_event_on DESC, w.value\n                 LIMIT 20) wlm) AS updated_meaning_words\n   FROM dataset ds\n  WHERE (is_public = true)\n  ORDER BY order_by;"));
     }
 
     /**
@@ -147,11 +170,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, String, String, String, String, Boolean, Long> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row12<String, String, String, String, String, String, Boolean, Long, LocalDateTime, Long, JSON, JSON> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

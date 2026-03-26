@@ -4,16 +4,37 @@
 <body>
   <div id="addClassifierCodeDlg" class="modal" role="dialog"
        th:fragment="add_classifier_code_dialog"
-       data-plugin="addClassifierCodePlugin">
+       data-plugin="openAddClassifierPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form name="createClassifierForm" th:action="@{/create_classifier}" method="post" data-plugin="createClassifierPlugin">
+        <form th:action="@{/create_classifier}" method="post" data-plugin="createClassifierPlugin">
           <input type="hidden" name="name" th:value="${classifierName}">
           <input type="hidden" name="origin" th:value="${domainOriginCode}">
           <input type="hidden" name="order">
           <div class="modal-header">
             <label class="col-md-2 col-form-label" th:text="#{classifiers.code}">kood</label>
             <input class="modal-title col-md-4 form-control font-weight-bold required-field" name="code" autocomplete="off">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="addLanguageGroupDlg" class="modal" role="dialog"
+       th:fragment="add_language_group_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/save_language_group}" method="post" data-plugin="saveLanguageGroupPlugin">
+          <input type="hidden" name="id" value="">
+          <div class="modal-header">
+            <label class="col-md-4 col-form-label" th:text="#{languagegroup.name}">Nimi</label>
+            <input class="modal-title col-md-6 form-control font-weight-bold required-field" name="name" autocomplete="off">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

@@ -51,6 +51,8 @@ import eki.ekilex.data.db.main.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.LanguageGroup;
+import eki.ekilex.data.db.main.tables.LanguageGroupMember;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
@@ -416,6 +418,16 @@ public class Tables {
      * The table <code>public.language</code>.
      */
     public static final Language LANGUAGE = Language.LANGUAGE;
+
+    /**
+     * The table <code>public.language_group</code>.
+     */
+    public static final LanguageGroup LANGUAGE_GROUP = LanguageGroup.LANGUAGE_GROUP;
+
+    /**
+     * The table <code>public.language_group_member</code>.
+     */
+    public static final LanguageGroupMember LANGUAGE_GROUP_MEMBER = LanguageGroupMember.LANGUAGE_GROUP_MEMBER;
 
     /**
      * The table <code>public.language_label</code>.

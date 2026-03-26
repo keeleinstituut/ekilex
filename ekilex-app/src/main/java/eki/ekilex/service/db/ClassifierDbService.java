@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP;
 
 import java.util.Arrays;
 import java.util.List;
@@ -403,4 +404,24 @@ public class ClassifierDbService extends AbstractDataDbService {
 		return getTableName(classifierName) + "_label";
 	}
 
+	public Long createLanguageGroup(String name) {
+
+		return mainDb
+				.insertInto(
+						LANGUAGE_GROUP,
+						LANGUAGE_GROUP.NAME)
+				.values(name)
+				.returning(LANGUAGE_GROUP.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateLanguageGroup(Long id, String name) {
+
+		mainDb
+				.update(LANGUAGE_GROUP)
+				.set(LANGUAGE_GROUP.NAME, name)
+				.where(LANGUAGE_GROUP.ID.eq(id))
+				.execute();
+	}
 }
