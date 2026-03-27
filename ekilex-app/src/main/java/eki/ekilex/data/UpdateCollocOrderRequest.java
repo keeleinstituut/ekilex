@@ -12,6 +12,8 @@ public class UpdateCollocOrderRequest extends AbstractDataObject {
 
 	private String direction;
 
+	private Integer targetMemberIndex;
+
 	public Long getCollocLexemeId() {
 		return collocLexemeId;
 	}
@@ -34,6 +36,14 @@ public class UpdateCollocOrderRequest extends AbstractDataObject {
 
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+
+	public Integer getTargetMemberIndex() {
+		return targetMemberIndex;
+	}
+
+	public void setTargetMemberIndex(Integer targetMemberIndex) {
+		this.targetMemberIndex = targetMemberIndex;
 	}
 
 }

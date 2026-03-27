@@ -93,25 +93,85 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
 				.findFirst()
 				.get();
-		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
-		if (sourceCollocMemberIndex < 0) {
+		int sourceMemberIndex = collocMembers.indexOf(sourceCollocMember);
+		if (sourceMemberIndex < 0) {
 			return;
 		}
 		CollocMemberOrder targetCollocMember = null;
-		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
-		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
+		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceMemberIndex > 0)) {
+			targetCollocMember = collocMembers.get(sourceMemberIndex - 1);
+		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceMemberIndex < (collocMemberCount - 1))) {
+			targetCollocMember = collocMembers.get(sourceMemberIndex + 1);
 		}
-		if (targetCollocMember != null) {
-			Long sourceCollocMemberId = sourceCollocMember.getId();
-			Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
-			Long targetCollocMemberId = targetCollocMember.getId();
-			Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
-			collocationDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
-			collocationDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
+		if (targetCollocMember == null) {
+			return;
 		}
+		Long sourceCollocMemberId = sourceCollocMember.getId();
+		Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
+		Long targetCollocMemberId = targetCollocMember.getId();
+		Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
+		collocationDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
+		collocationDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
 		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void updateCollocMemberGroupOrder(
+			Long collocLexemeId,
+			Long memberLexemeId,
+			Integer targetMemberIndex,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<CollocMemberOrder> collocMembers = collocationDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
+		List<Integer> groupOrders = collocMembers.stream().map(CollocMemberOrder::getGroupOrder).collect(Collectors.toList());
+		int sourceMemberIndex = getCollocMemberIndex(memberLexemeId, collocMembers);
+		if (sourceMemberIndex < 0) {
+			return;
+		}
+
+		if (sourceMemberIndex < targetMemberIndex) {
+
+			for (int memberIndex = sourceMemberIndex + 1; memberIndex < targetMemberIndex; memberIndex++) {
+
+				CollocMemberOrder collocMember = collocMembers.get(memberIndex);
+				Long collocMemberId = collocMember.getId();
+				Integer collocGroupOrder = groupOrders.get(memberIndex - 1);
+
+				collocationDbService.updateLexemeCollocMemberGroupOrder(collocMemberId, collocGroupOrder);
+			}
+
+			Integer targetGroupOrder = groupOrders.get(targetMemberIndex - 1);
+			collocationDbService.updateLexemeCollocMemberGroupOrder(memberLexemeId, targetGroupOrder);
+			activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+
+		} else if (sourceMemberIndex > targetMemberIndex) {
+
+			for (int memberIndex = targetMemberIndex; memberIndex < sourceMemberIndex - 1; memberIndex++) {
+
+				CollocMemberOrder collocMember = collocMembers.get(memberIndex);
+				Long collocMemberId = collocMember.getId();
+				Integer collocGroupOrder = groupOrders.get(memberIndex + 1);
+
+				collocationDbService.updateLexemeCollocMemberGroupOrder(collocMemberId, collocGroupOrder);
+			}
+
+			Integer targetGroupOrder = groupOrders.get(targetMemberIndex);
+			collocationDbService.updateLexemeCollocMemberGroupOrder(memberLexemeId, targetGroupOrder);
+			activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
+	private int getCollocMemberIndex(Long memberLexemeId, List<CollocMemberOrder> collocMembers) {
+
+		for (int memberIndex = 0; memberIndex < collocMembers.size(); memberIndex++) {
+			CollocMemberOrder collocMember = collocMembers.get(memberIndex);
+			if (collocMember.getMemberLexemeId().equals(memberLexemeId)) {
+				return memberIndex;
+			}
+		}
+		return -1;
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -139,14 +199,15 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
 			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
 		}
-		if (targetCollocMember != null) {
-			Long sourceCollocMemberId = sourceCollocMember.getId();
-			Integer sourceCollocMemberOrder = sourceCollocMember.getMemberOrder();
-			Long targetCollocMemberId = targetCollocMember.getId();
-			Integer targetCollocMemberOrder = targetCollocMember.getMemberOrder();
-			collocationDbService.updateLexemeCollocMemberOrder(sourceCollocMemberId, targetCollocMemberOrder);
-			collocationDbService.updateLexemeCollocMemberOrder(targetCollocMemberId, sourceCollocMemberOrder);
+		if (targetCollocMember == null) {
+			return;
 		}
+		Long sourceCollocMemberId = sourceCollocMember.getId();
+		Integer sourceCollocMemberOrder = sourceCollocMember.getMemberOrder();
+		Long targetCollocMemberId = targetCollocMember.getId();
+		Integer targetCollocMemberOrder = targetCollocMember.getMemberOrder();
+		collocationDbService.updateLexemeCollocMemberOrder(sourceCollocMemberId, targetCollocMemberOrder);
+		collocationDbService.updateLexemeCollocMemberOrder(targetCollocMemberId, sourceCollocMemberOrder);
 		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
 	}
 

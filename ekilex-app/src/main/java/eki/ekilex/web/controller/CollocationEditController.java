@@ -41,8 +41,8 @@ public class CollocationEditController extends AbstractPrivatePageController {
 	@Autowired
 	private CollocationService collocationService;
 
-	@ResponseBody
 	@PostMapping(UPDATE_COLLOC_MEMBER_GROUP_ORDER_URI)
+	@ResponseBody
 	public String updateCollocMemberGroupOrder(
 			@RequestBody UpdateCollocOrderRequest updateCollocOrderRequest,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
@@ -56,14 +56,19 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		Long collocLexemeId = updateCollocOrderRequest.getCollocLexemeId();
 		Long memberLexemeId = updateCollocOrderRequest.getMemberLexemeId();
 		String direction = updateCollocOrderRequest.getDirection();
+		Integer targetMemberIndex = updateCollocOrderRequest.getTargetMemberIndex();
 
-		collocationService.updateCollocMemberGroupOrder(collocLexemeId, memberLexemeId, direction, userRoleDatasetCode, isManualEventOnUpdateEnabled);
+		if (StringUtils.isNotBlank(direction)) {
+			collocationService.updateCollocMemberGroupOrder(collocLexemeId, memberLexemeId, direction, userRoleDatasetCode, isManualEventOnUpdateEnabled);
+		} else if (targetMemberIndex != null) {
+			collocationService.updateCollocMemberGroupOrder(collocLexemeId, memberLexemeId, targetMemberIndex, userRoleDatasetCode, isManualEventOnUpdateEnabled);
+		}
 
 		return RESPONSE_OK_VER2;
 	}
 
-	@ResponseBody
 	@PostMapping(UPDATE_COLLOC_MEMBER_ORDER_URI)
+	@ResponseBody
 	public String updateCollocMemberOrder(
 			@RequestBody UpdateCollocOrderRequest updateCollocOrderRequest,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
