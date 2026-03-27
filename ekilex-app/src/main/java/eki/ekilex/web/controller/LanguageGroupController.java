@@ -66,7 +66,7 @@ public class LanguageGroupController extends AbstractPrivatePageController {
 
 		populateModel(model);
 
-		return LANGUAGE_GROUPS_PAGE;
+		return REDIRECT_PREF + LANGUAGE_GROUPS_URI;
 	}
 
 	@PreAuthorize("principal.admin")
@@ -80,7 +80,7 @@ public class LanguageGroupController extends AbstractPrivatePageController {
 
 		populateModel(model);
 
-		return LANGUAGE_GROUPS_PAGE;
+		return REDIRECT_PREF + LANGUAGE_GROUPS_URI;
 	}
 
 	private void populateModel(Model model) {
