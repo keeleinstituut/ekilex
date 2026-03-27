@@ -104,6 +104,9 @@
   --color-money-green: #328237;
   --color-light-green: #f7fdf9;
   --color-dark-green: #267c6b;
+  --color-award-green: #266b42;
+  --color-award-green-60: #266B4299;
+  --color-whitish-green: #EAF3EE;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #de6837;
@@ -16184,6 +16187,20 @@ span.material-symbols-outlined--filled {
   border: 1px solid var(--color-blue-100);
   pointer-events: none;
 }
+.word-suggestion-page__in-dictionary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-award-green);
+  border: 1px solid var(--color-award-green-60);
+  background-color: var(--color-whitish-green);
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-radius: 100px;
+  --icon-size: .875rem;
+}
 .dataset-page {
   background-color: var(--color-white);
 }
@@ -17606,6 +17623,9 @@ span.material-symbols-outlined--filled {
   --color-money-green: #328237;
   --color-light-green: #f7fdf9;
   --color-dark-green: #267c6b;
+  --color-award-green: #266b42;
+  --color-award-green-60: #266B4299;
+  --color-whitish-green: #EAF3EE;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #de6837;
