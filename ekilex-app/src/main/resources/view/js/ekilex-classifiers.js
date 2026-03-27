@@ -272,4 +272,3 @@ $.fn.addLanguageToGroupPlugin = function() {
 	});
 }
 
-
