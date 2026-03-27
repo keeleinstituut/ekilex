@@ -77,12 +77,15 @@
             <input name="selectRelGroupCheck" type="checkbox" class="mb-2 ml-1 mr-2 d-none" data-plugin="collocRelGroupTogglePlugin" th:data-colloc-rel-group="${collocRelGr.relGroupCode}"/>
             <h5 th:text="${collocRelGr.relGroupValue}"></h5>
           </div>
-          <table class="table table-sm" th:data-colloc-rel-group-for="${collocPosGr.posGroupCode}" th:data-colloc-rel-group="${collocRelGr.relGroupCode}" data-plugin="ekiOrdering, collocMemberOrderingPlugin" th:data-callback="${callback}">
-            <tr
-              th:each="colloc, collocIter : ${collocRelGr.collocations}"
-              data-ordering-item
-              th:data-colloc-lexeme-id="${colloc.lexemeId}"
-              th:data-member-lexeme-id="${lexeme.lexemeId}">
+          <table class="table table-sm"
+                 th:data-colloc-rel-group-for="${collocPosGr.posGroupCode}"
+                 th:data-colloc-rel-group="${collocRelGr.relGroupCode}"
+                 data-plugin="ekiOrdering, lexemeCollocMemberGroupOrderDragPlugin"
+                 th:data-callback="${callback}">
+            <tr th:each="colloc, collocIter : ${collocRelGr.collocations}"
+                data-ordering-item
+                th:data-colloc-lexeme-id="${colloc.lexemeId}"
+                th:data-member-lexeme-id="${lexeme.lexemeId}">
               <th:block th:replace="colloc :: colloc_row(draggable = ${true})"></th:block>
             </tr>
           </table>
@@ -108,10 +111,9 @@
         </div>
       </div>
       <table class="table table-sm">
-        <tr
-        th:each="colloc, collocIter : ${lexeme.secondaryCollocations}"
-        th:data-colloc-lexeme-id="${colloc.lexemeId}"
-        th:data-member-lexeme-id="${lexeme.lexemeId}">
+        <tr th:each="colloc, collocIter : ${lexeme.secondaryCollocations}"
+            th:data-colloc-lexeme-id="${colloc.lexemeId}"
+            th:data-member-lexeme-id="${lexeme.lexemeId}">
           <th:block th:replace="colloc :: colloc_row"></th:block>
         </tr>
       </table>
