@@ -1,3 +1,4 @@
+let QUILL_GLOBAL_MODULES;
 $(function () {
   const Inline = Quill.import("blots/inline");
   const Clipboard = Quill.import("modules/clipboard");
@@ -116,6 +117,22 @@ $(function () {
   Quill.register(ExtLinkBlot, true);
   Quill.register(EkiMediaBlot, true);
   Quill.register("modules/clipboard", PlainClipboard, true);
+  const Keyboard = Quill.import("modules/keyboard");
+
+  const existingBindings = Keyboard.DEFAULTS.bindings;
+  QUILL_GLOBAL_MODULES = {
+    keyboard: {
+      bindings: {
+        "list autofill": {
+          // Keep existing handler but change key combination to Ctrl+Shift+Space
+          ...existingBindings["list autofill"],
+          key: " ",
+          metaKey: true,
+          shiftKey: true,
+        },
+      },
+    },
+  };
 });
 
 function createQuillToolbarHtml(uniqueId, basicOnly = false) {
@@ -322,7 +339,7 @@ function initQuillDlg(dlg, options = {}) {
 
   const editor = new Quill(container, {
     theme: "snow",
-    modules: { toolbar: { container: toolbar } },
+    modules: { ...QUILL_GLOBAL_MODULES, toolbar: { container: toolbar } },
   });
 
   applyQuillOptions(editor, container, options);
@@ -358,7 +375,7 @@ function initQuillForField(editorField, dlg, options = {}) {
 
   const editor = new Quill(container, {
     theme: "snow",
-    modules: { toolbar: { container: toolbar } },
+    modules: { ...QUILL_GLOBAL_MODULES, toolbar: { container: toolbar } },
   });
 
   applyQuillOptions(editor, container, options);
@@ -712,6 +729,7 @@ function initBasicInlineQuillOnContent(obj, callback) {
   const editor = new Quill(container, {
     theme: "snow",
     modules: {
+      ...QUILL_GLOBAL_MODULES,
       toolbar: {
         container: toolbar,
       },
