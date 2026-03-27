@@ -286,10 +286,9 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-  }
-
-  & label {
-    margin: 0;
+    & label {
+      margin: 0;
+    }
   }
 }
 
@@ -328,5 +327,33 @@
     width: 0;
     height: 0;
     opacity: 0;
+  }
+
+  & label {
+    margin: 0;
+  }
+}
+
+[data-ordering-item] {
+  &[data-ordering-over] {
+    outline: 1px dashed var(--color-dark-blue);
+  }
+
+  &[data-ordering-dragging] {
+    opacity: 0.5;
+  }
+
+  & [data-ordering-handle] {
+    cursor: grab;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    border: none;
+    --icon-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 4px;
   }
 }

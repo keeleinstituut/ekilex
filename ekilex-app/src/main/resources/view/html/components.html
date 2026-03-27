@@ -774,7 +774,7 @@
         <span th:text="#{media.choose.attachment}">Vali manus</span>
       </div>
     </button>
-    <input type="file" class="input-media__file" th:id="|${id}-input|" th:name="${inputName}" data-media-file accept=".jpg,.jpeg,.png,.svg">
+    <input type="file" class="input-media__file" th:id="|${id}-input|" th:name="${inputName}" data-media-file th:accept="${accept}">
   </div>
 </body>
 </html>
