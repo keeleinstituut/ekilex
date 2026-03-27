@@ -13,6 +13,14 @@ $(function () {
     };
   }
 
+  function showError(elements, message) {
+    elements.uploadErrorBlock.text(message);
+  }
+
+  function hideError(elements) {
+    elements.uploadErrorBlock.text("");
+  }
+
   function initMediaSegmentHandler(elements, mediaInputApi) {
     elements.segmentContainer
       .off("segment:change.media")
@@ -93,19 +101,41 @@ $(function () {
             mediaInputApi.setFileName(response.objectFilename);
             elements.thumbnail.attr("src", response.url);
             elements.thumbnail.removeClass("d-none");
-            elements.uploadErrorBlock.text("");
+            hideError(elements);
           } else if (response.status === "ERROR") {
             console.log(response.detailMessage);
-            elements.uploadErrorBlock.text(response.message);
+            showError(elements, response.message);
           }
         })
         .fail(function (data) {
           console.log(data);
-          elements.uploadErrorBlock.text(messages["common.error"]);
+          showError(elements, messages["common.error"]);
         });
 
       mediaInputApi.fileInput.val("");
     };
+  }
+
+  function validateMediaUrl(elements) {
+    // The hidden url input will be filled in both cases if the user has filled the form correctly
+    if (elements.hiddenUrlInput.val()) {
+      return true;
+    }
+    showError(elements, messages["common.fill.form"]);
+  }
+
+  function initSubmitHandler(modal, elements) {
+    modal
+      .find("button[type=submit]")
+      .off("click.mediaSubmit")
+      .on("click.mediaSubmit", function (e) {
+        e.preventDefault();
+        hideError(elements);
+        if (!validateMediaUrl(elements)) {
+          return;
+        }
+        submitDialog(e, modal, messages["common.data.add.error"]);
+      });
   }
 
   $.fn.initAddMeaningMediaPlugin = function () {
@@ -120,7 +150,7 @@ $(function () {
         elements.hiddenUrlInput.val("");
         elements.visibleUrlInput.val("");
         elements.thumbnail.attr("src", "");
-        elements.uploadErrorBlock.text("").addClass("d-none");
+        hideError(elements);
 
         // Reset to file mode
         const fileRadio = modal.find(
@@ -143,7 +173,7 @@ $(function () {
 
         initMediaSegmentHandler(elements, mediaInputApi);
 
-        initGenericTextAddDlg(modal);
+        initSubmitHandler(modal, elements);
         alignAndFocus(e, modal);
       });
     });
@@ -171,7 +201,7 @@ $(function () {
         // Media-specific segment + URL handlers
         initMediaSegmentHandler(els, mediaInputApi);
 
-        initGenericTextEditDlg(modal);
+        initSubmitHandler(modal, elements);
         alignAndFocus(e, modal);
       });
     });

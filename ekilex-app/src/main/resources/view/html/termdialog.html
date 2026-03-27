@@ -1738,7 +1738,7 @@
             <input type="hidden" name="meaningId" th:value="${meaningId}">
             <input type="hidden" name="objectFilename">
             <input type="hidden" name="url">
-            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="alert alert-danger alert--form" data-error-container role="alert"></div>
             <div class="d-flex flex-column gap-1">
               <h2 th:text="#{media.image.source.type}">Pildi tüüp</h2>
               <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.image.source.type}" th:aria-controls="|addMeaningImageDlg_${meaningId}_filePanel, addMeaningImageDlg_${meaningId}_urlPanel|">
@@ -1800,7 +1800,7 @@
             <input type="hidden" name="meaningImageId" th:value="${image.id}">
             <input type="hidden" name="objectFilename" th:value="${image.objectFilename}">
             <input type="hidden" name="url" th:value="${image.url}">
-            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="alert alert-danger alert--form" data-error-container role="alert"></div>
             <div class="d-flex flex-column gap-1">
               <span th:text="#{media.image.source.type}">Pildi tüüp</span>
               <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.image.source.type}" th:aria-controls="|editMeaningMediaDlg_${meaningId}_filePanel, editMeaningMediaDlg_${meaningId}_urlPanel|">
@@ -1875,7 +1875,7 @@
             <input type="hidden" name="meaningId" th:value="${meaningId}">
             <input type="hidden" name="url">
             <input type="hidden" name="objectFilename">
-            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="alert alert-danger alert--form" data-error-container role="alert"></div>
             <div class="d-flex flex-column gap-1">
               <span th:text="#{media.source.type}">Meedia tüüp</span>
               <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.source.type}" th:aria-controls="|addMeaningMediaDlg_${meaningId}_filePanel, addMeaningMediaDlg_${meaningId}_urlPanel|">
@@ -1936,7 +1936,7 @@
             <input type="hidden" name="meaningMediaId" th:value="${media.id}">
             <input type="hidden" name="objectFilename" th:value="${media.objectFilename}">
             <input type="hidden" name="url" th:value="${media.url}">
-            <div class="alert alert-danger alert--form d-none" data-error-container role="alert"></div>
+            <div class="alert alert-danger alert--form" data-error-container role="alert"></div>
             <div class="d-flex flex-column gap-1">
               <span th:text="#{media.source.type}">Meedia tüüp</span>
               <div class="segmented-switch" role="radiogroup" th:aria-label="#{media.source.type}" th:aria-controls="|editMeaningMediaDlg_${meaningId}_filePanel, editMeaningMediaDlg_${meaningId}_urlPanel|">

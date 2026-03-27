@@ -328,6 +328,10 @@
     height: 0;
     opacity: 0;
   }
+
+  & label {
+    margin: 0;
+  }
 }
 
 [data-ordering-item] {

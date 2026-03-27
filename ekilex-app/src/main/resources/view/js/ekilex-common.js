@@ -84,6 +84,7 @@ function doPostDelete(deleteUrl, callback, force) {
 function submitDialog(e, dlg, failMessage) {
 	e.preventDefault();
 	const form = dlg.find('form');
+
 	if (!checkRequiredFields(form)) {
 		return;
 	}
@@ -107,7 +108,7 @@ function submitForm(form, failMessage, callback) {
 		if (response.status === "OK") {
 			openMessageDlg(response.message);
 		} else if (response.status === "ERROR") {
-			openAlertDlg(response.message);
+			openAlertDlg(response.message ?? failMessage);
 		}
 
 		if (typeof callback === 'function') {
@@ -612,20 +613,6 @@ function openSourceDetails(elem) {
 		});
 	});
 };
-/*
-function openMessageDlg(message) {
-	openAlertDlg(message, false);
-};
-
-function openAlertDlg(alertMessage, showAsAlert = true) {
-	const alertDlg = $('#alertDlg');
-	alertDlg.find(('[name=alert_message]')).text(alertMessage);
-	alertDlg.find('.alert-warning').prop('hidden', !showAsAlert);
-	alertDlg.find('.alert-success').prop('hidden', showAsAlert);
-	alertDlg.modal('show');
-	alertDlg.find('.modal-footer button').trigger('focus');
-};
-*/
 
 function openMessageDlg(message, smallAlert = true) {
 	openAlertDlg(message, smallAlert, false);

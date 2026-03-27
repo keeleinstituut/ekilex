@@ -334,4 +334,11 @@ button:focus {
 // Line alert up with form controls that use 15px horizontal paddings
 .alert--form {
 	margin: 16px 15px 0;
+
+	// Hide empty alert, allowing it to be kept visible for screen readers without taking up space when there's no message to show
+	&:empty {
+		padding: 0;
+		margin: 0;
+		border: none;
+	}
 }
