@@ -55,6 +55,7 @@
             <td>
               <span th:text="${classifier.code}"></span>
             </td>
+          </tr>
         </table>
         <table class="table table-sm table-striped h-100" th:if="${hasLabel}">
           <th:block th:each="classifier,classifierIter : ${classifiers}">

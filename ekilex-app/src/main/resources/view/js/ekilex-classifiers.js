@@ -196,6 +196,18 @@ $.fn.createClassifierPlugin = function() {
 	});
 }
 
+$.fn.deleteClassifierPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.confirmation({
+			btnOkLabel: messages["common.yes"],
+			btnCancelLabel: messages["common.no"],
+			title: messages["classifiers.confirm.delete"],
+			onConfirm: deleteClassifier
+		});
+	});
+}
+
 $.fn.saveLanguageGroupPlugin = function() {
 	return this.each(function() {
 		const form = $(this);
@@ -228,14 +240,36 @@ $.fn.saveLanguageGroupPlugin = function() {
 	});
 }
 
-$.fn.deleteClassifierPlugin = function() {
+$.fn.addLanguageToGroupPlugin = function() {
 	return this.each(function() {
-		const btn = $(this);
-		btn.confirmation({
-			btnOkLabel: messages["common.yes"],
-			btnCancelLabel: messages["common.no"],
-			title: messages["classifiers.confirm.delete"],
-			onConfirm: deleteClassifier
+		const form = $(this);
+		form.on('submit', function(e) {
+			e.preventDefault();
+
+			const isValid = checkRequiredFields(form);
+			if (!isValid) {
+				return;
+			}
+
+			const actionUrl = form.attr('action');
+
+			$.ajax({
+				url: actionUrl,
+				data: form.serialize(),
+				method: 'POST'
+			}).done(function(response) {
+				if (response === "OK") {
+					location.reload();
+				} else {
+					console.log(response);
+					openAlertDlg(messages["common.error"]);
+				}
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 }
+
+

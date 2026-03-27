@@ -292,6 +292,13 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		return ClassifierName.DOMAIN.name().equals(classifierName) && StringUtils.isNotBlank(domainOrigin);
 	}
 
+	@Transactional
+	public List<LanguageGroup> getLanguageGroups() {
+
+		return classifierDbService.getLanguageGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
 	public Long saveLanguageGroup(LanguageGroup languageGroup) {
 
 		Long id = languageGroup.getId();
@@ -304,5 +311,20 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		}
 
 		return id;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void createLanguageGroupMember(Long languageGroupId, String languageCode) {
+		classifierDbService.createLanguageGroupMember(languageGroupId, languageCode);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteLanguageGroup(Long languageGroupId) {
+		classifierDbService.deleteLanguageGroup(languageGroupId);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteLanguageInGroup(Long languageGroupId, String languageCode) {
+		classifierDbService.deleteLanguageInGroup(languageGroupId, languageCode);
 	}
 }
