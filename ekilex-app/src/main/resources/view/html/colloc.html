@@ -83,7 +83,7 @@
               data-ordering-item
               th:data-colloc-lexeme-id="${colloc.lexemeId}"
               th:data-member-lexeme-id="${lexeme.lexemeId}">
-              <th:block th:replace="colloc :: colloc_row(draggable = ${false})"></th:block>
+              <th:block th:replace="colloc :: colloc_row(draggable = ${true})"></th:block>
             </tr>
           </table>
         </th:block>

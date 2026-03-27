@@ -47,27 +47,21 @@ $.fn.collocMemberOrderPlugin = function () {
 $.fn.collocMemberOrderingPlugin = function () {
   return this.each(function () {
     const container = $(this);
-    container.on("ordering:change", function (e, { item, oldIndex, newIndex }) {
+    container.on("ordering:change", function (e, { item, newIndex }) {
       const collocLexemeId = item.attr("data-colloc-lexeme-id");
       const memberLexemeId = item.attr("data-member-lexeme-id");
       const members = container.find("[data-ordering-item]");
-      const targetIndex =
+      const targetMemberIndex =
         members.length - 1 < newIndex + 1 ? members.length - 1 : newIndex + 1;
-      const targetId = container
-        .find("[data-ordering-item]")
-        .eq(targetIndex)
-        .attr("data-colloc-lexeme-id");
       const data = {
         memberLexemeId,
-        sourceCollocLexemeId: collocLexemeId,
-        targetCollocLexemeId: targetId,
+        collocLexemeId,
+        targetMemberIndex,
       };
       const callback = container.attr("data-callback");
       const callbackFunc = createCallback(callback);
 
-      // postJson(applicationUrl + 'update_colloc_member_order_index', data).done(function() {
-      //   callbackFunc();
-      // });
+      postJson(applicationUrl + "update_colloc_member_order", data).done(callbackFunc);
     });
   });
 };
