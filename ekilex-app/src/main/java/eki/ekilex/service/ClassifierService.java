@@ -20,6 +20,7 @@ import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ClassifierFull;
 import eki.ekilex.data.ClassifierLabel;
+import eki.ekilex.data.LanguageGroup;
 import eki.ekilex.data.Origin;
 import eki.ekilex.service.db.ClassifierDbService;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -289,5 +290,41 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	private boolean isDomainClassifier(String classifierName, String domainOrigin) {
 
 		return ClassifierName.DOMAIN.name().equals(classifierName) && StringUtils.isNotBlank(domainOrigin);
+	}
+
+	@Transactional
+	public List<LanguageGroup> getLanguageGroups() {
+
+		return classifierDbService.getLanguageGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public Long saveLanguageGroup(LanguageGroup languageGroup) {
+
+		Long id = languageGroup.getId();
+		String name = languageGroup.getName();
+
+		if (id == null) {
+			classifierDbService.createLanguageGroup(name);
+		} else {
+			classifierDbService.updateLanguageGroup(id, name);
+		}
+
+		return id;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void createLanguageGroupMember(Long languageGroupId, String languageCode) {
+		classifierDbService.createLanguageGroupMember(languageGroupId, languageCode);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteLanguageGroup(Long languageGroupId) {
+		classifierDbService.deleteLanguageGroup(languageGroupId);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteLanguageInGroup(Long languageGroupId, String languageCode) {
+		classifierDbService.deleteLanguageInGroup(languageGroupId, languageCode);
 	}
 }

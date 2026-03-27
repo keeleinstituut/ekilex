@@ -179,6 +179,8 @@ drop table if exists variant_type;
 drop table if exists freeform;
 drop table if exists freeform_type_label;
 drop table if exists freeform_type;
+drop table if exists language_group_member;
+drop table if exists language_group;
 drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;

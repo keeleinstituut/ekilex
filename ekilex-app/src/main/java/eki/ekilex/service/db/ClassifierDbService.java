@@ -3,7 +3,12 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +24,10 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.ekilex.data.ClassifierFull;
 import eki.ekilex.data.ClassifierLabel;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.LanguageGroup;
+import eki.ekilex.data.db.main.tables.LanguageGroupMember;
+import eki.ekilex.data.db.main.tables.LanguageLabel;
 
 @Component
 public class ClassifierDbService extends AbstractDataDbService {
@@ -403,4 +412,101 @@ public class ClassifierDbService extends AbstractDataDbService {
 		return getTableName(classifierName) + "_label";
 	}
 
+	public List<eki.ekilex.data.LanguageGroup> getLanguageGroups(String classifierLabelLang, String classifierLabelTypeCode) {
+
+		LanguageGroup lg = LANGUAGE_GROUP.as("lg");
+		LanguageGroupMember lgm = LANGUAGE_GROUP_MEMBER.as("lgm");
+		Language cl = LANGUAGE.as("cl");
+		LanguageLabel cll = LANGUAGE_LABEL.as("cll");
+
+		Field<String> lcf = DSL
+				.select(DSL.arrayAgg(lgm.LANG).orderBy(lgm.LANG))
+				.from(lgm)
+				.where(lgm.LANGUAGE_GROUP_ID.eq(lg.ID))
+				.asField();
+
+		Field<JSON> lgmf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("name").value(ClassifierName.LANGUAGE.name()),
+										DSL.key("code").value(cl.CODE),
+										DSL.key("value").value(cll.VALUE)))
+						.orderBy(cl.ORDER_BY))
+				.from(lgm, cl, cll)
+				.where(
+						lgm.LANGUAGE_GROUP_ID.eq(lg.ID)
+								.and(lgm.LANG.eq(cl.CODE))
+								.and(cll.CODE.eq(cl.CODE))
+								.and(cll.LANG.eq(classifierLabelLang))
+								.and(cll.TYPE.eq(classifierLabelTypeCode)))
+				.asField();
+
+		return mainDb
+				.select(lg.fields())
+				.select(lcf.as("language_codes"))
+				.select(lgmf.as("language_group_members"))
+				.from(lg)
+				.orderBy(lg.NAME)
+				.fetch(record -> {
+					eki.ekilex.data.LanguageGroup pojo = record.into(eki.ekilex.data.LanguageGroup.class);
+					if (pojo.getLanguageCodes() == null) {
+						pojo.setLanguageCodes(new ArrayList<>());
+					}
+					return pojo;
+				});
+	}
+
+	public Long createLanguageGroup(String name) {
+
+		return mainDb
+				.insertInto(
+						LANGUAGE_GROUP,
+						LANGUAGE_GROUP.NAME)
+				.values(name)
+				.returning(LANGUAGE_GROUP.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateLanguageGroup(Long id, String name) {
+
+		mainDb
+				.update(LANGUAGE_GROUP)
+				.set(LANGUAGE_GROUP.NAME, name)
+				.where(LANGUAGE_GROUP.ID.eq(id))
+				.execute();
+	}
+
+	public void createLanguageGroupMember(Long languageGroupId, String languageCode) {
+
+		mainDb
+				.insertInto(
+						LANGUAGE_GROUP_MEMBER,
+						LANGUAGE_GROUP_MEMBER.LANGUAGE_GROUP_ID,
+						LANGUAGE_GROUP_MEMBER.LANG)
+				.values(
+						languageGroupId,
+						languageCode)
+				.execute();
+		;
+	}
+
+	public void deleteLanguageGroup(Long languageGroupId) {
+
+		mainDb
+				.deleteFrom(LANGUAGE_GROUP)
+				.where(LANGUAGE_GROUP.ID.eq(languageGroupId))
+				.execute();
+	}
+
+	public void deleteLanguageInGroup(Long languageGroupId, String languageCode) {
+
+		mainDb
+				.deleteFrom(LANGUAGE_GROUP_MEMBER)
+				.where(
+						LANGUAGE_GROUP_MEMBER.LANGUAGE_GROUP_ID.eq(languageGroupId)
+								.and(LANGUAGE_GROUP_MEMBER.LANG.eq(languageCode)))
+				.execute();
+	}
 }

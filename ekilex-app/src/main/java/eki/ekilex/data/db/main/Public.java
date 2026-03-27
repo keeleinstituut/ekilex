@@ -51,6 +51,8 @@ import eki.ekilex.data.db.main.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.LanguageGroup;
+import eki.ekilex.data.db.main.tables.LanguageGroupMember;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
@@ -444,6 +446,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.language</code>.
      */
     public final Language LANGUAGE = Language.LANGUAGE;
+
+    /**
+     * The table <code>public.language_group</code>.
+     */
+    public final LanguageGroup LANGUAGE_GROUP = LanguageGroup.LANGUAGE_GROUP;
+
+    /**
+     * The table <code>public.language_group_member</code>.
+     */
+    public final LanguageGroupMember LANGUAGE_GROUP_MEMBER = LanguageGroupMember.LANGUAGE_GROUP_MEMBER;
 
     /**
      * The table <code>public.language_label</code>.
@@ -1120,6 +1132,8 @@ public class Public extends SchemaImpl {
             Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
             Sequences.GRAMMAR_ID_SEQ,
             Sequences.GRAMMAR_ORDER_BY_SEQ,
+            Sequences.LANGUAGE_GROUP_ID_SEQ,
+            Sequences.LANGUAGE_GROUP_MEMBER_ID_SEQ,
             Sequences.LANGUAGE_ORDER_BY_SEQ,
             Sequences.LEARNER_COMMENT_ID_SEQ,
             Sequences.LEARNER_COMMENT_ORDER_BY_SEQ,
@@ -1286,6 +1300,8 @@ public class Public extends SchemaImpl {
             Grammar.GRAMMAR,
             LabelType.LABEL_TYPE,
             Language.LANGUAGE,
+            LanguageGroup.LANGUAGE_GROUP,
+            LanguageGroupMember.LANGUAGE_GROUP_MEMBER,
             LanguageLabel.LANGUAGE_LABEL,
             LearnerComment.LEARNER_COMMENT,
             LexRelMapping.LEX_REL_MAPPING,

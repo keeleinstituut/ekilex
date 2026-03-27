@@ -336,6 +336,18 @@ public interface WebConstant {
 
 	String DELETE_CLASSIFIER_URI = "/delete_classifier";
 
+	String LANGUAGE_GROUPS_URI = "/languagegroups";
+
+	String LANGUAGE_GROUPS_PAGE = "languagegroups";
+
+	String SAVE_LANGUAGE_GROUP_URI = "/save_language_group";
+
+	String DELETE_LANGUAGE_GROUP_URI = "/delete_language_group";
+
+	String ADD_LANGUAGE_TO_GROUP_URI = "/add_language_to_group";
+
+	String DELETE_LANGUAGE_IN_GROUP = "/delete_language_in_group";
+
 	String TAGS_URI = "/tags";
 
 	String TAGS_PAGE = "tags";

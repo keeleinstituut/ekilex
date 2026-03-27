@@ -42,7 +42,7 @@ function updateOriginSelectVisibility(classifierName) {
 	}
 }
 
-$.fn.addClassifierCodePlugin = function() {
+$.fn.openAddClassifierPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('show.bs.modal', function(e) {
@@ -73,8 +73,8 @@ $.fn.classifierNameSelectPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('change', function() {
-				const classifierName = obj.val();
-				updateOriginSelectVisibility(classifierName);
+			const classifierName = obj.val();
+			updateOriginSelectVisibility(classifierName);
 		});
 	});
 }
@@ -114,7 +114,7 @@ $.fn.editClassifierPlugin = function() {
 	});
 }
 
-$.fn.saveClassifierChangesPlugin = function() {
+$.fn.saveClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
@@ -200,10 +200,75 @@ $.fn.deleteClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.confirmation({
-			btnOkLabel : messages["common.yes"],
-			btnCancelLabel : messages["common.no"],
-			title : messages["classifiers.confirm.delete"],
-			onConfirm : deleteClassifier
+			btnOkLabel: messages["common.yes"],
+			btnCancelLabel: messages["common.no"],
+			title: messages["classifiers.confirm.delete"],
+			onConfirm: deleteClassifier
 		});
 	});
 }
+
+$.fn.saveLanguageGroupPlugin = function() {
+	return this.each(function() {
+		const form = $(this);
+		form.on('submit', function(e) {
+			e.preventDefault();
+
+			const isValid = checkRequiredFields(form);
+			if (!isValid) {
+				return;
+			}
+
+			const actionUrl = form.attr('action');
+
+			$.ajax({
+				url: actionUrl,
+				data: form.serialize(),
+				method: 'POST'
+			}).done(function(response) {
+				if (response === "OK") {
+					location.reload();
+				} else {
+					console.log(response);
+					openAlertDlg(messages["common.error"]);
+				}
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
+		});
+	});
+}
+
+$.fn.addLanguageToGroupPlugin = function() {
+	return this.each(function() {
+		const form = $(this);
+		form.on('submit', function(e) {
+			e.preventDefault();
+
+			const isValid = checkRequiredFields(form);
+			if (!isValid) {
+				return;
+			}
+
+			const actionUrl = form.attr('action');
+
+			$.ajax({
+				url: actionUrl,
+				data: form.serialize(),
+				method: 'POST'
+			}).done(function(response) {
+				if (response === "OK") {
+					location.reload();
+				} else {
+					console.log(response);
+					openAlertDlg(messages["common.error"]);
+				}
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
+		});
+	});
+}
+

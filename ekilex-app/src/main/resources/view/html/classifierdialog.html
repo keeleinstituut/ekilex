@@ -4,10 +4,10 @@
 <body>
   <div id="addClassifierCodeDlg" class="modal" role="dialog"
        th:fragment="add_classifier_code_dialog"
-       data-plugin="addClassifierCodePlugin">
+       data-plugin="openAddClassifierPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form name="createClassifierForm" th:action="@{/create_classifier}" method="post" data-plugin="createClassifierPlugin">
+        <form th:action="@{/create_classifier}" method="post" data-plugin="createClassifierPlugin">
           <input type="hidden" name="name" th:value="${classifierName}">
           <input type="hidden" name="origin" th:value="${domainOriginCode}">
           <input type="hidden" name="order">
@@ -22,6 +22,113 @@
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="addLanguageGroupDlg" class="modal" role="dialog"
+       th:fragment="add_language_group_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/save_language_group}" method="post" data-plugin="saveLanguageGroupPlugin">
+          <input type="hidden" name="id" value="">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{languagegroups.add}">Nimi</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input class="form-control font-weight-bold required-field" name="name" autocomplete="off">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="|addLanguageToGroupDlg_${languageGroup.id}|" class="modal" role="dialog"
+       th:fragment="add_language_to_group_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_language_to_group}" method="post" data-plugin="addLanguageToGroupPlugin">
+          <input type="hidden" name="languageGroupId" th:value="${languageGroup.id}">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <span th:text="#{languagegroups.language.add.full}"></span>
+              <strong th:text="${languageGroup.name}"></strong>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select class="form-control required-field classifier-select" name="languageCode" data-live-search="true">
+                  <option value="" th:text="#{common.select.language}">vali keel...</option>
+                  <option th:each="language : ${languages}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="|deleteLanguageGroupDlg_${languageGroup.id}|" class="modal" role="dialog"
+       th:fragment="delete_language_group_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/delete_language_group}" method="post">
+          <input type="hidden" name="languageGroupId" th:value="${languageGroup.id}">
+          <div class="modal-body">
+            <div>
+              <span th:text="#{languagegroups.delete.confirm}"></span>
+            </div>
+            <div>
+              <strong th:text="${languageGroup.name}"></strong>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-danger" th:text="#{common.delete}">Kustuta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="|deleteLanguageInGroupDlg_${languageGroup.id}_${languageGroupMember.code}|" class="modal" role="dialog"
+       th:fragment="delete_language_in_group_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/delete_language_in_group}" method="post">
+          <input type="hidden" name="languageGroupId" th:value="${languageGroup.id}">
+          <input type="hidden" name="languageCode" th:value="${languageGroupMember.code}">
+          <div class="modal-body">
+            <div>
+              <span th:text="#{languagegroups.language.delete.confirm}"></span>
+            </div>
+            <div>
+              <strong th:text="${languageGroup.name}"></strong>
+              -
+              <strong th:text="${languageGroupMember.value}"></strong>
+              <span th:text="${languageGroupMember.code}" class="badge badge-light"></span>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-danger" th:text="#{common.delete}">Kustuta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+            </div>
         </form>
       </div>
     </div>

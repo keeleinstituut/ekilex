@@ -293,6 +293,10 @@ create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_n
 create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
 create index domain_label_code_origin_idx on domain_label(code, origin);
+create index language_group_parent_language_group_id_idx on language_group(parent_language_group_id);
+create index language_group_name_idx on language_group(name);
+create index language_group_member_language_group_id_idx on language_group_member(language_group_id);
+create index language_group_member_lang_idx on language_group_member(lang);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value));

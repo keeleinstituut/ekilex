@@ -14,7 +14,7 @@
                 <div class="btn btn-custom pt-0">
                   <span th:utext="${@viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                  <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
+                  <span th:text="|(${@viewUtil.getLangIso2(word.lang)})|"></span>
                 </div>
                 <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${word.wordId}"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">

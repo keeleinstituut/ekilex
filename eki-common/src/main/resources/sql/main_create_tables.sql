@@ -23,6 +23,24 @@ create table language_label (
   unique(code, lang, type)
 );
 
+-- keelegrupp
+
+create table language_group (
+	id bigserial primary key,
+	parent_language_group_id bigint references language_group(id) on delete cascade, 
+	name text not null,
+	unique(name)
+);
+alter sequence language_group_id_seq restart with 10000;
+
+create table language_group_member (
+	id bigserial primary key,
+	language_group_id bigint references language_group(id) on delete cascade not null, 
+	lang char(3) references language(code) not null,
+	unique(language_group_id, lang)
+);
+alter sequence language_group_member_id_seq restart with 10000;
+
 -- valdkond
 create table domain (
   code varchar(100) not null, 

@@ -84,7 +84,7 @@ public class ViewWwWordSuggestion extends TableImpl<ViewWwWordSuggestionRecord> 
     }
 
     private ViewWwWordSuggestion(Name alias, Table<ViewWwWordSuggestionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_suggestion\" as  SELECT ws.id AS word_suggestion_id,\n    ws.created,\n    ws.word_value,\n    ws.definition_value,\n    ws.usage_value,\n    ws.author_name,\n    ws.published_word_value\n   FROM word_suggestion ws\n  WHERE ((ws.is_public = true) AND (ws.publication_date <= CURRENT_DATE))\n  ORDER BY ws.created DESC;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_suggestion\" as  SELECT id AS word_suggestion_id,\n    created,\n    word_value,\n    definition_value,\n    usage_value,\n    author_name,\n    published_word_value\n   FROM word_suggestion ws\n  WHERE ((is_public = true) AND (publication_date <= CURRENT_DATE))\n  ORDER BY created DESC;"));
     }
 
     /**
