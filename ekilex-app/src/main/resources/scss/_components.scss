@@ -356,4 +356,8 @@
     align-items: center;
     margin-right: 4px;
   }
+
+  &[data-ordering-placeholder] {
+    cursor: grabbing;
+  }
 }
