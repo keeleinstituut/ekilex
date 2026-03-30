@@ -88,6 +88,7 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		List<CollocMemberOrder> collocMembers = collocationDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
+		recalcAndFixGroupOrders(collocMembers);
 		int collocMemberCount = collocMembers.size();
 		CollocMemberOrder sourceCollocMember = collocMembers.stream()
 				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
@@ -125,7 +126,10 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		List<CollocMemberOrder> collocMembers = collocationDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
-		List<Integer> groupOrders = collocMembers.stream().map(CollocMemberOrder::getGroupOrder).collect(Collectors.toList());
+		recalcAndFixGroupOrders(collocMembers);
+		List<Integer> groupOrders = collocMembers.stream()
+				.map(CollocMemberOrder::getGroupOrder)
+				.collect(Collectors.toList());
 		int sourceMemberIndex = getCollocMemberIndex(collocLexemeId, memberLexemeId, collocMembers);
 
 		if (sourceMemberIndex < 0) {
@@ -164,6 +168,23 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 			Integer targetGroupOrder = groupOrders.get(targetMemberIndex);
 			collocationDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetGroupOrder);
 			activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
+	private void recalcAndFixGroupOrders(List<CollocMemberOrder> collocMembers) {
+
+		int calculatedGroupOrder = 1;
+		for (CollocMemberOrder collocMember : collocMembers) {
+
+			Long collocMemberId = collocMember.getId();
+			Integer existingGroupOrder = collocMember.getGroupOrder();
+			if (existingGroupOrder == null) {
+				collocationDbService.updateLexemeCollocMemberGroupOrder(collocMemberId, calculatedGroupOrder);
+			} else if (existingGroupOrder != calculatedGroupOrder) {
+				collocationDbService.updateLexemeCollocMemberGroupOrder(collocMemberId, calculatedGroupOrder);
+			}
+			collocMember.setGroupOrder(calculatedGroupOrder);
+			calculatedGroupOrder++;
 		}
 	}
 
