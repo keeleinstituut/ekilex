@@ -4,11 +4,14 @@ class EkiOrdering {
     this.draggedItem = null;
     this.placeholder = null;
     this.oldIndex = null;
+    this.originalNextSibling = null;
     this.offsetX = 0;
     this.offsetY = 0;
 
     this._onPointerMove = this.onPointerMove.bind(this);
     this._onPointerUp = this.onPointerUp.bind(this);
+    this._onKeyDown = this.onKeyDown.bind(this);
+    this._onContextMenu = this.onContextMenu.bind(this);
   }
 
   getItems() {
@@ -55,6 +58,9 @@ class EkiOrdering {
   }
 
   onPointerDown(e) {
+    // Don't start drag on right click
+    if (e.button !== 0) return;
+
     const hasHandles = this.container.find("[data-ordering-handle]").length > 0;
     if (hasHandles && !$(e.target).closest("[data-ordering-handle]").length)
       return;
@@ -66,6 +72,7 @@ class EkiOrdering {
 
     this.draggedItem = item;
     this.oldIndex = this.getIndexOf(item);
+    this.originalNextSibling = item[0].nextElementSibling;
 
     const rect = item[0].getBoundingClientRect();
     this.offsetX = e.clientX - rect.left;
@@ -116,6 +123,8 @@ class EkiOrdering {
 
     document.addEventListener("pointermove", this._onPointerMove);
     document.addEventListener("pointerup", this._onPointerUp);
+    document.addEventListener("keydown", this._onKeyDown);
+    document.addEventListener("contextmenu", this._onContextMenu);
   }
 
   onPointerMove(e) {
@@ -125,6 +134,18 @@ class EkiOrdering {
       left: e.clientX - this.offsetX,
       top: e.clientY - this.offsetY,
     });
+
+    const containerRect = this.container[0].getBoundingClientRect();
+    const offsetBuffer = 100;
+    if (
+      e.clientX < containerRect.left - offsetBuffer ||
+      e.clientX > containerRect.right + offsetBuffer ||
+      e.clientY < containerRect.top - offsetBuffer ||
+      e.clientY > containerRect.bottom + offsetBuffer
+    ) {
+      this.cancelDrag();
+      return;
+    }
 
     const { target, before } = this.getDropTarget(e.clientX, e.clientY);
     if (!target || target === this.placeholder[0]) return;
@@ -140,18 +161,62 @@ class EkiOrdering {
     }
   }
 
+  removeListeners() {
+    document.removeEventListener("pointermove", this._onPointerMove);
+    document.removeEventListener("pointerup", this._onPointerUp);
+    document.removeEventListener("keydown", this._onKeyDown);
+    document.removeEventListener("contextmenu", this._onContextMenu);
+  }
+
+  resetDraggedItemStyles() {
+    this.draggedItem.removeAttr("data-ordering-dragging style");
+    this.draggedItem.children().css("width", "");
+    this.getItems().removeAttr("data-ordering-over");
+  }
+
+  clearState() {
+    this.draggedItem = null;
+    this.placeholder = null;
+    this.oldIndex = null;
+    this.originalNextSibling = null;
+  }
+
+  onKeyDown(e) {
+    if (e.key === "Escape") {
+      this.cancelDrag();
+    }
+  }
+
+  onContextMenu(e) {
+    e.preventDefault();
+    this.cancelDrag();
+  }
+
+  cancelDrag() {
+    if (!this.draggedItem) return;
+
+    this.removeListeners();
+    this.placeholder.remove();
+    this.resetDraggedItemStyles();
+
+    // Restore to original position
+    if (this.originalNextSibling) {
+      $(this.originalNextSibling).before(this.draggedItem);
+    } else {
+      this.container.append(this.draggedItem);
+    }
+
+    this.clearState();
+  }
+
   onPointerUp() {
     if (!this.draggedItem) return;
 
-    document.removeEventListener("pointermove", this._onPointerMove);
-    document.removeEventListener("pointerup", this._onPointerUp);
+    this.removeListeners();
 
     // Put the item back where the placeholder is
     this.placeholder.replaceWith(this.draggedItem);
-    this.draggedItem.removeAttr("data-ordering-dragging style");
-    this.draggedItem.children().css("width", "");
-
-    this.getItems().removeAttr("data-ordering-over");
+    this.resetDraggedItemStyles();
 
     const newIndex = this.getIndexOf(this.draggedItem);
     if (this.oldIndex !== newIndex) {
@@ -164,9 +229,7 @@ class EkiOrdering {
       ]);
     }
 
-    this.draggedItem = null;
-    this.placeholder = null;
-    this.oldIndex = null;
+    this.clearState();
   }
 
   bindEvents() {
