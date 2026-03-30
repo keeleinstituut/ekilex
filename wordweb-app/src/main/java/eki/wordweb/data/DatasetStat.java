@@ -17,6 +17,10 @@ public class DatasetStat extends Dataset {
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime lastManualEventOn;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime lastEventTime;
+
 	private Integer wordCount;
 
 	private List<DatasetWord> createdMeaningWords;
@@ -29,6 +33,14 @@ public class DatasetStat extends Dataset {
 
 	public void setLastManualEventOn(LocalDateTime lastManualEventOn) {
 		this.lastManualEventOn = lastManualEventOn;
+	}
+
+	public LocalDateTime getLastEventTime() {
+		return lastEventTime;
+	}
+
+	public void setLastEventTime(LocalDateTime lastEventTime) {
+		this.lastEventTime = lastEventTime;
 	}
 
 	public Integer getWordCount() {

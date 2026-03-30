@@ -262,6 +262,7 @@ dblink(
 	is_superior boolean,
 	order_by bigint,
 	last_manual_event_on timestamp,
+	last_event_time timestamp,
 	word_count integer,
 	created_meaning_words json,
 	updated_meaning_words json

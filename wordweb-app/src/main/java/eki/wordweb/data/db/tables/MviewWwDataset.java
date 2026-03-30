@@ -14,7 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -89,6 +89,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
      * The column <code>public.mview_ww_dataset.last_manual_event_on</code>.
      */
     public final TableField<MviewWwDatasetRecord, LocalDateTime> LAST_MANUAL_EVENT_ON = createField(DSL.name("last_manual_event_on"), SQLDataType.LOCALDATETIME(0), this, "");
+
+    /**
+     * The column <code>public.mview_ww_dataset.last_event_time</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, LocalDateTime> LAST_EVENT_TIME = createField(DSL.name("last_event_time"), SQLDataType.LOCALDATETIME(0), this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.word_count</code>.
@@ -170,11 +175,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<String, String, String, String, String, String, Boolean, Long, LocalDateTime, Integer, JSON, JSON> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<String, String, String, String, String, String, Boolean, Long, LocalDateTime, LocalDateTime, Integer, JSON, JSON> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

@@ -30,16 +30,21 @@ public class DatasetContentService {
 		}
 		List<Character> firstLetters = datasetContentDbService.getDatasetFirstLetters(datasetCode);
 
-		List<DatasetWord> createdMeaningWords = dataset.getCreatedMeaningWords();
-		dataset.setCreatedMeaningWords(removeDuplicateValuesAndLimit(createdMeaningWords));
-		List<DatasetWord> updatedMeaningWords = dataset.getUpdatedMeaningWords();
-		dataset.setUpdatedMeaningWords(removeDuplicateValuesAndLimit(updatedMeaningWords));
+		handleDuplicatesAndLimitWords(dataset);
 
 		DatasetHomeData datasetHomeData = new DatasetHomeData();
 		datasetHomeData.setDataset(dataset);
 		datasetHomeData.setFirstLetters(firstLetters);
 
 		return datasetHomeData;
+	}
+
+	public void handleDuplicatesAndLimitWords(DatasetStat dataset) {
+
+		List<DatasetWord> createdMeaningWords = dataset.getCreatedMeaningWords();
+		dataset.setCreatedMeaningWords(removeDuplicateValuesAndLimit(createdMeaningWords));
+		List<DatasetWord> updatedMeaningWords = dataset.getUpdatedMeaningWords();
+		dataset.setUpdatedMeaningWords(removeDuplicateValuesAndLimit(updatedMeaningWords));
 	}
 
 	private List<DatasetWord> removeDuplicateValuesAndLimit(List<DatasetWord> datasetWords) {

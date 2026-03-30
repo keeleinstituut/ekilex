@@ -3667,6 +3667,30 @@ select
 	) last_manual_event_on,
 	(
 	select
+		max(al.event_on)
+	from
+		meaning m,
+		meaning_activity_log mal,
+		activity_log al
+	where
+		mal.meaning_id = m.id
+		and mal.activity_log_id = al.id
+		and al.owner_name = 'MEANING'
+		and al.owner_id = m.id
+		and exists (
+			select
+				1
+			from
+				lexeme l
+			where
+				l.meaning_id = m.id
+				and l.is_public = true
+				and l.is_word = true
+				and l.dataset_code = ds.code
+		)
+	) last_event_time,
+	(
+	select
 		count(w.id)
 	from
 		word w 
@@ -3885,36 +3909,30 @@ select
 			(
 				select
 					m.id meaning_id,
-					m.last_event_on
-				from (
-					select
-						m.id,
-						max(al.event_on) last_event_on
-					from
-						meaning m,
-						meaning_last_activity_log mlal,
-						activity_log al
-					where
-						mlal.meaning_id = m.id
-						and mlal.activity_log_id = al.id
-						and mlal.type = 'EDIT'
-						and exists (
-							select
-								1
-							from
-								lexeme l
-							where
-								l.meaning_id = m.id
-								and l.is_public = true
-								and l.is_word = true
-								and l.dataset_code != 'eki'
-								and l.dataset_code = ds.code
-						)
-					group by
-						m.id
-				) m
+					max(al.event_on) last_event_on
+				from
+					meaning m,
+					meaning_last_activity_log mlal,
+					activity_log al
 				where
-					m.last_event_on > (current_date - interval '3 years')
+					mlal.meaning_id = m.id
+					and mlal.activity_log_id = al.id
+					and mlal.type = 'EDIT'
+					and al.event_on > (current_date - interval '3 years')
+					and exists (
+						select
+							1
+						from
+							lexeme l
+						where
+							l.meaning_id = m.id
+							and l.is_public = true
+							and l.is_word = true
+							and l.dataset_code != 'eki'
+							and l.dataset_code = ds.code
+					)
+				group by
+					m.id
 			) mm,
 			word w,
 			lexeme l
