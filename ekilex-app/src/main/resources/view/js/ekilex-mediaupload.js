@@ -184,7 +184,7 @@ $(function () {
       const modal = $(this);
 
       modal.on("show.bs.modal", function (e) {
-        const els = getMediaElements(modal);
+        const elements = getMediaElements(modal);
 
         // Init generic components
         initSegmentedSwitch(modal);
@@ -194,12 +194,12 @@ $(function () {
             .off("change.mediaUpload")
             .on(
               "change.mediaUpload",
-              createMediaUploadCallbacks(els, mediaInputApi),
+              createMediaUploadCallbacks(elements, mediaInputApi),
             );
         }
 
         // Media-specific segment + URL handlers
-        initMediaSegmentHandler(els, mediaInputApi);
+        initMediaSegmentHandler(elements, mediaInputApi);
 
         initSubmitHandler(modal, elements);
         alignAndFocus(e, modal);
