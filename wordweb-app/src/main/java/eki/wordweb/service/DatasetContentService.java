@@ -32,8 +32,8 @@ public class DatasetContentService {
 		}
 		List<Character> firstLetters = datasetContentDbService.getDatasetFirstLetters(datasetCode);
 
-		handleLastAnythingTime(dataset);
 		handleDuplicatesAndLimitWords(dataset);
+		handleLastAnythingTime(dataset);
 
 		DatasetHomeData datasetHomeData = new DatasetHomeData();
 		datasetHomeData.setDataset(dataset);
@@ -44,33 +44,46 @@ public class DatasetContentService {
 
 	private void handleLastAnythingTime(DatasetStat dataset) {
 
-		LocalDateTime lastManualEventOn = dataset.getLastManualEventOn();
 		List<DatasetWord> createdMeaningWords = dataset.getCreatedMeaningWords();
+		List<DatasetWord> updatedMeaningWords = dataset.getUpdatedMeaningWords();
 
-		if ((lastManualEventOn == null) && CollectionUtils.isEmpty(createdMeaningWords)) {
+		if (CollectionUtils.isEmpty(createdMeaningWords) && CollectionUtils.isEmpty(updatedMeaningWords)) {
 			return;
 		}
 
-		if ((lastManualEventOn != null) && CollectionUtils.isEmpty(createdMeaningWords)) {
+		LocalDateTime lastCreatedEeventOn = null;
+		LocalDateTime lastUpdatedEeventOn = null;
 
-			dataset.setLastAnythingTime(lastManualEventOn);
-		}
 		if (CollectionUtils.isNotEmpty(createdMeaningWords)) {
 
-			LocalDateTime lastCreatedEeventOn = createdMeaningWords.stream()
+			lastCreatedEeventOn = createdMeaningWords.stream()
 					.map(DatasetWord::getEventOn)
 					.sorted(Collections.reverseOrder())
 					.findFirst()
 					.get();
+		}
 
-			if (lastManualEventOn == null) {
-				dataset.setLastAnythingTime(lastCreatedEeventOn);
-			} else if (lastManualEventOn.isAfter(lastCreatedEeventOn)) {
-				dataset.setLastAnythingTime(lastManualEventOn);
-			} else {
-				dataset.setLastAnythingTime(lastCreatedEeventOn);
-			}
+		if (CollectionUtils.isNotEmpty(updatedMeaningWords)) {
 
+			lastUpdatedEeventOn = updatedMeaningWords.stream()
+					.map(DatasetWord::getEventOn)
+					.sorted(Collections.reverseOrder())
+					.findFirst()
+					.get();
+		}
+
+		if ((lastCreatedEeventOn == null) && (lastUpdatedEeventOn == null)) {
+			return;
+		}
+
+		if (lastCreatedEeventOn == null) {
+			dataset.setLastAnythingTime(lastUpdatedEeventOn);
+		} else if (lastUpdatedEeventOn == null) {
+			dataset.setLastAnythingTime(lastCreatedEeventOn);
+		} else if (lastCreatedEeventOn.isAfter(lastUpdatedEeventOn)) {
+			dataset.setLastAnythingTime(lastCreatedEeventOn);
+		} else {
+			dataset.setLastAnythingTime(lastUpdatedEeventOn);
 		}
 	}
 
