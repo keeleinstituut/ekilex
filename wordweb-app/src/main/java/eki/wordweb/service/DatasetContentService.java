@@ -1,6 +1,8 @@
 package eki.wordweb.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,6 +32,7 @@ public class DatasetContentService {
 		}
 		List<Character> firstLetters = datasetContentDbService.getDatasetFirstLetters(datasetCode);
 
+		handleLastAnythingTime(dataset);
 		handleDuplicatesAndLimitWords(dataset);
 
 		DatasetHomeData datasetHomeData = new DatasetHomeData();
@@ -37,6 +40,38 @@ public class DatasetContentService {
 		datasetHomeData.setFirstLetters(firstLetters);
 
 		return datasetHomeData;
+	}
+
+	private void handleLastAnythingTime(DatasetStat dataset) {
+
+		LocalDateTime lastManualEventOn = dataset.getLastManualEventOn();
+		List<DatasetWord> createdMeaningWords = dataset.getCreatedMeaningWords();
+
+		if ((lastManualEventOn == null) && CollectionUtils.isEmpty(createdMeaningWords)) {
+			return;
+		}
+
+		if ((lastManualEventOn != null) && CollectionUtils.isEmpty(createdMeaningWords)) {
+
+			dataset.setLastAnythingTime(lastManualEventOn);
+		}
+		if (CollectionUtils.isNotEmpty(createdMeaningWords)) {
+
+			LocalDateTime lastCreatedEeventOn = createdMeaningWords.stream()
+					.map(DatasetWord::getEventOn)
+					.sorted(Collections.reverseOrder())
+					.findFirst()
+					.get();
+
+			if (lastManualEventOn == null) {
+				dataset.setLastAnythingTime(lastCreatedEeventOn);
+			} else if (lastManualEventOn.isAfter(lastCreatedEeventOn)) {
+				dataset.setLastAnythingTime(lastManualEventOn);
+			} else {
+				dataset.setLastAnythingTime(lastCreatedEeventOn);
+			}
+
+		}
 	}
 
 	public void handleDuplicatesAndLimitWords(DatasetStat dataset) {

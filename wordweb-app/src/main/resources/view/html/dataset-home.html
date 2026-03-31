@@ -20,9 +20,9 @@
       </div>
       <div class="dataset-page__header-text" th:if="${showDescription}">
         <span th:text="#{|label.dataset.wordcount.${datasetHomeData.dataset.type}|(${datasetHomeData.dataset.wordCount})}"> Selles sõnakogus on </span>
-        <th:block th:if="${datasetHomeData.dataset.lastEventTime}">
+        <th:block th:if="${datasetHomeData.dataset.lastAnythingTime}">
           <span th:text="#{label.dataset.lastupdate}">Viimati muudetud</span>
-          <span th:text="${#temporals.format(datasetHomeData.dataset.lastEventTime, 'dd.MM.yyyy')}"></span>
+          <span th:text="${#temporals.format(datasetHomeData.dataset.lastAnythingTime, 'dd.MM.yyyy')}"></span>
         </th:block>
       </div>
     </div>

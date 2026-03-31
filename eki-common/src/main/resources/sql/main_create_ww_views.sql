@@ -3843,10 +3843,10 @@ select
 				'valuePrese', wlm.value_prese,
 				'homonymNr', wlm.homonym_nr,
 				'lang', wlm.lang,
-				'eventOn', wlm.last_event_on
+				'eventOn', wlm.manual_event_on
 			)
 			order by
-				wlm.last_event_on desc,
+				wlm.manual_event_on desc,
 				wlm.value
 		)
 	from
@@ -3859,7 +3859,7 @@ select
 			w.value_prese,
 			w.homonym_nr,
 			w.lang,
-			mm.last_event_on
+			mm.manual_event_on
 		from
 			(
 			select
@@ -3909,16 +3909,11 @@ select
 			(
 				select
 					m.id meaning_id,
-					max(al.event_on) last_event_on
+					m.manual_event_on
 				from
-					meaning m,
-					meaning_last_activity_log mlal,
-					activity_log al
+					meaning m
 				where
-					mlal.meaning_id = m.id
-					and mlal.activity_log_id = al.id
-					and mlal.type = 'EDIT'
-					and al.event_on > (current_date - interval '3 years')
+					m.manual_event_on > (current_date - interval '3 years')
 					and exists (
 						select
 							1
@@ -3931,8 +3926,6 @@ select
 							and l.dataset_code != 'eki'
 							and l.dataset_code = ds.code
 					)
-				group by
-					m.id
 			) mm,
 			word w,
 			lexeme l
@@ -3942,7 +3935,7 @@ select
 			and l.meaning_id = ww.meaning_id
 			and l.meaning_id = mm.meaning_id
 		order by
-			mm.last_event_on desc,
+			mm.manual_event_on desc,
 			w.value
 		limit 20
 		) wlm
@@ -3954,7 +3947,6 @@ where
 order by 
 	ds.order_by
 ;
-
 
 create view view_ww_classifier
   as
