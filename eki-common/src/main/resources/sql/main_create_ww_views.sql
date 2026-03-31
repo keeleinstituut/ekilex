@@ -3801,6 +3801,7 @@ select
 						and al.owner_id = m.id
 						and al.entity_name = 'MEANING'
 						and al.funct_name like 'create%'
+						and m.manual_event_on is not null
 						and exists (
 							select
 								1
@@ -3913,7 +3914,8 @@ select
 				from
 					meaning m
 				where
-					m.manual_event_on > (current_date - interval '3 years')
+					m.manual_event_on is not null
+					and m.manual_event_on > (current_date - interval '3 years')
 					and exists (
 						select
 							1
