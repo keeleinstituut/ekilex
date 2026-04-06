@@ -76,12 +76,14 @@ create table value_state_label (
   unique(code, lang, type)
 );
 
+-- TODO not used, remove
 -- klassif. rektsiooni tüüp
 create table government_type (
   code varchar(100) primary key, 
   order_by bigserial
 );
 
+-- TODO not used, remove
 create table government_type_label (
   code varchar(100) references government_type(code) on delete cascade not null, 
   value text not null, 
