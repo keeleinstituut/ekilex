@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>eki.common</groupId>
+	<artifactId>eki-common</artifactId>
+	<version>1.47-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
 		<version>1.47-SNAPSHOT</version>
 	</parent>
-
-	<groupId>eki.common</groupId>
-	<artifactId>eki-common</artifactId>
-	<version>1.47-SNAPSHOT</version>
-	<packaging>jar</packaging>
 
 	<name>Ekilex/Wordweb/Ekistat Commons</name>
 
