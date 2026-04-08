@@ -53,7 +53,7 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 
 		validateLoadedContent(languageGroups, languageCodes, languageToGroupMapSs1, languageCodesVsl, languageGroupNamesVsl);
 
-		//createLanguageGroupMembers(languageGroups, languageToGroupMapSs1);
+		createLanguageGroupMembers(languageGroups, languageToGroupMapSs1);
 
 		int languageCount = languageToGroupMapSs1.size();
 		long languageGroupCount = languageToGroupMapSs1.values().stream().distinct().count();

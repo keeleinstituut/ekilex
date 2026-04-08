@@ -1,1 +1,7 @@
 Märkused ver 1.48.0 tarne kohta:
+
+1. migration
+
+2. keelegruppide ja mäpingute laadur ja validaator
+   
+   mvn spring-boot:run -P langr -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/apps/data/""

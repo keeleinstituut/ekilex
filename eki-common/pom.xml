@@ -12,7 +12,7 @@
 		<version>1.48-SNAPSHOT</version>
 	</parent>
 
-	<name>Ekilex/Wordweb/Ekistat Commons</name>
+	<name>Eki apps commons</name>
 
 	<developers>
 		<developer>

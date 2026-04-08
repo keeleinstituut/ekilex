@@ -3,6 +3,8 @@
 
 delete from language_group;
 
+delete from language where code in ('aka', 'qbq', 'qbr', 'phn', 'cel', 'gml', 'ito', 'pro', 'und');
+
 insert into language (code, datasets) values ('aka', '{eki, ety}');
 insert into language (code, datasets) values ('qbq', '{eki, ety}');
 insert into language (code, datasets) values ('qbr', '{eki, ety}');
