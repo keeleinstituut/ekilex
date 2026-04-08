@@ -113,6 +113,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.QuotationReplacer</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>langr</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.LanguageGroupLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
 		<!-- temporary. remove later-->
 		<profile>
 			<id>msrvt</id>
