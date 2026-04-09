@@ -740,7 +740,10 @@
     <span th:utext="${inputLabel}"></span>
   </label>
   <div class="modal-header" th:fragment="modal_header">
-    <h1 class="custom-modal__title" th:text="${title}">Pealkiri</h1>
+    <h1 class="custom-modal__title" th:text="${title}" th:if="${title}">Pealkiri</h1>
+    <h1 class="custom-modal__title" th:if="${titleContent}">
+      <th:block th:replace="${titleContent}"></th:block>
+    </h1>
     <button class="custom-modal__close" type="button" data-dismiss="modal" th:title="#{common.close}">
       <span class="material-symbols-outlined" aria-hidden="true">close</span>
     </button>
@@ -776,5 +779,50 @@
     </button>
     <input type="file" class="input-media__file" th:id="|${id}-input|" th:name="${inputName}" data-media-file th:accept="${accept}">
   </div>
+  <div th:fragment="searchable_select"
+       class="searchable-select"
+       data-plugin="searchableSelectHandler">
+    <input type="hidden"
+           th:name="${name}"
+           th:value="${value ?: ''}"
+           class="searchable-select__value"
+           th:classappend="${required} ? 'required-field'">
+    <label th:if="${label}" th:for="|${id}-input|" th:text="${label}"></label>
+    <div class="searchable-select__control"
+         role="combobox"
+         aria-haspopup="listbox"
+         aria-expanded="false"
+         th:aria-owns="|${id}-listbox|">
+      <input type="text"
+             th:id="|${id}-input|"
+             class="searchable-select__input"
+             autocomplete="off"
+             th:placeholder="${placeholder ?: ''}"
+             aria-autocomplete="list"
+             th:aria-controls="|${id}-listbox|">
+      <span class="material-symbols-outlined searchable-select__icon" aria-hidden="true">search</span>
+    </div>
+    <ul class="searchable-select__menu"
+        th:id="|${id}-listbox|"
+        role="listbox"
+        th:aria-label="${label}">
+      <th:block th:replace="${content}"></th:block>
+      <li
+        class="searchable-select__no-results"
+        tabindex="-1"
+        hidden
+        disabled>
+        -
+      </li>
+    </ul>
+  </div>
+  <li th:fragment="searchable_select_option"
+      class="searchable-select__option"
+      role="option"
+      aria-selected="false"
+      th:data-value="${optionValue}"
+      th:text="${optionLabel}"
+      tabindex="-1">
+  </li>
 </body>
 </html>

@@ -55,32 +55,37 @@
       <div class="modal-content">
         <form th:action="@{/add_language_to_group}" method="post" data-plugin="addLanguageToGroupPlugin">
           <input type="hidden" name="languageGroupId" th:value="${languageGroup.id}">
-          <div class="modal-header">
-            <h5 class="modal-title">
+          <th:block th:replace="components :: modal_header(titleContent = ~{::add_language_to_group_title})">
+            <th:block th:fragment="add_language_to_group_title">
               <span th:text="#{languagegroups.language.add.full}"></span>
               <strong th:text="${languageGroup.name}"></strong>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+            </th:block>
+          </th:block>
           <div class="modal-body">
             <div class="form-group row">
               <div class="col-md-12">
-                <select class="form-control required-field classifier-select" name="languageCode" data-live-search="true">
-                  <option value="" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${languages}"
-                          th:value="${language.code}"
-                          th:text="${language.value}">
-                  </option>
-                </select>
+                <th:block th:replace="~{components :: searchable_select(
+                    id='langSelect-' + ${languageGroup.id},
+                    name='languageCode',
+                    label=#{label.language_groups.language},
+                    required=true,
+                    content=~{:: langOptions}
+                  )}">
+                  <th:block th:fragment="langOptions">
+                    <th:block th:each="language : ${languages}">
+                      <li
+                          th:replace="~{components :: searchable_select_option(
+                            optionValue=${language.code},
+                            optionLabel=${language.value}
+                          )}">
+                      </li>
+                    </th:block>
+                  </th:block>
+                </th:block>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
+          <th:block th:replace="components :: modal_footer"></th:block>
         </form>
       </div>
     </div>

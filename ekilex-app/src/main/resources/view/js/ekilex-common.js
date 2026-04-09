@@ -403,6 +403,19 @@ function checkRequiredFields(form, message) {
 			isValid = false;
 		}
 	});
+
+	// Searchable select: hidden inputs are excluded by :not(:hidden), validate them separately
+	form.find('input.searchable-select__value.required-field').each(function() {
+		const hiddenInput = $(this);
+		const control = hiddenInput.closest('.searchable-select').find('.searchable-select__control');
+		if (!hiddenInput.val()) {
+			control.addClass('is-invalid');
+			isValid = false;
+		} else {
+			control.removeClass('is-invalid');
+		}
+	});
+
 	return isValid;
 };
 
