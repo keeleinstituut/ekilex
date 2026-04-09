@@ -1,96 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{languagegroups.title}">Keelegrupid</title>
-<th:block th:fragment="links">
-</th:block>
-</head>
-<body class="body-with-navbar">
-  <th:block th:replace="common :: nav_bar(activeItem = 'classifiers')"></th:block>
-  <div class="container-fluid">
-    <div class="mt-4">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link"  th:href="@{/classifiers}" th:text="#{classifiers.title}">Klassifikaatorid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/languagegroups}" th:text="#{languagegroups.title}">Keelegrupid</a>
-        </li>
-      </ul>
-      <div class="card mb-4 shadow">
-        <div class="card-body">
-          <div>
-            <button type="button" 
-                    class="btn btn-primary" 
-                    data-toggle="modal" 
-                    data-target="#addLanguageGroupDlg">
-              <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-              <span th:text="#{languagegroups.add}">Lisa</span>
-            </button>
-          </div>
+  <head th:replace="common :: common_header(~{::title},~{::links})">
+    <title th:text="#{languagegroups.title}">Keelegrupid</title>
+    <th:block th:fragment="links"> </th:block>
+  </head>
+  <body class="body-with-navbar">
+    <div class="language-groups">
+      <div class="language-groups__header">
+        <h1 th:text="#{languagegroups.title}">Keelegrupid</h1>
+        <button
+          type="button"
+          class="btn btn-primary d-inline-flex align-items-center"
+          data-toggle="modal"
+          data-target="#addLanguageGroupDlg"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+          <span th:text="#{languagegroups.add}">Lisa</span>
+        </button>
+      </div>
+      <div class="language-groups__content">
+        <div class="language-groups__table-wrapper">
+          <table class="language-groups__table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <strong th:text="#{languagegroups.name}"
+                    >Keelegrupi nimetus</strong
+                  >
+                </th>
+                <th scope="col">
+                  <strong th:text="#{languagegroups.actions}">Toimingud</strong>
+                </th>
+              </tr>
+            </thead>
+            <th:block th:each="languageGroup : ${languageGroups}">
+              <tbody>
+                <tr class="language-groups__group-header-row">
+                  <th
+                    class="language-groups__group-header-content-wrapper"
+                    scope="colgroup"
+                  >
+                    <button
+                      class="language-groups__group-header"
+                      type="button"
+                      aria-expanded="false"
+                      th:aria-controls="|language-group-${languageGroup.id}|"
+                      th:data-toggle="${membersSize > 0 ? 'collapse' : null}"
+                      th:data-target="|#language-group-${languageGroup.id}|"
+                      th:with="membersSize = ${languageGroup.languageGroupMembers != null ? languageGroup.languageGroupMembers.size() : 0}"
+                      th:disabled="${membersSize == 0}"
+                    >
+                      <span
+                        class="material-symbols-outlined language-groups__group-header-icon"
+                        aria-hidden="true"
+                        >keyboard_arrow_down</span
+                      >
+                      <span th:text="${languageGroup.name}"></span>
+                      <th:block>
+                        <small
+                          th:text="'(' + ${membersSize} +  ' ' + ${membersSize != 1 ? #messages.msg('languagegroups.language.plural') : #messages.msg('languagegroups.language')} + ')'"
+                        ></small>
+                      </th:block>
+                    </button>
+                  </th>
+                  <td class="language-groups__group-header-content-wrapper">
+                    <div
+                      th:replace="classifierdialog :: add_language_to_group_dialog"
+                    ></div>
+                    <div
+                      th:replace="classifierdialog :: delete_language_group_dialog"
+                    ></div>
+                    <button
+                      type="button"
+                      class="language-groups__add-btn mr-2"
+                      data-toggle="modal"
+                      th:data-target="|#addLanguageToGroupDlg_${languageGroup.id}|"
+                      th:title="#{languagegroups.language.add.short}"
+                    >
+                      <span class="material-symbols-outlined" aria-hidden="true"
+                        >add</span
+                      >
+                      <span th:text="#{languagegroups.language.add.short}"
+                        >Lisa keel</span
+                      >
+                    </button>
+                    <button
+                      type="button"
+                      class="language-groups__delete-btn"
+                      data-toggle="modal"
+                      th:data-target="|#deleteLanguageGroupDlg_${languageGroup.id}|"
+                      th:title="#{languagegroups.delete}"
+                    >
+                      <span class="material-symbols-outlined" aria-hidden="true"
+                        >delete</span
+                      >
+                      <span th:text="#{common.delete}"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody
+                class="collapse"
+                th:id="|language-group-${languageGroup.id}|"
+                th:if="languageGroup.languageGroupMembers != null"
+              >
+                <tr
+                  class="language-groups__row"
+                  th:each="languageGroupMember : ${languageGroup.languageGroupMembers}"
+                >
+                  <td>
+                    <div class="language-groups__column">
+                      <span
+                        class="language-groups__language"
+                        th:text="${languageGroupMember.value}"
+                      ></span>
+                      <span
+                        class="language-groups__lang-code"
+                        th:text="${languageGroupMember.code}"
+                      ></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="language-groups__column">
+                      <div
+                        th:replace="classifierdialog :: delete_language_in_group_dialog"
+                      ></div>
+                      <button
+                        type="button"
+                        class="language-groups__remove-btn"
+                        data-toggle="modal"
+                        th:data-target="|#deleteLanguageInGroupDlg_${languageGroup.id}_${languageGroupMember.code}|"
+                        th:title="#{languagegroups.language.delete}"
+                      >
+                        <span
+                          class="material-symbols-outlined"
+                          aria-hidden="true"
+                          >delete</span
+                        >
+                        <span th:text="#{common.remove}"></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </th:block>
+          </table>
         </div>
       </div>
     </div>
-    <div class="card mt-4 mb-4 shadow" th:unless="${#lists.isEmpty(languageGroups)}">
-      <div class="card-body">
-        <table class="table table-sm">
-          <th:block th:each="languageGroup : ${languageGroups}">
-            <tr>
-              <td class="table-active" th:title="#{languagegroups.single}">
-                <strong th:text="${languageGroup.name}"></strong>
-              </td>
-              <td class="table-active">
-                <div th:replace="classifierdialog :: add_language_to_group_dialog"></div>
-                <div th:replace="classifierdialog :: delete_language_group_dialog"></div>
-                <button type="button" 
-                        class="btn btn-sm btn-primary btn-compact" 
-                        data-toggle="modal" 
-                        th:data-target="|#addLanguageToGroupDlg_${languageGroup.id}|" 
-                        th:title="#{languagegroups.language.add.short}">
-                  <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-                  <span th:text="#{languagegroups.language.add.short}">Lisa keel</span>
-                </button>
-                <button type="button"
-                        class="btn btn-sm btn-warning btn-compact"
-                        data-toggle="modal" 
-                        th:data-target="|#deleteLanguageGroupDlg_${languageGroup.id}|"
-                        th:title="#{languagegroups.delete}">
-                  <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"></i>
-                  <span th:text="#{common.delete}"></span>
-                </button>
-              </td>
-            </tr>
-            <th:block th:each="languageGroupMember : ${languageGroup.languageGroupMembers}">
-              <tr>
-                <td th:title="#{classifiers.lang}">
-                  <span th:text="${languageGroupMember.value}"></span>
-                  <span th:text="${languageGroupMember.code}" class="badge badge-light"></span>
-                </td>
-                <td>
-                  <div th:replace="classifierdialog :: delete_language_in_group_dialog"></div>
-                  <button type="button"
-                          class="btn btn-sm btn-warning btn-compact"
-                          data-toggle="modal" 
-                          th:data-target="|#deleteLanguageInGroupDlg_${languageGroup.id}_${languageGroupMember.code}|"
-                          th:title="#{languagegroups.language.delete}">
-                    <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"></i>
-                    <span th:text="#{common.remove}"></span>
-                  </button>
-                </td>
-              </tr>
-            </th:block>
-          </th:block>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div th:replace="classifierdialog :: add_language_group_dialog"></div>
-  <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="common :: #alertSmall"></div>
-  <script th:inline="javascript">
-    $(function() {
-    	$('.classifier-select').selectpicker();
-    });
-  </script>
-</body>
+    <div th:replace="classifierdialog :: add_language_group_dialog"></div>
+    <div th:replace="common :: #alertDlg"></div>
+    <div th:replace="common :: #alertSmall"></div>
+  </body>
 </html>

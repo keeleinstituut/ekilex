@@ -67,7 +67,7 @@
                 <th:block th:replace="~{components :: searchable_select(
                     id='langSelect-' + ${languageGroup.id},
                     name='languageCode',
-                    label=#{label.language_groups.language},
+                    label=#{languagegroups.language},
                     required=true,
                     content=~{:: langOptions}
                   )}">
