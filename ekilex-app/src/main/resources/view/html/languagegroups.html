@@ -5,6 +5,7 @@
     <th:block th:fragment="links"> </th:block>
   </head>
   <body class="body-with-navbar">
+    <th:block th:replace="common :: nav_bar(activeItem = 'classifiers')"></th:block>
     <div class="language-groups">
       <div class="language-groups__header">
         <h1 th:text="#{languagegroups.title}">Keelegrupid</h1>

@@ -62,8 +62,6 @@
             </th:block>
           </th:block>
           <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-md-12">
                 <th:block th:replace="~{components :: searchable_select(
                     id='langSelect-' + ${languageGroup.id},
                     name='languageCode',
@@ -73,16 +71,17 @@
                   )}">
                   <th:block th:fragment="langOptions">
                     <th:block th:each="language : ${languages}">
-                      <li
-                          th:replace="~{components :: searchable_select_option(
-                            optionValue=${language.code},
-                            optionLabel=${language.value}
-                          )}">
+                      <li th:fragment="searchable_select_option"
+                        class="searchable-select__option"
+                        role="option"
+                        aria-selected="false"
+                        th:data-value="${language.code}"
+                        th:text="${language.value}"
+                        tabindex="-1">
                       </li>
                     </th:block>
                   </th:block>
                 </th:block>
-              </div>
             </div>
           </div>
           <th:block th:replace="components :: modal_footer"></th:block>
