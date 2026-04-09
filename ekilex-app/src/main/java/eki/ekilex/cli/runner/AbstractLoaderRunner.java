@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -90,7 +91,11 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 	protected List<String> readFileLines(String filePath) throws Exception {
 		InputStream fileInputStream = new FileInputStream(filePath);
 		try {
-			return IOUtils.readLines(fileInputStream, StandardCharsets.UTF_8);
+			List<String> fileLines = IOUtils.readLines(fileInputStream, StandardCharsets.UTF_8);
+			fileLines = fileLines.stream()
+					.filter(fileLine -> StringUtils.isNotBlank(fileLine))
+					.collect(Collectors.toList());
+			return fileLines;
 		} finally {
 			fileInputStream.close();
 		}
