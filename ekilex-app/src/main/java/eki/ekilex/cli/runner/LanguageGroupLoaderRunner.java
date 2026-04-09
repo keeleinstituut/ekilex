@@ -1,6 +1,7 @@
 package eki.ekilex.cli.runner;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.LanguageGroup;
@@ -47,18 +49,20 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 
 		List<LanguageGroup> languageGroups = classifierDbService.getLanguageGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<String> languageCodes = collectExistingLanguageCodes();
-		Map<String, String> languageToGroupMapSs1 = collectLanguageToGroupMapSs1(folderPath);
+		Map<String, List<String>> languageToGroupMapSs1 = collectLanguageToGroupMapSs1(folderPath);
 		List<String> languageCodesVsl = collectLanguageCodesVsl(folderPath);
 		List<String> languageGroupNamesVsl = collectLanguageGroupNamesVsl(folderPath);
 
 		validateLoadedContent(languageGroups, languageCodes, languageToGroupMapSs1, languageCodesVsl, languageGroupNamesVsl);
 
-		createLanguageGroupMembers(languageGroups, languageToGroupMapSs1);
-
 		int languageCount = languageToGroupMapSs1.size();
 		long languageGroupCount = languageToGroupMapSs1.values().stream().distinct().count();
+		Count languageGroupMemberCount = new Count();
 
-		logger.info("Completed load. Added {} languages to {} groups", languageCount, languageGroupCount);
+		createLanguageGroupMembers(languageGroups, languageToGroupMapSs1, languageGroupMemberCount);
+
+		logger.info("Completed load. Added {} languages to {} groups, altogether created {} group members",
+				languageCount, languageGroupCount, languageGroupMemberCount.getValue());
 	}
 
 	private List<String> collectExistingLanguageCodes() {
@@ -68,19 +72,24 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 		return languageCodes;
 	}
 
-	private Map<String, String> collectLanguageToGroupMapSs1(String folderPath) throws Exception {
+	private Map<String, List<String>> collectLanguageToGroupMapSs1(String folderPath) throws Exception {
 
 		String langGroupSs1FilePath = folderPath + CLASSIF_LANG_GROUP_SS1_FILENAME;
 		List<String> langGroupSs1FileLines = readFileLines(langGroupSs1FilePath);
 		langGroupSs1FileLines.remove(0);
-		Map<String, String> langToGroupMap = new HashMap<>();
+		Map<String, List<String>> langToGroupMap = new HashMap<>();
 
 		for (String fileLine : langGroupSs1FileLines) {
 
 			String[] fileLineCells = StringUtils.splitPreserveAllTokens(fileLine, CSV_SEPARATOR);
 			String languageCode = StringUtils.trim(fileLineCells[0]);
 			String languageGroupName = StringUtils.trim(fileLineCells[2]);
-			langToGroupMap.put(languageCode, languageGroupName);
+			List<String> languageGroupNames = langToGroupMap.get(languageCode);
+			if (languageGroupNames == null) {
+				languageGroupNames = new ArrayList<>();
+				langToGroupMap.put(languageCode, languageGroupNames);
+			}
+			languageGroupNames.add(languageGroupName);
 		}
 
 		return langToGroupMap;
@@ -108,16 +117,25 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 		return langGroupVslFileLines;
 	}
 
-	private void createLanguageGroupMembers(List<LanguageGroup> languageGroups, Map<String, String> languageToGroupMapSs1) {
+	private void createLanguageGroupMembers(
+			List<LanguageGroup> languageGroups,
+			Map<String, List<String>> languageToGroupMapSs1,
+			Count languageGroupMemberCount) {
 
 		Map<String, Long> languageGroupIdMap = languageGroups.stream()
 				.collect(Collectors.toMap(LanguageGroup::getName, LanguageGroup::getId));
 
 		for (String languageCode : languageToGroupMapSs1.keySet()) {
 
-			String languageGroupName = languageToGroupMapSs1.get(languageCode);
-			Long languageGroupId = languageGroupIdMap.get(languageGroupName);
-			classifierDbService.createLanguageGroupMember(languageGroupId, languageCode);
+			List<String> languageGroupNames = languageToGroupMapSs1.get(languageCode);
+			languageGroupNames = languageGroupNames.stream().distinct().collect(Collectors.toList());
+
+			for (String languageGroupName : languageGroupNames) {
+
+				Long languageGroupId = languageGroupIdMap.get(languageGroupName);
+				classifierDbService.createLanguageGroupMember(languageGroupId, languageCode);
+				languageGroupMemberCount.increment();
+			}
 		}
 	}
 
@@ -161,7 +179,7 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 	private void validateLoadedContent(
 			List<LanguageGroup> languageGroups,
 			List<String> languageCodes,
-			Map<String, String> languageToGroupMapSs1,
+			Map<String, List<String>> languageToGroupMapSs1,
 			List<String> languageCodesVsl,
 			List<String> languageGroupNamesVsl) throws DataLoadingException {
 
@@ -178,6 +196,7 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		List<String> languageGroupNamesSs1 = languageToGroupMapSs1.values().stream()
+				.flatMap(list -> list.stream())
 				.distinct()
 				.collect(Collectors.toList());
 

@@ -39,9 +39,8 @@
               <td class="table-active" th:title="#{languagegroups.single}">
                 <strong th:text="${languageGroup.name}"></strong>
               </td>
-              <td class="table-active">
+              <td class="table-active" style="width: 100px">
                 <div th:replace="classifierdialog :: add_language_to_group_dialog"></div>
-                <div th:replace="classifierdialog :: delete_language_group_dialog"></div>
                 <button type="button" 
                         class="btn btn-sm btn-primary btn-compact" 
                         data-toggle="modal" 
@@ -50,13 +49,15 @@
                   <i class="fa fa-plus mr-2" aria-hidden="true"></i>
                   <span th:text="#{languagegroups.language.add.short}">Lisa keel</span>
                 </button>
+              </td>
+              <td class="table-active" style="width: 40px">
+                <div th:replace="classifierdialog :: delete_language_group_dialog"></div>
                 <button type="button"
                         class="btn btn-sm btn-warning btn-compact"
                         data-toggle="modal" 
                         th:data-target="|#deleteLanguageGroupDlg_${languageGroup.id}|"
                         th:title="#{languagegroups.delete}">
                   <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"></i>
-                  <span th:text="#{common.delete}"></span>
                 </button>
               </td>
             </tr>
@@ -66,7 +67,8 @@
                   <span th:text="${languageGroupMember.value}"></span>
                   <span th:text="${languageGroupMember.code}" class="badge badge-light"></span>
                 </td>
-                <td>
+                <td style="width: 100px"></td>
+                <td style="width: 40px">
                   <div th:replace="classifierdialog :: delete_language_in_group_dialog"></div>
                   <button type="button"
                           class="btn btn-sm btn-warning btn-compact"
@@ -74,7 +76,6 @@
                           th:data-target="|#deleteLanguageInGroupDlg_${languageGroup.id}_${languageGroupMember.code}|"
                           th:title="#{languagegroups.language.delete}">
                     <i class="fa fa-trash" aria-hidden="true" data-toggle="tooltip"></i>
-                    <span th:text="#{common.remove}"></span>
                   </button>
                 </td>
               </tr>

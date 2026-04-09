@@ -5,3 +5,8 @@ Märkused ver 1.48.0 tarne kohta:
 2. keelegruppide ja mäpingute laadur ja validaator
    
    mvn spring-boot:run -P langr -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/apps/data/""
+
+   classif-lang-group-ss1.tsv
+   classif-lang-group-vsl.tsv
+   classif-lang-vsl.tsv
+   
