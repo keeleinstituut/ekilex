@@ -49,6 +49,14 @@
         transform: rotateZ(180deg);
       }
     }
+
+    &:disabled {
+      // Keep same alignment as non-disabled rows
+      padding-left: 40px;
+      & .language-groups__group-header-icon {
+        display: none;
+      }
+    }
   }
 
   &__group-header-icon {

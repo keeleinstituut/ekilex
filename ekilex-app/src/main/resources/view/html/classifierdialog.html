@@ -62,29 +62,28 @@
             </th:block>
           </th:block>
           <div class="modal-body">
-                <th:block th:replace="~{components :: searchable_select(
-                    id='langSelect-' + ${languageGroup.id},
-                    name='languageCode',
-                    label=#{languagegroups.language},
-                    required=true,
-                    content=~{:: langOptions}
-                  )}">
-                  <th:block th:fragment="langOptions">
-                    <th:block th:each="language : ${languages}">
-                      <li th:fragment="searchable_select_option"
-                        class="searchable-select__option"
-                        role="option"
-                        aria-selected="false"
-                        th:data-value="${language.code}"
-                        th:text="${language.value}"
-                        tabindex="-1">
-                      </li>
-                    </th:block>
-                  </th:block>
+            <th:block th:replace="~{components :: searchable_select(
+                id='langSelect-' + ${languageGroup.id},
+                name='languageCode',
+                label=#{languagegroups.language},
+                required=true,
+                content=~{:: langOptions}
+              )}">
+              <th:block th:fragment="langOptions">
+                <th:block th:each="language : ${languages}">
+                  <li th:fragment="searchable_select_option"
+                    class="searchable-select__option"
+                    role="option"
+                    aria-selected="false"
+                    th:data-value="${language.code}"
+                    th:text="${language.value}"
+                    tabindex="-1">
+                  </li>
                 </th:block>
-            </div>
+              </th:block>
+            </th:block>
+            <th:block th:replace="components :: modal_footer"></th:block>
           </div>
-          <th:block th:replace="components :: modal_footer"></th:block>
         </form>
       </div>
     </div>
