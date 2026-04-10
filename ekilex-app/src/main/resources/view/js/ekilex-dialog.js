@@ -295,4 +295,13 @@ $(function() {
 			});
 		});
 	}
+
+	$.fn.resetDialogOnClosePlugin = function() {
+		return this.each(function() {
+			const obj = $(this);
+			obj.on('hide.bs.modal', function() {
+				obj.find('input').val('');
+			});
+		});
+	}
 });

@@ -27,7 +27,7 @@
     </div>
   </div>
   <div id="addLanguageGroupDlg" class="modal" role="dialog"
-       th:fragment="add_language_group_dialog">
+       th:fragment="add_language_group_dialog" data-plugin="resetDialogOnClosePlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/save_language_group}" method="post" data-plugin="saveLanguageGroupPlugin">
@@ -50,7 +50,7 @@
     </div>
   </div>
   <div th:id="|addLanguageToGroupDlg_${languageGroup.id}|" class="modal" role="dialog"
-       th:fragment="add_language_to_group_dialog">
+       th:fragment="add_language_to_group_dialog" data-plugin="resetDialogOnClosePlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/add_language_to_group}" method="post" data-plugin="addLanguageToGroupPlugin">
