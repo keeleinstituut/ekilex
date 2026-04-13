@@ -16,6 +16,10 @@ public class LanguageGroup extends AbstractDataObject {
 
 	private List<Classifier> languageGroupMembers;
 
+	private int memberCount;
+
+	private boolean memberExists;
+
 	public Long getId() {
 		return id;
 	}
@@ -46,6 +50,22 @@ public class LanguageGroup extends AbstractDataObject {
 
 	public void setLanguageGroupMembers(List<Classifier> languageGroupMembers) {
 		this.languageGroupMembers = languageGroupMembers;
+	}
+
+	public int getMemberCount() {
+		return memberCount;
+	}
+
+	public void setMemberCount(int memberCount) {
+		this.memberCount = memberCount;
+	}
+
+	public boolean isMemberExists() {
+		return memberExists;
+	}
+
+	public void setMemberExists(boolean memberExists) {
+		this.memberExists = memberExists;
 	}
 
 }

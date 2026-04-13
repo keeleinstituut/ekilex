@@ -8,7 +8,6 @@ import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -442,19 +441,28 @@ public class ClassifierDbService extends AbstractDataDbService {
 								.and(cll.TYPE.eq(classifierLabelTypeCode)))
 				.asField();
 
+		Field<Integer> lgmcf = DSL
+				.select(DSL.count(lgm.ID))
+				.from(lgm)
+				.where(lgm.LANGUAGE_GROUP_ID.eq(lg.ID))
+				.asField();
+
+		Field<Boolean> lgmef = DSL
+				.field(DSL
+						.exists(DSL
+								.select(lgm.ID)
+								.from(lgm)
+								.where(lgm.LANGUAGE_GROUP_ID.eq(lg.ID))));
+
 		return mainDb
 				.select(lg.fields())
 				.select(lcf.as("language_codes"))
 				.select(lgmf.as("language_group_members"))
+				.select(lgmcf.as("member_count"))
+				.select(lgmef.as("member_exists"))
 				.from(lg)
 				.orderBy(lg.NAME)
-				.fetch(record -> {
-					eki.ekilex.data.LanguageGroup pojo = record.into(eki.ekilex.data.LanguageGroup.class);
-					if (pojo.getLanguageCodes() == null) {
-						pojo.setLanguageCodes(new ArrayList<>());
-					}
-					return pojo;
-				});
+				.fetchInto(eki.ekilex.data.LanguageGroup.class);
 	}
 
 	public Long createLanguageGroup(String name) {
