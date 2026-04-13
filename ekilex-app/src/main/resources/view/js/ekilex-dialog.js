@@ -300,7 +300,8 @@ $(function() {
 		return this.each(function() {
 			const obj = $(this);
 			obj.on('hide.bs.modal', function() {
-				obj.find('input').val('');
+				obj.find('input:not(:hidden)').val('');
+				obj.find(".searchable-select").clearSearchableSelect();
 			});
 		});
 	}

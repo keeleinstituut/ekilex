@@ -192,7 +192,22 @@ function initSegmentedSwitch(context) {
  */
 $.fn.searchableSelectHandler = function () {
   $(this).each(function () {
-    new SearchableSelect($(this)).init();
+    const container = $(this);
+    let instance = container.data("searchableSelect");
+
+    if (!instance) {
+      instance = new SearchableSelect(container);
+      container.data("searchableSelect", instance);
+      instance.init();
+    }
+  });
+
+  return this;
+};
+
+$.fn.clearSearchableSelect = function () {
+  return this.each(function () {
+    $(this).data("searchableSelect")?.clearSelection();
   });
 };
 
@@ -222,8 +237,7 @@ class SearchableSelect {
           .filter(`[data-value="${this.hiddenInput.val()}"]`)
           .text();
         if (this.textInput.val() !== currentLabel) {
-          this.hiddenInput.val("");
-          this.options.attr("aria-selected", "false");
+          this.clearSelection({ preserveText: true, triggerChange: false });
         }
       }
     });
@@ -254,9 +268,31 @@ class SearchableSelect {
     if (preselected) {
       const opt = this.options.filter(`[data-value="${preselected}"]`);
       if (opt.length) {
+        this.clearOptionState();
         this.textInput.val(opt.text());
         opt.attr("aria-selected", "true");
       }
+    }
+  }
+
+  clearOptionState() {
+    this.options.attr("aria-selected", "false");
+    this.clearFocus();
+    this.focusedIndex = -1;
+  }
+
+  clearSelection({ preserveText = false, triggerChange = true } = {}) {
+    const hadValue = Boolean(this.hiddenInput.val());
+
+    this.hiddenInput.val("");
+    if (!preserveText) {
+      this.textInput.val("");
+    }
+
+    this.clearOptionState();
+
+    if (triggerChange && hadValue) {
+      this.hiddenInput.trigger("change");
     }
   }
 
@@ -356,7 +392,7 @@ class SearchableSelect {
     const label = option.text();
     this.hiddenInput.val(value).trigger("change");
     this.textInput.val(label);
-    this.options.attr("aria-selected", "false");
+    this.clearOptionState();
     option.attr("aria-selected", "true");
     this.control.removeClass("is-invalid");
     this.close();
