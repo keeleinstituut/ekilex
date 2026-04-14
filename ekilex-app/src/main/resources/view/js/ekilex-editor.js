@@ -39,7 +39,7 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 			valueInput.val(editFldValue);
 			footer.find('.error-text').remove();
 			editFld.removeClass('is-invalid');
-			submitDialog(e, editDlg, messages["common.data.update.error"]);
+			submitDialog(e, editDlg, { failMessage: messages["common.data.update.error"] });
 		} else {
 			e.preventDefault();
 			editFld.addClass('is-invalid');
@@ -102,7 +102,7 @@ function initMultipleEkiEditorDlg(editDlg, editorOptions) {
           valueField.val(cleanedValue);
         });
         footer.find(".error-text").remove();
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
+        submitDialog(e, editDlg, { failMessage: messages["common.data.update.error"] });
       } else {
         e.preventDefault();
         footer.prepend(errorTemplate);

@@ -444,7 +444,7 @@ function initSingleQuillEditorDlg(editDlg, editorOptions = {}) {
         valueInput.val(cleanedValue);
         footer.find(".error-text").remove();
         editFldElement.removeClass("is-invalid");
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
+        submitDialog(e, editDlg, { failMessage: messages["common.data.update.error"] });
       } else {
         e.preventDefault();
         editFldElement.addClass("is-invalid");
@@ -569,7 +569,7 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
           valueField.val(cleanedValue);
         });
         footer.find(".error-text").remove();
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
+        submitDialog(e, editDlg, { failMessage: messages["common.data.update.error"] });
       } else {
         e.preventDefault();
         footer.prepend(errorTemplate);

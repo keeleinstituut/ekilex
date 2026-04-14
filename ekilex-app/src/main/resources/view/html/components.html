@@ -752,6 +752,9 @@
     <button type="submit" class="btn btn-primary" th:text="${submitLabel?: #messages.msg('common.save')}">Salvesta</button>
     <button type="button" class="btn btn-default" data-dismiss="modal" th:text="${cancelLabel?: #messages.msg('common.cancel')}">Katkesta</button>
   </div>
+  <div class="display-4 display-flex justify-content-center d-none" data-loader th:fragment="modal_loader">
+    <i class="fa fa-spinner fa-spin"></i>
+  </div>
   <label class="segmented-switch__option" th:fragment="segmented_switch_option">
     <input type="radio" th:name="${inputName}" th:value="${value}" th:checked="${checked}" th:data-segment-target="${value}">
     <span th:text="${label}"></span>

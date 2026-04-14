@@ -81,7 +81,7 @@ function doPostDelete(deleteUrl, callback, force) {
 	});
 };
 
-function submitDialog(e, dlg, failMessage) {
+function submitDialog(e, dlg, { failMessage, showLoader } = {}) {
 	e.preventDefault();
 	const form = dlg.find('form');
 
@@ -89,10 +89,19 @@ function submitDialog(e, dlg, failMessage) {
 		return;
 	}
 
+	const submitButton = dlg.find('button[type="submit"]');
+	const submitButtonContents = submitButton.html();
+	if (showLoader && submitButtonContents) {
+		submitButton.html(submitButtonContents + ' <i class="fa fa-spinner fa-spin"></i>');
+	}
+
 	const successCallback = dlg.attr("data-callback");
 	let successCallbackFunc = createCallback(successCallback);
 	submitForm(form, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
+		if (showLoader && submitButtonContents) {
+			submitButton.html(submitButtonContents);
+		}
 	});
 };
 
@@ -245,7 +254,7 @@ function initAddMultiDataDlg(theDlg) {
 		theDlg.find('[name=value]').val($(this).val());
 	});
 	theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitDialog(e, theDlg, messages["common.data.add.error"]);
+		submitDialog(e, theDlg, { failMessage: messages["common.data.add.error"] });
 	});
 	theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		theDlg.find('.form-control').each(function() {
@@ -266,7 +275,7 @@ function initGenericTextAddDlg(addDlg) {
 		item.val(item.find('option').first().val());
 	});
 	addDlg.find('button[type="submit"]').off('click.genericTextDlg').on('click.genericTextDlg', function(e) {
-		submitDialog(e, addDlg, messages["common.data.add.error"]);
+		submitDialog(e, addDlg, { failMessage: messages["common.data.add.error"] });
 	});
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
@@ -275,7 +284,7 @@ function initGenericTextAddDlg(addDlg) {
 
 function initGenericTextEditDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitDialog(e, editDlg, messages["common.data.update.error"])
+		submitDialog(e, editDlg, { failMessage:messages["common.data.update.error"] })
 	});
 };
 
@@ -283,14 +292,14 @@ function initSelectDlg(selectDlg) {
 	let selectControl = selectDlg.find('select');
 	configureSelectDlg(selectControl, selectDlg);
 	selectControl.off('click').on('click', function(e) {
-		submitDialog(e, selectDlg, messages["common.data.update.error"])
+		submitDialog(e, selectDlg, { failMessage: messages["common.data.update.error"] });
 	});
 	selectControl.off('changed.bs.select').on('changed.bs.select', function(e) {
-		submitDialog(e, selectDlg, messages["common.data.update.error"]);
+		submitDialog(e, selectDlg, { failMessage: messages["common.data.update.error"] });
 	});
 	selectControl.off('keydown').on('keydown', function(e) {
 		if (e.key === "Enter") {
-			submitDialog(e, selectDlg, messages["common.data.update.error"]);
+			submitDialog(e, selectDlg, { failMessage: messages["common.data.update.error"] });
 		}
 	});
 };
