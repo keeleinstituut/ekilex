@@ -51,7 +51,7 @@ import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
-import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.MaskedWordSearchResult;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
@@ -288,7 +288,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(String.class);
 	}
 
-	public WordsMatch getWordsWithMask(String searchWord, SearchContext searchContext) {
+	public MaskedWordSearchResult getWordsWithMask(String searchWord, SearchContext searchContext) {
 
 		searchWord = StringUtils.trim(searchWord);
 		searchWord = StringUtils.replace(searchWord, SEARCH_MASK_CHARS, "%");
@@ -319,7 +319,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		boolean resultExists = resultCount > 0;
 		boolean singleResult = resultCount == 1;
 
-		return new WordsMatch(wordValues, resultExists, singleResult, resultCount);
+		return new MaskedWordSearchResult(wordValues, resultExists, singleResult, resultCount);
 	}
 
 	public List<Word> getWords(String searchWord, SearchContext searchContext, boolean ignoreForms) {
@@ -410,12 +410,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(Word.class);
 	}
 
-	public LanguagesDatasets getAvailableLanguagesDatasets(String searchWord, SearchContext searchContext) {
+	public LanguagesDatasets getAvailableLanguagesDatasets(String searchWordValue, SearchContext searchContext) {
 
 		boolean isWwUnif = searchContext.isWwUnif();
 		boolean isWwLite = searchContext.isWwLite();
 		boolean isWwOs = searchContext.isWwOs();
-		Field<String> searchWordLowerField = DSL.lower(searchWord);
+		Field<String> searchWordLowerField = DSL.lower(searchWordValue);
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");

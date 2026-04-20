@@ -66,6 +66,8 @@ public class Word extends WordTypeData {
 
 	private boolean selected;
 
+	private String searchUri;
+
 	private String lexSearchUrl;
 
 	public String getVocalForm() {
@@ -258,6 +260,14 @@ public class Word extends WordTypeData {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public String getSearchUri() {
+		return searchUri;
+	}
+
+	public void setSearchUri(String searchUri) {
+		this.searchUri = searchUri;
 	}
 
 	public String getLexSearchUrl() {

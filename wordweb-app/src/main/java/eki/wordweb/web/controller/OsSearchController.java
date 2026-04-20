@@ -25,7 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import eki.common.constant.FeedbackType;
 import eki.common.data.SearchStat;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.AbstractSearchResult;
+import eki.wordweb.data.MaskedWordSearchResult;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
 import eki.wordweb.web.bean.SessionBean;
@@ -117,7 +118,7 @@ public class OsSearchController extends AbstractSearchController {
 		boolean isSearchForm = isSearchForm(model);
 
 		SessionBean sessionBean = getOrCreateSessionBean(model);
-		sessionBean.setSearchWord(searchValue);
+		sessionBean.setSearchWordValue(searchValue);
 
 		if (isMaskedSearchCrit) {
 			String cleanMaskSearchValue = cleanupMask(searchValue);
@@ -126,12 +127,11 @@ public class OsSearchController extends AbstractSearchController {
 				return REDIRECT_PREF + SEARCH_URI + OS_URI;
 			}
 			searchValue = cleanMaskSearchValue;
-			WordsMatch wordsMatch = osSearchService.getWordsWithMask(cleanMaskSearchValue);
-			model.addAttribute("wordsMatch", wordsMatch);
-			populateOsModel(null, request, response, model);
+			MaskedWordSearchResult searchResult = osSearchService.getWordsWithMask(cleanMaskSearchValue);
+			populateOsModel(searchResult, request, response, model);
 
 			String searchUri = webUtil.composeOsSearchUri(searchValue, null);
-			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, null, searchUri, wordsMatch);
+			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, null, searchUri, searchResult);
 			statDataCollector.postSearchStat(searchStat);
 
 			return OS_WORDS_PAGE;
@@ -164,7 +164,7 @@ public class OsSearchController extends AbstractSearchController {
 	}
 
 	private void populateOsModel(
-			OsSearchResult searchResult,
+			AbstractSearchResult searchResult,
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Model model) {

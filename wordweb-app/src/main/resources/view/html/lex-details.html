@@ -25,9 +25,9 @@
           </div>
         </th:block>
         <th:block th:if="${lexeme.correctMeaningWord == null}">
-          <div class="d-flex flex-row" th:with="hasMultipleLexLexemes=${wordData.multipleLexLexemesExist}" th:classappend="${hasMultipleLexLexemes ? 'mt-2' : ''}">
+          <div class="d-flex flex-row" th:with="hasMultipleLexLexemes=${searchResult.selectedWordData.multipleLexLexemesExist}" th:classappend="${hasMultipleLexLexemes ? 'mt-2' : ''}">
             <th:block th:if="${hasMultipleLexLexemes}">
-              <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.value}" th:text="${lexeme.levels}"></strong>
+              <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${searchResult.selectedWordData.word.value}" th:text="${lexeme.levels}"></strong>
             </th:block>
             <div class="w-100">
               <div class="meaning">

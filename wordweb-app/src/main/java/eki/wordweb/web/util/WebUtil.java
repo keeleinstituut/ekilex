@@ -29,11 +29,19 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	@Value("${iate.service.url}")
 	private String iateServiceUrl;
 
-	public boolean isMaskedSearchCrit(String searchWord) {
-		if (StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
+	public boolean isMaskedSearchCrit(String searchWordValue) {
+		if (StringUtils.containsAny(searchWordValue, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
 			return true;
 		}
 		return false;
+	}
+
+	public String composeAndEncodeDetailSearchUri(List<String> destinLangs, List<String> datasetCodes, String wordValue, Integer homonymNr, String lang) {
+		String encodedWordValue = encode(wordValue);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
+		return composeDetailSearchUri(destinLangsStr, encodedDatasetCodesStr, encodedWordValue, homonymNr, lang);
 	}
 
 	public String composeAndEncodeDetailSearchUri(List<String> destinLangs, String datasetCode, String wordValue, Integer homonymNr, String lang) {

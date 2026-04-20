@@ -22,6 +22,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.MaskedWordSearchResult;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
@@ -29,8 +30,7 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordSearchElement;
-import eki.wordweb.data.WordsData;
-import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.WordSearchResult;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -40,6 +40,7 @@ import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
+import eki.wordweb.web.util.LinkUtil;
 
 public abstract class AbstractSearchService implements SystemConstant, WebConstant, GlobalConstant {
 
@@ -74,9 +75,16 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
+	protected LinkUtil linkUtil;
+
+	@Autowired
 	protected LanguageContext languageContext;
 
 	public abstract SearchContext getSearchContext(SearchFilter searchFilter);
+
+	public abstract boolean isWwUnif();
+
+	public abstract boolean isWwLite();
 
 	public abstract void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets);
 
@@ -125,41 +133,50 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	}
 
 	@Transactional
-	public WordsMatch getWordsWithMask(SearchFilter searchFilter) {
+	public MaskedWordSearchResult getWordsWithMask(SearchFilter searchFilter) {
 
-		String searchWord = searchFilter.getSearchWord();
+		String searchWordValue = searchFilter.getSearchWordValue();
 
-		if (StringUtils.isBlank(searchWord)) {
-			return new WordsMatch(Collections.emptyList(), false, false, 0);
+		if (StringUtils.isBlank(searchWordValue)) {
+			return new MaskedWordSearchResult(Collections.emptyList(), false, false, 0);
 		}
-		if (!StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
-			return new WordsMatch(Collections.emptyList(), false, false, 0);
+		if (!StringUtils.containsAny(searchWordValue, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
+			return new MaskedWordSearchResult(Collections.emptyList(), false, false, 0);
 		}
 
 		SearchContext searchContext = getSearchContext(searchFilter);
-		WordsMatch wordsMatch = searchDbService.getWordsWithMask(searchWord, searchContext);
+		MaskedWordSearchResult maskedWordSearchResult = searchDbService.getWordsWithMask(searchWordValue, searchContext);
 
-		return wordsMatch;
+		return maskedWordSearchResult;
 	}
 
 	@Transactional
-	public WordsData getWords(SearchFilter searchFilter) {
+	public WordSearchResult getWords(SearchFilter searchFilter) {
 
-		String searchWord = searchFilter.getSearchWord();
+		SearchContext searchContext = getSearchContext(searchFilter);
+		String searchWordValue = searchFilter.getSearchWordValue();
 		Integer homonymNr = searchFilter.getHomonymNr();
 		String lang = searchFilter.getLang();
-		AsWordResult asWordResult = textDecorationService.getAsWordResult(searchWord);
+		AsWordResult asWordResult = textDecorationService.getAsWordResult(searchWordValue);
 		String searchWordUnaccent;
 		if (asWordResult.isValueAsWordExists()) {
 			searchWordUnaccent = asWordResult.getValueAsWord();
 		} else {
 			searchWordUnaccent = asWordResult.getValue();
 		}
-		SearchContext searchContext = getSearchContext(searchFilter);
 		List<Word> allWords = searchDbService.getWords(searchWordUnaccent, searchContext, false);
 		wordConversionUtil.setWordTypeFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
-		wordConversionUtil.selectHomonymWithLang(allWords, homonymNr, lang);
+		wordConversionUtil.selectHomonymWithLang(allWords, searchWordValue, homonymNr, lang);
+		linkUtil.applySearchUris(allWords, searchFilter, isWwUnif(), isWwLite());
+
+		Long selectedWordId = allWords.stream()
+				.filter(Word::isSelected)
+				.map(Word::getWordId)
+				.findFirst()
+				.orElse(null);
+
+		WordData selectedWordData = getWordData(selectedWordId, searchFilter);
 
 		List<Word> wordMatchWords = allWords.stream()
 				.filter(Word::isWordMatch)
@@ -176,23 +193,26 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		int wordResultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = wordResultCount == 1;
 
+		// #1 main flow
 		if (wordOrFormResultExists) {
-			return new WordsData(wordMatchWords, wordResultExists, isSingleResult, wordResultCount, formMatchWordValues, formResultExists);
+			return new WordSearchResult(wordMatchWords, formMatchWordValues, selectedWordData, wordResultExists, isSingleResult, wordResultCount, formResultExists);
 		}
 
-		List<String> similarWordValues = searchDbService.getWordValuesByLevenshteinLess(searchWord, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
+		List<String> similarWordValues = searchDbService.getWordValuesByLevenshteinLess(searchWordValue, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
 		boolean altResultExists = CollectionUtils.isNotEmpty(similarWordValues);
 
+		// #2 alternative flow
 		if (altResultExists) {
-			return new WordsData(similarWordValues, altResultExists);
+			return new WordSearchResult(similarWordValues, altResultExists);
 		}
 
-		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext);
+		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWordValue, searchContext);
 		composeFilteringSuggestions(searchFilter, availableLanguagesDatasets);
 		String displayLang = languageContext.getIso3DisplayLang();
 		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
 
-		return new WordsData(availableLanguagesDatasets);
+		// #3 alternative flow
+		return new WordSearchResult(availableLanguagesDatasets);
 	}
 
 	protected WordData composeWordData(

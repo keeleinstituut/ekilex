@@ -31,14 +31,11 @@ import org.springframework.web.util.UriUtils;
 import eki.common.data.SearchStat;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.AbstractSearchResult;
-import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
-import eki.wordweb.data.Word;
-import eki.wordweb.data.WordData;
-import eki.wordweb.data.WordsData;
+import eki.wordweb.data.WordSearchResult;
 import eki.wordweb.service.UnifSearchService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -56,7 +53,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 	public String home(HttpServletRequest request, Model model) {
 
 		populateSearchModel("", false, request, model);
-		model.addAttribute("wordsData", new WordsData());
+		model.addAttribute("searchResult", new WordSearchResult());
 
 		return UNIF_HOME_PAGE;
 	}
@@ -65,14 +62,14 @@ public class UnifSearchController extends AbstractMainSearchController {
 	public String search(HttpServletRequest request, Model model) {
 
 		populateSearchModel("", false, request, model);
-		model.addAttribute("wordsData", new WordsData());
+		model.addAttribute("searchResult", new WordSearchResult());
 
 		return UNIF_SEARCH_PAGE;
 	}
 
 	@PostMapping(SEARCH_URI + UNIF_URI)
 	public String searchWords(
-			@RequestParam(name = "searchWord") String searchWord,
+			@RequestParam(name = "searchWordValue") String searchWordValue,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
 			@RequestParam(name = "selectedWordLang", required = false) String selectedWordLang,
 			@RequestParam(name = "destinLangsStr") String destinLangsStr,
@@ -80,23 +77,23 @@ public class UnifSearchController extends AbstractMainSearchController {
 			@RequestParam(name = "linkedLexemeId", required = false) Long linkedLexemeId,
 			RedirectAttributes redirectAttributes) {
 
-		searchWord = decode(searchWord);
-		searchWord = cleanupMain(searchWord);
-		if (StringUtils.isBlank(searchWord)) {
+		searchWordValue = decode(searchWordValue);
+		searchWordValue = cleanupMain(searchWordValue);
+		if (StringUtils.isBlank(searchWordValue)) {
 			return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
 		}
 		Integer selectedWordHomonymNr = null;
-		if (webUtil.isMaskedSearchCrit(searchWord)) {
-			String cleanMaskSearchWord = cleanupMask(searchWord);
+		if (webUtil.isMaskedSearchCrit(searchWordValue)) {
+			String cleanMaskSearchWord = cleanupMask(searchWordValue);
 			boolean isValidMaskedSearch = isValidMaskedSearch(cleanMaskSearchWord);
 			if (!isValidMaskedSearch) {
 				return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
 			}
-			searchWord = cleanMaskSearchWord;
+			searchWordValue = cleanMaskSearchWord;
 		} else {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
-		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr, selectedWordLang);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWordValue, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		redirectAttributes.addFlashAttribute("linkedLexemeId", linkedLexemeId);
 
@@ -104,12 +101,12 @@ public class UnifSearchController extends AbstractMainSearchController {
 	}
 
 	@GetMapping({
-			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}/{homonymNr}/{lang}",
-			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}"})
+			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWordValue}/{homonymNr}/{lang}",
+			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWordValue}"})
 	public String searchUnifWordsByUri(
 			@PathVariable(name = "destinLangs") String destinLangsStr,
 			@PathVariable(name = "datasetCodes") String datasetCodesStr,
-			@PathVariable(name = "searchWord") String searchWord,
+			@PathVariable(name = "searchWordValue") String searchWordValue,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			@PathVariable(name = "lang", required = false) String lang,
 			HttpServletRequest request,
@@ -128,17 +125,17 @@ public class UnifSearchController extends AbstractMainSearchController {
 
 		boolean isSearchForm = isSearchForm(model);
 		Long linkedLexemeId = getLinkedLexemeId(model);
-		searchWord = decode(searchWord);
-		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchWord);
+		searchWordValue = decode(searchWordValue);
+		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchWordValue);
 
 		SearchValidation searchValidation;
 		if (isMaskedSearchCrit) {
-			searchValidation = validateAndCorrectMaskedSearch(destinLangsStr, datasetCodesStr, searchWord);
+			searchValidation = validateAndCorrectMaskedSearch(destinLangsStr, datasetCodesStr, searchWordValue);
 		} else {
-			searchValidation = validateAndCorrectWordSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr, lang);
+			searchValidation = validateAndCorrectWordSearch(destinLangsStr, datasetCodesStr, searchWordValue, homonymNrStr, lang);
 		}
 
-		sessionBean.setSearchWord(searchValidation.getSearchWord());
+		sessionBean.setSearchWordValue(searchValidation.getSearchWordValue());
 		sessionBean.setDestinLangs(searchValidation.getDestinLangs());
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 		sessionBean.setLinkedLexemeId(linkedLexemeId);
@@ -163,17 +160,17 @@ public class UnifSearchController extends AbstractMainSearchController {
 		if (isMaskedSearchCrit) {
 
 			searchResult = unifSearchService.getWordsWithMask(searchValidation);
-			model.addAttribute("wordsMatch", searchResult);
+			model.addAttribute("searchResult", searchResult);
 			pageName = UNIF_WORDS_PAGE;
 
 		} else {
 
 			searchResult = unifSearchService.getWords(searchValidation);
-			model.addAttribute("wordsData", searchResult);
+			model.addAttribute("searchResult", searchResult);
 			pageName = UNIF_SEARCH_PAGE;
 		}
 
-		populateSearchModel(searchWord, true, request, model);
+		populateSearchModel(searchWordValue, true, request, model);
 
 		SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_DETAIL, searchValidation, searchResult);
 		statDataCollector.postSearchStat(searchStat);
@@ -194,35 +191,6 @@ public class UnifSearchController extends AbstractMainSearchController {
 		Map<String, List<String>> wordsMap = unifSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 
 		return wordsMap;
-	}
-
-	@GetMapping(WORD_DETAILS_URI + UNIF_URI + "/{wordId}")
-	public String wordDetails(
-			@PathVariable("wordId") Long wordId,
-			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
-
-		List<String> destinLangs = sessionBean.getDestinLangs();
-		List<String> datasetCodes = sessionBean.getDatasetCodes();
-		Long linkedLexemeId = sessionBean.getLinkedLexemeId();
-		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
-		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
-		List<LexemeWord> termLexemes = wordData.getTermLexemes();
-		Word word = wordData.getWord();
-		String wordValue = word.getValue();
-		wordData.setLinkedLexemeId(linkedLexemeId);
-		sessionBean.setRecentWord(wordValue);
-		sessionBean.setLinkedLexemeId(null);
-		linkUtil.applyLexDetailSearchUrl(word, destinLangs);
-		linkUtil.applyDetailSearchUrl(termLexemes, destinLangs);
-
-		populateUserPref(sessionBean, model);
-		model.addAttribute("wordData", wordData);
-		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
-		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
-		model.addAttribute("selectedLangs", destinLangs);
-
-		return UNIF_SEARCH_PAGE + " :: worddetails";
 	}
 
 	@GetMapping(FEELING_LUCKY_URI)
@@ -282,7 +250,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 		return "OK";
 	}
 
-	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr, String lang) {
+	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String datasetCodesStr, String searchWordValue, String homonymNrStr, String lang) {
 
 		SearchValidation searchValidation = new SearchValidation();
 		searchValidation.setValid(true);
@@ -304,9 +272,9 @@ public class UnifSearchController extends AbstractMainSearchController {
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr, lang);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWordValue, homonymNr, lang);
 
-		searchValidation.setSearchWord(searchWord);
+		searchValidation.setSearchWordValue(searchWordValue);
 		searchValidation.setHomonymNr(homonymNr);
 		searchValidation.setLang(lang);
 		searchValidation.setSearchUri(searchUri);
@@ -315,7 +283,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 		return searchValidation;
 	}
 
-	private SearchValidation validateAndCorrectMaskedSearch(String destinLangsStr, String datasetCodesStr, String searchWord) {
+	private SearchValidation validateAndCorrectMaskedSearch(String destinLangsStr, String datasetCodesStr, String searchWordValue) {
 
 		SearchValidation searchValidation = new SearchValidation();
 		searchValidation.setValid(true);
@@ -325,15 +293,15 @@ public class UnifSearchController extends AbstractMainSearchController {
 		boolean isValid = searchValidation.isValid();
 
 		// mask
-		String cleanMaskSearchWord = cleanupMask(searchWord);
+		String cleanMaskSearchWord = cleanupMask(searchWordValue);
 		isValid = isValid & isValidMaskedSearch(cleanMaskSearchWord);
-		isValid = isValid & StringUtils.equals(searchWord, cleanMaskSearchWord);
+		isValid = isValid & StringUtils.equals(searchWordValue, cleanMaskSearchWord);
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
 		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, cleanMaskSearchWord, null, null);
 
-		searchValidation.setSearchWord(cleanMaskSearchWord);
+		searchValidation.setSearchWordValue(cleanMaskSearchWord);
 		searchValidation.setSearchUri(searchUri);
 		searchValidation.setValid(isValid);
 
@@ -385,7 +353,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 		searchValidation.setValid(isValid);
 	}
 
-	private void populateSearchModel(String searchWord, boolean isSearchFilterPresent, HttpServletRequest request, Model model) {
+	private void populateSearchModel(String searchWordValue, boolean isSearchFilterPresent, HttpServletRequest request, Model model) {
 
 		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter();
 		SessionBean sessionBean = populateCommonModel(isSearchFilterPresent, request, model);
@@ -396,8 +364,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 
 		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("wordData", new WordData());
+		model.addAttribute("searchWordValue", searchWordValue);
 	}
 
 	private void populateDatasetFilter(SessionBean sessionBean, Model model) {

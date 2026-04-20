@@ -5,7 +5,7 @@
     <div class="main-search" th:classappend="${pageContext == 'search' ? 'compact' : ''}">
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
-          <input id="search" type="text" name="searchWord" th:value="${searchWord}"
+          <input id="search" type="text" name="searchWordValue" th:value="${searchWordValue}"
                  class="main-search-input form-control search-phrase js-kioskboard-input" 
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
                  th:placeholder="#{search.placeholder}" role="search"
@@ -44,7 +44,7 @@
         </div>
       </form>
       <form th:action="@{${searchUri}}" th:method="post" id="hiddenSearchForm">
-        <input type="hidden" name="searchWord" />
+        <input type="hidden" name="searchWordValue" />
         <input type="hidden" name="selectedWordHomonymNr" />
         <input type="hidden" name="selectedWordLang" />
         <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
@@ -105,73 +105,95 @@
     <div class="search-filter__tags" id="lang-filter-tags"></div>
   </th:block>
   <th:block th:fragment="homonyms">
-    <div th:if="${wordsData.resultExists}" th:class="${wordsData.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
+    <div th:if="${searchResult.resultExists}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
-        <li class="homonym-list-item" th:each="word : ${wordsData.wordMatchWords}">
-          <form class="h-100">
-            <input type="hidden" name="word-id" th:value="${word.wordId}" />
-            <input type="hidden" name="word-selected" th:value="${word.selected}" />
-            <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.value, word.homonymNr, word.lang)}}" />
-            <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
-              <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
+        <th:block th:each="word : ${searchResult.wordMatchWords}" th:with="langData=${@viewUtil.getLangData(word.lang)}">
+          <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
+            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
+              <span>
                 <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
-              </th:block>
-              <div class="homonym__body">
-                <div class="text-body-two">
+              </span>
+              <span class="homonym__body">
+                <span class="text-body-two">
                   <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
                   <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
-                </div>
-                <div class="text-caption homonym__text">
+                </span>
+                <span class="text-caption homonym__text">
                   <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
                   <p th:utext="${word.definitionsWrapup}"></p>
+                </span>
+              </span>
+            </a>
+            <!-- TODO refactor and remove
+            <form class="h-100">
+              <input type="hidden" name="word-id" th:value="${word.wordId}" />
+              <input type="hidden" name="word-selected" th:value="${word.selected}" />
+              <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.value, word.homonymNr, word.lang)}}" />
+              <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
+                <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
+                  <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
+                  <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
+                </th:block>
+                <div class="homonym__body">
+                  <div class="text-body-two">
+                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
+                    <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
+                  </div>
+                  <div class="text-caption homonym__text">
+                    <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+                    <p th:utext="${word.definitionsWrapup}"></p>
+                  </div>
                 </div>
-              </div>
-            </button>
-          </form>
-        </li>
+              </button>
+            </form>
+            -->
+          </li>
+        </th:block>
       </ul>
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}, langData=${@viewUtil.getLangData(wordData.word.lang)}">
+    <div class="d-flex align-items-center flex-wrap" th:with="
+                title = ${@decorUtil.getWordValueMarkup(searchResult.selectedWordData.word)},
+                langData=${@viewUtil.getLangData(searchResult.selectedWordData.word.lang)}">
       <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
       <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       <div class="search__lex-title-wrapper">
-        <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(wordData.word)}" th:lang="${langData.defaultLang ? null : langData.codeIso2}">
+        <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(searchResult.selectedWordData.word)}" th:lang="${langData.defaultLang ? null : langData.codeIso2}">
           tee
         </h1>
-        <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@decorUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
+        <button class="search__long-text-tooltip" th:if="${searchResult.selectedWordData.headwordOverflow}" th:title="${@decorUtil.getWordValueMarkup(searchResult.selectedWordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
           <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
         </button>
       </div>
-      <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-      <button th:aria-label="|#{aria.listen.human} - ${wordData.word.value}|" class="btn btn-speaker"
-              th:if="${wordData.audioFileExists}"
-              th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
+      <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${searchResult.selectedWordData.word.homonymNr}|" th:text="${searchResult.selectedWordData.word.homonymNr}">1</span>
+      <button th:aria-label="|#{aria.listen.human} - ${searchResult.selectedWordData.word.value}|" class="btn btn-speaker"
+              th:if="${searchResult.selectedWordData.audioFileExists}"
+              th:data-audio-url="|@{/files/audio/}${searchResult.selectedWordData.firstAvailableAudioFile}|" onclick="getAndPlayAudio(this)">
         <span class="material-symbols-outlined material-symbols-outlined--small" aria-hidden="true">record_voice_over</span>
       </button>
-      <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
-      <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
+      <span id="spellingLine" class="mr-2" th:if="${searchResult.selectedWordData.word.vocalForm != null}" th:text="${searchResult.selectedWordData.word.vocalForm}"></span>
+      <th:block th:each="wordType : ${searchResult.selectedWordData.word.wordTypes}" th:if="${not #lists.isEmpty(searchResult.selectedWordData.word.wordTypes)}">
         <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
       </th:block>
-      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
-      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
-      <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
+      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${searchResult.selectedWordData.word.displayMorph.value}" th:if="${searchResult.selectedWordData.word.displayMorph != null}">lühend</span>
+      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${searchResult.selectedWordData.word.gender.value}" th:if="${searchResult.selectedWordData.word.gender != null}">sugu</span>
+      <th:block th:each="summarisedPos : ${searchResult.selectedWordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(searchResult.selectedWordData.word.summarisedPoses)}">
         <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${summarisedPos.value}"></span>
       </th:block>
-      <th:block th:if="${wordData.word.regYear}">
+      <th:block th:if="${searchResult.selectedWordData.word.regYear}">
         <span class="lang-code text-caption lang-code--unrestricted mr-2">
           <span th:text="#{label.word.regyear}"></span>
-          <span th:text="${wordData.word.regYear}" class="ml-1"></span>
+          <span th:text="${searchResult.selectedWordData.word.regYear}" class="ml-1"></span>
         </span>
       </th:block>
     </div>
-    <div class="variants" th:if="${wordData.word.lexemeVariants}">
+    <div class="variants" th:if="${searchResult.selectedWordData.word.lexemeVariants}">
       <span class="text-caption" th:text="#{label.word.variant}">Variant</span>
       <ul class="list-unstyled mb-0 ml-2 d-inline-flex gap-1 flex-wrap">
-        <li class="d-inline-flex align-items-baseline" th:each="lexemeVariant,lexemeVariantIter : ${wordData.word.lexemeVariants}">
+        <li class="d-inline-flex align-items-baseline" th:each="lexemeVariant,lexemeVariantIter : ${searchResult.selectedWordData.word.lexemeVariants}">
           <strong th:utext="${@decorUtil.getWordValueMarkup(lexemeVariant)}"></strong>
           <span class="ml-1 text-uppercase text-caption" th:text="${lexemeVariant.variantType.value}" th:if="${lexemeVariant.variantType}"></span>
           <span th:unless="${lexemeVariantIter.last}" aria-hidden="true">,</span>
@@ -180,12 +202,12 @@
     </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">
-    <div class="level-3-panel meaning-panel row d-block" th:if="${!wordData.lexemesExist}">
+    <div class="level-3-panel meaning-panel row d-block" th:if="${!searchResult.selectedWordData.lexemesExist}">
       <div class="col-12 meaning">
         <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole</span>
-        <span th:if="${not #strings.isEmpty(wordData.word.alternativeWord)}">
+        <span th:if="${not #strings.isEmpty(searchResult.selectedWordData.word.alternativeWord)}">
           <span th:text="#{label.word.suggest}">Seni vaata</span>
-          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, wordData.word.alternativeWord)}}" th:text="${wordData.word.alternativeWord}"></a>
+          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, searchResult.selectedWordData.word.alternativeWord)}}" th:text="${searchResult.selectedWordData.word.alternativeWord}"></a>
         </span>
       </div>
     </div>
@@ -213,18 +235,18 @@
   </th:block>
   <th:block th:fragment="lex-detail-view">
     <h3 class="search__block-title" th:text="#{label.lex.title}">Tähendused ja näited</h3>
-    <div th:if="${wordData.rusHeadword}" class="search-alert search-alert--sm search-alert--warning mb-3" role="alert" th:text="#{warning.eki.rus}">
+    <div th:if="${searchResult.selectedWordData.rusHeadword}" class="search-alert search-alert--sm search-alert--warning mb-3" role="alert" th:text="#{warning.eki.rus}">
       See ei ole valmis sõnastik.
     </div>
-    <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2">
+    <section th:each="lexeme : ${searchResult.selectedWordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
   <th:block th:fragment="lex-detail-view-simple">
-    <th:block th:if="${wordData.lexemesExist}">
-      <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-        <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row mb-2">
+    <th:block th:if="${searchResult.selectedWordData.lexemesExist}">
+      <div th:if="${not #lists.isEmpty(searchResult.selectedWordData.lexLexemes)}">
+        <section th:each="lexeme : ${searchResult.selectedWordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row mb-2">
           <div th:replace="lex-details :: lexeme-data"></div>
         </section>
       </div>
@@ -232,7 +254,7 @@
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
   <th:block th:fragment="term-detail-view">
-    <th:block th:each="lexeme : ${wordData.termLexemes}">
+    <th:block th:each="lexeme : ${searchResult.selectedWordData.termLexemes}">
       <div class="search__block">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>

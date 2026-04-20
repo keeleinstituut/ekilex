@@ -30,6 +30,16 @@ import eki.wordweb.data.WordTypeData;
 public class SimpleSearchService extends AbstractSearchService {
 
 	@Override
+	public boolean isWwUnif() {
+		return false;
+	}
+
+	@Override
+	public boolean isWwLite() {
+		return true;
+	}
+
+	@Override
 	public void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
 
 		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
@@ -52,6 +62,10 @@ public class SimpleSearchService extends AbstractSearchService {
 	@Transactional
 	@Override
 	public WordData getWordData(Long wordId, SearchFilter searchFilter) {
+
+		if (wordId == null) {
+			return null;
+		}
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
@@ -80,6 +94,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
 		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
 		wordConversionUtil.filterWordRelationsBySynonyms(word, lexemeWords);
+		linkUtil.applySearchUris(word, searchFilter, isWwUnif(), isWwLite());
 
 		if (CollectionUtils.isNotEmpty(lexemeWords)) {
 			List<WordCollocPosGroups> wordCollocPosGroups = searchDbService.getWordCollocPosGroups(wordId);
@@ -113,7 +128,8 @@ public class SimpleSearchService extends AbstractSearchService {
 		boolean excludeQuestionable = true;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
 		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodes, maxDisplayLevel, excludeQuestionable, fiCollationExists);
-		searchContext.setWwLite(true);
+		searchContext.setWwUnif(isWwUnif());
+		searchContext.setWwLite(isWwLite());
 		return searchContext;
 	}
 }

@@ -33,7 +33,7 @@ public class StatDataUtil {
 		List<String> datasetCodes = Collections.emptyList();
 
 		SearchValidation searchValidation = new SearchValidation();
-		searchValidation.setSearchWord(searchWord);
+		searchValidation.setSearchWordValue(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
 		searchValidation.setDestinLangs(destinLangs);
 		searchValidation.setDatasetCodes(datasetCodes);
@@ -54,7 +54,7 @@ public class StatDataUtil {
 		String referer = request.getHeader("referer");
 		String serverDomain = request.getServerName();
 
-		String searchWord = searchValidation.getSearchWord();
+		String searchWord = searchValidation.getSearchWordValue();
 		Integer homonymNr = searchValidation.getHomonymNr();
 		List<String> destinLangs = searchValidation.getDestinLangs();
 		List<String> datasetCodes = searchValidation.getDatasetCodes();

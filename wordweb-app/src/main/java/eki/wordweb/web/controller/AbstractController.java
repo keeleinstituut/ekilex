@@ -105,6 +105,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		}
 		Integer yearToday = LocalDate.now().getYear();
 		String uilang = languageContext.getIso2DisplayLang();
+
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("yearToday", yearToday);

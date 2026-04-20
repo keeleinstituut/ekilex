@@ -56,7 +56,7 @@ public class FeedbackController implements WebConstant {
 	@ResponseBody
 	public AppResponse feedback(Feedback feedback, @ModelAttribute(SESSION_BEAN) SessionBean sessionBean) {
 
-		feedback.setLastSearch(sessionBean.getSearchWord());
+		feedback.setLastSearch(sessionBean.getSearchWordValue());
 		AppResponse response = feedbackService.feedback(feedback);
 		String messageKey = response.getMessageKey();
 		if (StringUtils.isNotBlank(messageKey)) {

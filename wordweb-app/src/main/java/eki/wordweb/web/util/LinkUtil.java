@@ -11,6 +11,8 @@ import eki.common.constant.GlobalConstant;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.SearchContext;
+import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 
 @Component
@@ -22,38 +24,51 @@ public class LinkUtil implements GlobalConstant {
 	@Autowired
 	private WebUtil webUtil;
 
-	public void applyLexDetailSearchUrl(Word word, List<String> destinLangs) {
+	public void applySearchUris(List<Word> words, SearchFilter searchFilter, boolean isWwUnif, boolean isWwLite) {
+
+		if (CollectionUtils.isEmpty(words)) {
+			return;
+		}
+
+		for (Word word : words) {
+
+			applySearchUris(word, searchFilter, isWwUnif, isWwLite);
+		}
+	}
+
+	public void applySearchUris(Word word, SearchFilter searchFilter, boolean isWwUnif, boolean isWwLite) {
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();
 		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
+
+		List<String> destinLangs = searchFilter.getDestinLangs();
+		List<String> datasetCodes = searchFilter.getDatasetCodes();
+
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String lang = word.getLang();
-		String datasetCode = DATASET_EKI;
-		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangs, datasetCode, wordValue, homonymNr, lang);
-		String searchUrl = baseUrl + searchUri;
-		word.setLexSearchUrl(searchUrl);
+		String searchUri = null;
+		String lexSearchUrl = null;
+		if (isWwUnif) {
+			searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangs, datasetCodes, wordValue, homonymNr, lang);
+			String lexSearchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangs, DATASET_EKI, wordValue, homonymNr, lang);
+			lexSearchUrl = baseUrl + lexSearchUri;
+		} else if (isWwLite) {
+			searchUri = webUtil.composeAndEncodeSimpleSearchUri(destinLangs, wordValue, homonymNr, lang);
+			lexSearchUrl = baseUrl + searchUri;
+		}
+		word.setSearchUri(searchUri);
+		word.setLexSearchUrl(lexSearchUrl);
 	}
 
-	public void applyLexSimpleSearchUrl(Word word, List<String> destinLangs) {
-
-		AppData appData = appDataHolder.getAppData();
-		String baseUrl = appData.getBaseUrl();
-		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
-		String wordValue = word.getValue();
-		Integer homonymNr = word.getHomonymNr();
-		String lang = word.getLang();
-		String searchUri = webUtil.composeAndEncodeSimpleSearchUri(destinLangs, wordValue, homonymNr, lang);
-		String searchUrl = baseUrl + searchUri;
-		word.setLexSearchUrl(searchUrl);
-	}
-
-	public void applyDetailSearchUrl(List<LexemeWord> lexemes, List<String> destinLangs) {
+	public void applyDetailSearchUrl(List<LexemeWord> lexemes, SearchContext searchContext) {
 
 		if (CollectionUtils.isEmpty(lexemes)) {
 			return;
 		}
+
+		List<String> destinLangs = searchContext.getDestinLangs();
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();

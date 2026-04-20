@@ -19,7 +19,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.DatasetHomeData;
 import eki.wordweb.data.WordData;
-import eki.wordweb.data.WordsData;
+import eki.wordweb.data.WordSearchResult;
 import eki.wordweb.service.DatasetContentService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -96,7 +96,7 @@ public class DatasetHomeController extends AbstractController {
 		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
 		model.addAttribute("searchWord", "");
-		model.addAttribute("wordsData", new WordsData());
+		model.addAttribute("wordsData", new WordSearchResult());
 		model.addAttribute("wordData", new WordData());
 		model.addAttribute("destinLangsStr", DESTIN_LANG_ALL);
 		model.addAttribute("datasetCodesStr", datasetCode);

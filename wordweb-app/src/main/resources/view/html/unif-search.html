@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${uilang}" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},_, #{search.title(${searchWord})})">
-<title th:text="#{search.title(${searchWord})}">Otsing</title>
+<head th:replace="common-app :: common_header(~{::title},~{::links},_, #{search.title(${searchWordValue})})">
+<title th:text="#{search.title(${searchWordValue})}">Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
@@ -29,140 +29,146 @@
           </div>
         </div>
       </div>
-      <div class="sticky-scroll-panel__tags" th:classappend="${wordsData.resultExists} ? '' : 'sticky-scroll-panel__tags--empty'">
+      <div class="sticky-scroll-panel__tags" th:classappend="${searchResult.resultExists} ? '' : 'sticky-scroll-panel__tags--empty'">
         <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
         <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel loading">
-      <div th:if="${wordsData.resultExists}" class="loading-indicator">
+      <!-- needs different conditions
+      <div th:if="${searchResult.resultExists}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
+       -->
       <th:block th:replace="common-search :: homonyms"></th:block>
-      <div id="word-details">
-        <div class="no-results__wrapper" th:unless="${wordsData.resultExists}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <th:block th:if="${wordsData.validSearch}">
+      <div id="word-details" th:if="${searchResult}">
+        <div th:if="${searchResult.resultExists}">
+          <input id="selected-word-homonym-nr" type="hidden" th:value="${searchResult.selectedWordData.word.homonymNr}">
+          <input id="selected-word-lang" type="hidden" th:value="${searchResult.selectedWordData.word.lang}">
+          <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${searchResult.selectedWordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>
+          <div class="word-results" th:if="${searchResult.selectedWordData.relevantDataExists}">
+            <div>
+              <th:block th:replace="common-search :: word-data"></th:block>
+              <th:block th:if="${searchResult.selectedWordData.lexemesExist}">
+                <th:block th:if="${not #lists.isEmpty(searchResult.selectedWordData.lexLexemes)}">
+                  <div class="d-flex align-items-end flex-wrap gap-2">
+                    <div class="d-flex mr-auto mt-4">
+                      <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                      <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
+                        <span class="material-symbols-outlined" aria-hidden="true">book_ribbon</span>
+                      </button>
+                      <th:block th:replace="common-app :: clipboard(
+                        word=${searchResult.selectedWordData.word},
+                        text=${#messages.msg('label.clipboard.text.lex')},
+                        link=${searchResult.selectedWordData.word.lexSearchUrl},
+                        date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+                        id=${searchResult.selectedWordData.word.wordId})">
+                      </th:block>
+                    </div>
+                    <div class="text-caption text-darker-gray">
+                      <span th:text="#{label.tooltip.last_modified}"></span>
+                      <span th:text="${#temporals.format(searchResult.selectedWordData.word.manualEventOn, 'dd.MM.yyyy')}" th:if="${searchResult.selectedWordData.word.manualEventOn}"></span>
+                    </div>
+                  </div>
+                  <div class="search__block search__block--unified">
+                    <th:block th:replace="common-search :: lex-detail-view"></th:block>
+                  </div>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(searchResult.selectedWordData.termLexemes)}">
+                  <h2 class="search__pre-block-title mt-4" th:text="#{termdata.title}">Oskussõnastikud</h2>
+                  <th:block th:replace="common-search :: term-detail-view"></th:block>
+                </th:block>
+              </th:block>
+              <th:block th:replace="common-search :: no-lexemes-exist"></th:block>
+            </div>
+            <div>
+              <th:block th:unless="${searchResult.selectedWordData.word.incorrectWordForm}">
+                <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
+                <th:block th:replace="common-search-sidebar :: word-eki-recommendation"></th:block>
+                <th:block th:replace="common-search-sidebar :: etymology"></th:block>
+                <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
+                <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
+                <div class="search__sidebar-block search__block text-body-two" th:if="${searchResult.selectedWordData.estHeadword}">
+                  <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+                </div>
+                <div class="search__sidebar-block search__block text-body-two" th:if="${searchResult.selectedWordData.estHeadword && searchResult.selectedWordData.rusContent}">
+                  <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+                </div>
+                <div class="search__sidebar-block search__block text-body-two" th:if="${searchResult.selectedWordData.skellCompatible}">
+                  <th:block th:replace="common-search-sidebar :: skell-search-link"></th:block>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <script th:inline="javascript">
+            var currentWord = /*[[${searchResult.selectedWordData.word.value}]]*/'';
+            var currentWordId = /*[[${searchResult.selectedWordData.word.wordId}]]*/'';
+            var currentWordLang = /*[[${searchResult.selectedWordData.word.lang}]]*/'';
+            var currentWordPosCodes = /*[[${searchResult.selectedWordData.word.summarisedPosCodesStr}]]*/'';
+            var currentLinkedLexemeId = /*[[${searchResult.selectedWordData.linkedLexemeId}]]*/'';
+            scrollToLexeme(currentLinkedLexemeId);
+          </script>
+        </div>
+        <div class="no-results__wrapper" th:unless="${searchResult.resultExists}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
+          <th:block th:if="${searchResult.validSearch}">
             <h1 class="no-results__title">
-              <span th:text="#{label.search.word.not.found(${searchWord}, ${wordsData.formResultExists ? ',' : ''})}"></span>
-              <th:block th:if="${wordsData.formResultExists}">
-                <span th:text="${wordsData.suggestedWordValues.size() > 1 
+              <span th:text="#{label.search.word.not.found(${searchWordValue}, ${searchResult.formResultExists ? ',' : ''})}"></span>
+              <th:block th:if="${searchResult.formResultExists}">
+                <span th:text="${searchResult.suggestedWordValues.size() > 1 
                               ? #messages.msg('label.suggest.form.plural') 
                               : #messages.msg('label.suggest.form.single')}">
                   see on ka vorm sõnast
                 </span>
-                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+                <th:block th:each="wordValue, wordIter : ${searchResult.suggestedWordValues}">
+                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, wordValue)}}" th:text="${wordIter.last ? wordValue : wordValue + ',&nbsp;'}"></a>
+                </th:block>
               </th:block>
             </h1>
-            <th:block th:unless="${wordsData.suggestionExists}">
-              <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
+            <th:block th:unless="${searchResult.suggestionExists}">
+              <th:block th:if="${searchResult.availableLanguagesDatasets.availableFiltersExist}">
                 <div th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
-                <div
-                  th:with="
-                      hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)},
-                      hasDatasets = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.datasets)}"
-                  class="no-results__columns" th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}">
+                <div th:with="
+                      hasLanguages = ${not #lists.isEmpty(searchResult.availableLanguagesDatasets.languages)},
+                      hasDatasets = ${not #lists.isEmpty(searchResult.availableLanguagesDatasets.datasets)}"
+                      class="no-results__columns"
+                      th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}">
                   <div th:if="${hasLanguages}">
-                    <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
+                    <div th:each="language : ${searchResult.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
                   </div>
                   <div th:if="${hasDatasets}">
-                    <div th:each="dataset : ${wordsData.availableLanguagesDatasets.datasets}" th:text="${dataset.name}"></div>
+                    <div th:each="dataset : ${searchResult.availableLanguagesDatasets.datasets}" th:text="${dataset.name}"></div>
                   </div>
                 </div>
                 <div>
-                  <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
+                  <a th:href="@{${@viewUtil.getDetailSearchUri(searchWordValue)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
                 </div>
               </th:block>
-              <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
+              <th:block th:unless="${searchResult.availableLanguagesDatasets.availableFiltersExist}">
                 <div th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
               </th:block>
             </th:block>
-            <th:block th:if="${wordsData.formResultExists}">
+            <th:block th:if="${searchResult.formResultExists}">
               <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </th:block>
-            <th:block th:if="${wordsData.altResultExists}">
+            <th:block th:if="${searchResult.altResultExists}">
               <span th:text="#{label.suggest.alt}">mõned sarnased märksõnad</span>
               <div class="no-results__list">
-                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${word}" th:data-word="${word}"> </a>
+                <th:block th:each="wordValue, wordIter : ${searchResult.suggestedWordValues}">
+                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, wordValue)}}" th:text="${wordValue}"></a>
+                </th:block>
               </div>
               <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </th:block>
           </th:block>
-          <th:block th:unless="${wordsData.validSearch}">
+          <th:block th:unless="${searchResult.validSearch}">
             <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>
           </th:block>
         </div>
       </div>
     </main>
-    <div id="word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
-      <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
-      <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
-      <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>
-      <div class="word-results" th:if="${wordData.relevantDataExists}">
-        <div>
-          <th:block th:replace="common-search :: word-data"></th:block>
-          <th:block th:if="${wordData.lexemesExist}">
-            <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-              <div class="d-flex align-items-end flex-wrap gap-2">
-                <div class="d-flex mr-auto mt-4">
-                  <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
-                  <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
-                    <span class="material-symbols-outlined" aria-hidden="true">book_ribbon</span>
-                  </button>
-                  <th:block th:replace="common-app :: clipboard(
-                    word=${wordData.word},
-                    text=${#messages.msg('label.clipboard.text.lex')},
-                    link=${wordData.word.lexSearchUrl},
-                    date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
-                    id=${wordData.word.wordId})">
-                  </th:block>
-                </div>
-                <div class="text-caption text-darker-gray">
-                  <span th:text="#{label.tooltip.last_modified}"></span>
-                  <span th:text="${#temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}" th:if="${wordData.word.manualEventOn}"></span>
-                </div>
-              </div>
-              <div class="search__block search__block--unified">
-                <th:block th:replace="common-search :: lex-detail-view"></th:block>
-              </div>
-            </th:block>
-            <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
-              <h2 class="search__pre-block-title mt-4" th:text="#{termdata.title}">Oskussõnastikud</h2>
-              <th:block th:replace="common-search :: term-detail-view"></th:block>
-            </th:block>
-          </th:block>
-          <th:block th:replace="common-search :: no-lexemes-exist"></th:block>
-        </div>
-        <div>
-          <th:block th:unless="${wordData.word.incorrectWordForm}">
-            <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
-            <th:block th:replace="common-search-sidebar :: word-eki-recommendation"></th:block>
-            <th:block th:replace="common-search-sidebar :: etymology"></th:block>
-            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword}">
-              <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
-            </div>
-            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword && wordData.rusContent}">
-              <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
-            </div>
-            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.skellCompatible}">
-              <th:block th:replace="common-search-sidebar :: skell-search-link"></th:block>
-            </div>
-          </th:block>
-        </div>
-      </div>
-      <script th:inline="javascript">
-  		var currentWord = /*[[${wordData.word.value}]]*/'';
-  		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-  		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-  		var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
-  		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-  		scrollToLexeme(currentLinkedLexemeId);
-  	  </script>
-    </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">

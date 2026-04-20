@@ -28,6 +28,8 @@ $(document).on("click", ".btn-ellipsis", function(e) {
 	$(this).tooltip('hide');
 });
 
+/*
+// TODO refactor or remove
 function fetchDetails(wordId, wordSelectUrl) {
 	const wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
 	$.get(wordDetailsUrlWithParams).done(function(data) {
@@ -58,39 +60,7 @@ function fetchDetails(wordId, wordSelectUrl) {
 		$("#mainContentArea").removeClass("loading");
 	})
 }
-
-function setHomonymNrVisibility() {
-	var nrOfHomonyms = $(".homonym-item").length;
-	if (nrOfHomonyms === 1) {
-		$('.word-details-homonym-nr').addClass('d-none');
-	}
-}
-
-function fetchCorpSentences() {
-	var corpDiv = $("#corp");
-	var corpUrlWithParams;
-	if (currentWordPosCodes) {
-		corpUrlWithParams = corpUrl + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang + '/' + currentWordPosCodes;
-	} else {
-		corpUrlWithParams = corpUrl + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang;
-	}
-	$.get(corpUrlWithParams).done(function(data) {
-		corpDiv.replaceWith(data);
-		$('[data-toggle="popover"]').popover({
-			placement: 'top'
-		});
-	}).fail(function(data) {
-	})
-}
-
-function fetchCorpTranslations() {
-	var corpTransDiv = $("#corpTrans");
-	var corpTranslationsUrl = corpTransUrl + '/' + currentWordId + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang;
-	$.get(corpTranslationsUrl).done(function(data) {
-		corpTransDiv.replaceWith(data);
-	}).fail(function(data) {
-	})
-}
+*/
 
 function updateBrowserHistory(wordSelectUrl) {
 	if (currentWord.indexOf('/') !== -1) {
@@ -130,21 +100,17 @@ $(document).on("click", "button[name='expand-btn']", function() {
 	$(this).parent().find(".collapsable[data-collapse='true']").fadeToggle("slow", "linear");
 });
 
+/* TODO remove?
 $(document).on("click", "button[id^='word-details-link']", function() {
 	const wordWrapperForm = $(this).closest("form");
 	const wordId = wordWrapperForm.children("[name='word-id']").val();
 	const wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
 	fetchDetails(wordId, wordSelectUrl);
 });
+*/
 
 $(document).on("click", "a[id^='feedback-link']", function() {
 	$("button[data-target='#feedback-modal']").trigger('click');
-});
-
-$(document).on("click", ".word-form", function() {
-	var word = $(this).data('word');
-	$("input[name = 'searchWord']").val(word);
-	$('#search-btn').trigger('click');
 });
 
 $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {

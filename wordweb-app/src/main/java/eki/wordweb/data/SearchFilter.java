@@ -12,7 +12,7 @@ public class SearchFilter extends AbstractDataObject {
 
 	private List<String> datasetCodes;
 
-	private String searchWord;
+	private String searchWordValue;
 
 	private Integer homonymNr;
 
@@ -42,12 +42,12 @@ public class SearchFilter extends AbstractDataObject {
 		this.datasetCodes = datasetCodes;
 	}
 
-	public String getSearchWord() {
-		return searchWord;
+	public String getSearchWordValue() {
+		return searchWordValue;
 	}
 
-	public void setSearchWord(String searchWord) {
-		this.searchWord = searchWord;
+	public void setSearchWordValue(String searchWordValue) {
+		this.searchWordValue = searchWordValue;
 	}
 
 	public Integer getHomonymNr() {

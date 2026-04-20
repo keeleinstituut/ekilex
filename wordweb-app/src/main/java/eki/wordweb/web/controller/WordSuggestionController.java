@@ -61,7 +61,7 @@ public class WordSuggestionController extends AbstractController {
 			Model model) {
 
 		wordSuggestion.setFeedbackType(FeedbackType.WORD_SUGGESTION);
-		wordSuggestion.setLastSearch(sessionBean.getSearchWord());
+		wordSuggestion.setLastSearch(sessionBean.getSearchWordValue());
 		AppResponse response = feedbackService.feedback(wordSuggestion);
 		String messageKey = response.getMessageKey();
 		if (StringUtils.isNotBlank(messageKey)) {

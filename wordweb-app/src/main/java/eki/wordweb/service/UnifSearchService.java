@@ -32,6 +32,16 @@ import eki.wordweb.data.WordTypeData;
 public class UnifSearchService extends AbstractSearchService {
 
 	@Override
+	public boolean isWwUnif() {
+		return true;
+	}
+
+	@Override
+	public boolean isWwLite() {
+		return false;
+	}
+
+	@Override
 	public void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
 
 		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
@@ -62,6 +72,10 @@ public class UnifSearchService extends AbstractSearchService {
 	@Transactional
 	@Override
 	public WordData getWordData(Long wordId, SearchFilter searchFilter) {
+
+		if (wordId == null) {
+			return null;
+		}
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
@@ -94,6 +108,7 @@ public class UnifSearchService extends AbstractSearchService {
 		lexemeConversionUtil.composeLexemes(wordLang, flatDepthLexemes, langOrderByMap, searchContext, displayLang);
 		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
 		wordConversionUtil.filterWordRelationsBySynonyms(word, lexemeWords);
+		linkUtil.applySearchUris(word, searchFilter, isWwUnif(), isWwLite());
 
 		List<LexemeWord> lexLexemes = lexemeWords.stream()
 				.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))
@@ -116,6 +131,7 @@ public class UnifSearchService extends AbstractSearchService {
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
 			lexemeConversionUtil.flagTermContentExists(termLexemes);
 			lexemeConversionUtil.sortTermLexemes(termLexemes, word);
+			linkUtil.applyDetailSearchUrl(termLexemes, searchContext);
 		}
 
 		// word common
@@ -166,7 +182,9 @@ public class UnifSearchService extends AbstractSearchService {
 		boolean excludeQuestionable = false;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
 		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodesClean, maxDisplayLevel, excludeQuestionable, fiCollationExists);
-		searchContext.setWwUnif(true);
+		searchContext.setWwUnif(isWwUnif());
+		searchContext.setWwLite(isWwLite());
 		return searchContext;
 	}
+
 }

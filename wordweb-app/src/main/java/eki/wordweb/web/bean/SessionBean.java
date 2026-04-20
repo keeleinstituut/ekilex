@@ -14,9 +14,7 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<String> uiSections;
 
-	private String searchWord;
-
-	private String recentWord;
+	private String searchWordValue;
 
 	private Long linkedLexemeId;
 
@@ -44,20 +42,12 @@ public class SessionBean extends AbstractDataObject {
 		this.uiSections = uiSections;
 	}
 
-	public String getSearchWord() {
-		return searchWord;
+	public String getSearchWordValue() {
+		return searchWordValue;
 	}
 
-	public void setSearchWord(String searchWord) {
-		this.searchWord = searchWord;
-	}
-
-	public String getRecentWord() {
-		return recentWord;
-	}
-
-	public void setRecentWord(String recentWord) {
-		this.recentWord = recentWord;
+	public void setSearchWordValue(String searchWordValue) {
+		this.searchWordValue = searchWordValue;
 	}
 
 	public Long getLinkedLexemeId() {

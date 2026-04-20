@@ -441,7 +441,7 @@
           <span class="small-text-alt show-md">See võtab 10-15 minutit ja lisaks võid võita tänukingituse!</span>
         </span>
         <span class="banner-right">
-          <img th:src="@{'/view/images/banner-right-info.svg'}" alt="banner icons">
+          <img th:src="@{/view/images/banner-right-info.svg}" alt="banner icons">
         </span>
       </a>
       <button class="close-banner">
@@ -460,7 +460,7 @@
           <span class="small-text-alt show-sm">See võtab 10-15 minutit ja lisaks võid võita tänukingituse!</span>
         </span>
         <span class="banner-right show-sm">
-          <img th:src="@{'/view/images/banner-right-info.svg'}" alt="banner icons">
+          <img th:src="@{/view/images/banner-right-info.svg}" alt="banner icons">
         </span>
       </a>
       <button class="close-banner">
@@ -473,10 +473,10 @@
       <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
     </button>
     <div class="clipboard__popup" role="dialog"
-     th:aria-labelledby="|clipboard-label-${id}|"
-     th:aria-describedby="|clipboard-content-${id}|"
-     th:data-announce-prefix="|#{label.clipboard.copied} |"
-     th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
+         th:aria-labelledby="|clipboard-label-${id}|"
+         th:aria-describedby="|clipboard-content-${id}|"
+         th:data-announce-prefix="|#{label.clipboard.copied} |"
+         th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
       <span th:id="|clipboard-label-${id}|" th:text="#{label.clipboard.copied}"></span>
       <p th:id="|clipboard-content-${id}|">
         <span class="clipboard__word">

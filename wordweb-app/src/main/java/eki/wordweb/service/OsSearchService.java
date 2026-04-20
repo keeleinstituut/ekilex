@@ -16,7 +16,7 @@ import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.WordSearchElement;
-import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.MaskedWordSearchResult;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.data.os.OsWord;
 import eki.wordweb.service.db.OsDbService;
@@ -68,13 +68,13 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public WordsMatch getWordsWithMask(String searchValue) {
+	public MaskedWordSearchResult getWordsWithMask(String searchValue) {
 
 		if (StringUtils.isBlank(searchValue)) {
-			return new WordsMatch(Collections.emptyList(), false, false, 0);
+			return new MaskedWordSearchResult(Collections.emptyList(), false, false, 0);
 		}
 		if (!StringUtils.containsAny(searchValue, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
-			return new WordsMatch(Collections.emptyList(), false, false, 0);
+			return new MaskedWordSearchResult(Collections.emptyList(), false, false, 0);
 		}
 		return osDbService.getWordsWithMask(searchValue);
 	}

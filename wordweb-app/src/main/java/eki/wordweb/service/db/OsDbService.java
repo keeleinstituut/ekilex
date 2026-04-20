@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.WordSearchElement;
-import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.MaskedWordSearchResult;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
@@ -92,7 +92,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
 
-	public WordsMatch getWordsWithMask(String searchValue) {
+	public MaskedWordSearchResult getWordsWithMask(String searchValue) {
 
 		searchValue = StringUtils.trim(searchValue);
 		searchValue = StringUtils.replace(searchValue, SEARCH_MASK_CHARS, "%");
@@ -119,7 +119,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		boolean resultExists = resultCount > 0;
 		boolean singleResult = resultCount == 1;
 
-		return new WordsMatch(wordValues, resultExists, singleResult, resultCount);
+		return new MaskedWordSearchResult(wordValues, resultExists, singleResult, resultCount);
 	}
 
 	@SuppressWarnings("unchecked")

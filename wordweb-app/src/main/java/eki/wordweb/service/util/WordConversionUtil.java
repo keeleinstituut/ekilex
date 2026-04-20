@@ -88,7 +88,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void selectHomonymWithLang(List<Word> words, Integer homonymNr, String lang) {
+	public void selectHomonymWithLang(List<Word> words, String searchWordValue, Integer homonymNr, String lang) {
 
 		if (CollectionUtils.isEmpty(words)) {
 			return;
@@ -99,20 +99,16 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		} else if (StringUtils.isBlank(lang)) {
 			firstWord.setSelected(true);
 		} else {
-			boolean isSelected = false;
-			for (Word word : words) {
-
-				Integer wordHomonymNr = word.getHomonymNr();
-				String wordLang = word.getLang();
-				isSelected = homonymNr.equals(wordHomonymNr) && StringUtils.equals(lang, wordLang);
-				word.setSelected(isSelected);
-
-				if (isSelected) {
-					break;
-				}
-			}
-			if (!isSelected) {
+			Word selectedWord = words.stream()
+					.filter(word -> StringUtils.equals(searchWordValue, word.getValue())
+							&& homonymNr.equals(word.getHomonymNr())
+							&& StringUtils.equals(lang, word.getLang()))
+					.findFirst()
+					.orElse(null);
+			if (selectedWord == null) {
 				firstWord.setSelected(true);
+			} else {
+				selectedWord.setSelected(true);
 			}
 		}
 	}
