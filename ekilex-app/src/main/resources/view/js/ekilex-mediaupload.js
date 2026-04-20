@@ -10,6 +10,7 @@ $(function () {
       thumbnail: modal.find("[data-media-thumbnail]"),
       uploadErrorBlock: modal.find("[data-error-container]"),
       segmentContainer: modal.find("[data-segment-container]"),
+      loader: modal.find("[data-loader]"),
     };
   }
 
@@ -79,7 +80,8 @@ $(function () {
     return function () {
       const file = this.files?.[0];
       if (!file) return;
-
+      elements.thumbnail.addClass("d-none");
+      elements.loader.removeClass("d-none");
       if (elements.objectFilenameInput.val()) {
         deleteMediaFile(elements.objectFilenameInput.val());
       }
@@ -110,6 +112,9 @@ $(function () {
         .fail(function (data) {
           console.log(data);
           showError(elements, messages["common.error"]);
+        })
+        .always(function () {
+          elements.loader.addClass("d-none");
         });
 
       mediaInputApi.fileInput.val("");
@@ -134,7 +139,10 @@ $(function () {
         if (!validateMediaUrl(elements)) {
           return;
         }
-        submitDialog(e, modal, messages["common.data.add.error"]);
+        submitDialog(e, modal, {
+          failMessage: messages["common.data.add.error"],
+          showLoader: true,
+        });
       });
   }
 

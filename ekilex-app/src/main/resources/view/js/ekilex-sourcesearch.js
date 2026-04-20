@@ -126,11 +126,12 @@ $.fn.addSourceSubmitPlugin = function() {
 			} else {
 				nameError.addClass('d-none');
 			}
-			const editFld = addSourceForm.find('[data-id="editFld"]');
+			const dlg = obj.closest('.modal');
+			const editor = dlg.data("quillEditor");
+			const editorContent = getQuillContent(editor);
 			const valueInput = addSourceForm.find('[name=valuePrese]');
-			let editFldValue = editFld.val();
-			editFldValue = cleanEkiEditorValue(editFldValue);
-			valueInput.val(editFldValue);
+			const cleanedEditorValue = cleanEkiEditorValue(editorContent);
+			valueInput.val(cleanedEditorValue);
 			if (viewType === 'source') {
 				addSource(addSourceForm);
 			} else {

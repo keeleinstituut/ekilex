@@ -1,8 +1,8 @@
 $.fn.initAddSourcePlugin = function() {
 	return this.each(function() {
 		const form = $(this);
-		const editFld = form.find('[data-id="editFld"]');
-		initCkEditor(editFld);
+		const dlg = form.closest('.modal');
+		initQuillWithoutSubmitHandling(dlg);
 	});
 }
 
@@ -10,10 +10,10 @@ $.fn.editSourcePlugin = function() {
 	return this.each(function() {
 		const form = $(this);
 		const sourceId = form.find('[name=id]').val();
-		const editFld = form.find('[data-id="editFld"]');
 		const valueInput = form.find('[name=valuePrese]');
-		editFld.val(valueInput.val());
-		initCkEditor(editFld);
+		const dlg = form.closest('.modal');
+		const editor = initQuillWithoutSubmitHandling(dlg);
+  		setQuillContent(editor, valueInput.val());
 
 		form.on('submit', function(e) {
 			e.preventDefault();
@@ -31,9 +31,10 @@ $.fn.editSourcePlugin = function() {
 				nameError.addClass('d-none');
 			}
 
-			let editFldValue = editFld.val();
-			editFldValue = cleanEkiEditorValue(editFldValue);
-			valueInput.val(editFldValue);
+			const editorContent = getQuillContent(editor);
+			const valueInput = form.find('[name=valuePrese]');
+			const cleanedEditorValue = cleanEkiEditorValue(editorContent);
+			valueInput.val(cleanedEditorValue);
 
 			$.ajax({
 				url: form.attr('action'),

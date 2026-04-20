@@ -2386,7 +2386,7 @@
               label = #{lex.placeholder.image.title},
               name = 'title'
               )"></th:block>
-
+            <th:block th:replace="components :: modal_loader"></th:block>
             <th:block th:replace="components :: modal_footer(submitLabel = #{common.add})"></th:block>
           </div>
         </form>
@@ -2462,6 +2462,7 @@
                   name = 'title'
                 )"></th:block>
             </div>
+            <th:block th:replace="components :: modal_loader"></th:block>
           </div>
           <th:block th:replace="components :: modal_footer(submitLabel = #{common.save})"></th:block>
         </form>
@@ -2542,6 +2543,7 @@
                 label = #{lex.placeholder.media.title},
                 name = 'title'
                 )"></th:block>
+              <th:block th:replace="components :: modal_loader"></th:block>
               <th:block th:replace="components :: modal_footer"></th:block>
             </div>
           </form>
@@ -2616,6 +2618,7 @@
                   name = 'title'
                 )"></th:block>
             </div>
+            <th:block th:replace="components :: modal_loader"></th:block>
           </div>
           <th:block th:replace="components :: modal_footer(submitLabel = #{common.save})"></th:block>
         </form>

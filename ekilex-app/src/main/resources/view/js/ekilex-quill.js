@@ -350,6 +350,7 @@ function initQuillDlg(dlg, options = {}) {
   editor.on("text-change", function () {
     updateUndoRedoButtons(editor, dlg);
   });
+  dlg.data("quillEditor", editor);
 
   return editor;
 }
@@ -403,6 +404,16 @@ function getQuillContent(editor) {
   return stripPTags(editor.root.innerHTML);
 }
 
+function containsContent(content) {
+  return [
+    content,
+    content !== "<br>",
+    content !== "<p><br></p>",
+    content !== "<p></p>",
+    content?.trim() !== "",
+  ].every(Boolean);
+}
+
 function cleanupQuillEditors(dlg) {
   dlg.find(".quill-editor-wrapper").remove();
   dlg.find("[data-editor-field]").show();
@@ -435,16 +446,15 @@ function initSingleQuillEditorDlg(editDlg, editorOptions = {}) {
     .off("click")
     .on("click", function (e) {
       const editorContent = getQuillContent(editor);
-      const hasContent =
-        editorContent &&
-        editorContent !== "<br>" &&
-        editorContent.trim() !== "";
+      const hasContent = containsContent(editorContent);
       if (hasContent) {
         const cleanedValue = cleanEkiEditorValue(editorContent);
         valueInput.val(cleanedValue);
         footer.find(".error-text").remove();
         editFldElement.removeClass("is-invalid");
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
+        submitDialog(e, editDlg, {
+          failMessage: messages["common.data.update.error"],
+        });
       } else {
         e.preventDefault();
         editFldElement.addClass("is-invalid");
@@ -549,10 +559,7 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
       const areValuesFilled = editFields.every(
         ({ editorFieldElement, editor }) => {
           const editorContent = editor.root.innerHTML;
-          const hasContent =
-            editorContent &&
-            editorContent !== "<p><br></p>" &&
-            editorContent !== "<p></p>";
+          const hasContent = containsContent(editorContent);
           if (hasContent || editorFieldElement.data("optional")) {
             editorFieldElement.removeClass("is-invalid");
             return true;
@@ -569,7 +576,9 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
           valueField.val(cleanedValue);
         });
         footer.find(".error-text").remove();
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
+        submitDialog(e, editDlg, {
+          failMessage: messages["common.data.update.error"],
+        });
       } else {
         e.preventDefault();
         footer.prepend(errorTemplate);
@@ -666,10 +675,7 @@ $.fn.initTermWordValueQuillDlgPlugin = function () {
           e.preventDefault();
           const submitBtn = $(this);
           const editorContent = getQuillContent(editor);
-          const hasContent =
-            editorContent &&
-            editorContent !== "<br>" &&
-            editorContent.trim() !== "";
+          const hasContent = containsContent(editorContent);
           if (hasContent) {
             const cleanedValue = cleanEkiEditorValue(editorContent);
             valueInput.val(cleanedValue);
@@ -791,6 +797,12 @@ $.fn.initTermMeaningTableQuillDlgOnClickPlugin = function () {
     });
   });
 };
+
+function initQuillWithoutSubmitHandling(editDlg, editorOptions = {}) {
+  cleanupQuillEditors(editDlg);
+  const editor = initQuillDlg(editDlg, editorOptions);
+  return editor;
+}
 
 class QuillLink {
   constructor(editor, dlg) {
