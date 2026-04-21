@@ -54,18 +54,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>dsimp</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.DatasetImporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>dsexp</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.DatasetExporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
 			<id>domf</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.DomainFixer</spring.boot.mainclass>
@@ -90,18 +78,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>depu</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.DefinitionPurger</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>wrsupr</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.WordRelationSuperlReorder</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
 			<id>codup</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.CollocationDuplicatePurger</spring.boot.mainclass>
@@ -117,13 +93,6 @@
 			<id>langr</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.LanguageGroupLoader</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<!-- temporary. remove later-->
-		<profile>
-			<id>msrvt</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.MediaServerTestbench</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>
@@ -204,10 +173,6 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 		</dependency>
@@ -275,10 +240,6 @@
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.atlassian.commonmark</groupId>

@@ -1,5 +1,5 @@
-eki.ekilex:ekilex-app:jar:1.47-SNAPSHOT
-+- eki.common:eki-common:jar:1.47-SNAPSHOT:compile
+eki.ekilex:ekilex-app:jar:1.48-SNAPSHOT
++- eki.common:eki-common:jar:1.48-SNAPSHOT:compile
 |  +- org.apache.commons:commons-lang3:jar:3.12.0:compile
 |  +- org.springframework:spring-core:jar:5.3.23:compile
 |  |  \- org.springframework:spring-jcl:jar:5.3.23:compile
@@ -43,7 +43,6 @@ eki.ekilex:ekilex-app:jar:1.47-SNAPSHOT
 +- org.apache.commons:commons-collections4:jar:4.4:compile
 +- org.apache.commons:commons-math3:jar:3.6.1:compile
 +- commons-io:commons-io:jar:2.18.0:compile
-+- commons-fileupload:commons-fileupload:jar:1.5:compile
 +- commons-validator:commons-validator:jar:1.9.0:compile
 |  +- commons-beanutils:commons-beanutils:jar:1.9.4:compile
 |  +- commons-digester:commons-digester:jar:2.1:compile
@@ -100,7 +99,6 @@ eki.ekilex:ekilex-app:jar:1.47-SNAPSHOT
 +- com.flipkart.zjsonpatch:zjsonpatch:jar:0.4.11:compile
 +- org.dom4j:dom4j:jar:2.2.0:compile
 +- jaxen:jaxen:jar:1.2.0:compile
-+- org.jsoup:jsoup:jar:1.13.1:compile
 +- com.atlassian.commonmark:commonmark:jar:0.10.0:compile
 +- org.jooq:jooq-meta:jar:3.14.16:compile
 +- org.jooq:jooq-codegen:jar:3.14.16:compile
