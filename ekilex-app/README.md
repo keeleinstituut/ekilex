@@ -17,11 +17,12 @@ Now you can edit all your `.scss` files and `.html` files and they will be autom
 You do this by first entering `Ctr+C` to your command line and then calling `grunt` again. Now grunt-cli will see the new files
 
 ## Running developer server
-* Start a tunnel between test database and your computer `ssh username@ekitest.tripledev.ee -L 5433:127.0.0.1:5432 -N` - run it at the root folder of the project. If there is no output from the command then it means everything is working. Otherwise it will output errors.
+* Start a tunnel between test database and your computer `ssh username@ekitest.tripledev.ee -L 5433:127.0.0.1:5432 -N -p {portHere}` - ask developer for ssh port and run it at the root folder of the project. If there is no output from the command then it means everything is working. Otherwise it will output errors.
 * Install Maven application (at root folder) - `mvn clean install -D skipTests`
 * Add application-dev.properties file to src/main/resources with this content and tweak as necessary:
 ```
 spring.datasource.main.url=jdbc:postgresql://localhost:5433/ekilex
+spring.datasource.arch.url=jdbc:postgresql://localhost:5433/archive
 server.servlet.context-path=/
 ```  
 * Start Ekilex server (at ekilex-app folder) - `mvn spring-boot:run -D spring-boot.run.profiles=dev`
