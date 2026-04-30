@@ -14957,6 +14957,13 @@ body {
   font-size: 2.25rem;
   color: var(--color-dark-blue);
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@supports (-moz-appearance: none) {
+  .search__lex-title {
+    --eki-stress-width: 70%;
+  }
 }
 .search__lex-title-wrapper {
   display: inline-flex;
@@ -14964,10 +14971,6 @@ body {
   gap: 24px;
   max-width: calc(100dvw - 30px);
   margin-right: 8px;
-}
-.search__lex-title-wrapper h1 {
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .search__long-text-tooltip {
   display: none;
@@ -19697,7 +19700,7 @@ eki-stress::after {
   position: absolute;
   content: "\301";
   display: flex;
-  width: 100%;
+  width: var(--eki-stress-width, 100%);
   top: -2px;
   font-size: inherit;
   left: 30%;
