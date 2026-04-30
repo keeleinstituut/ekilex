@@ -125,7 +125,7 @@
       <ul class="homonym-list list-unstyled w-100">
         <th:block th:each="word : ${searchResult.wordMatchWords}" th:with="langData=${@viewUtil.getLangData(word.lang)}">
           <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
-            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
+            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item">
               <span>
                 <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">

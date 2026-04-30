@@ -10,6 +10,10 @@ $(window).on('load', function() {
 	initStickyScrollPanel();
 })
 
+document.addEventListener('DOMContentLoaded', () => {
+	initHomonymScroll();
+});
+
 //Dismiss popovers when clicked outside of it
 $(document).on('click', function(e) {
 	$('[data-toggle="popover"],[data-original-title]').each(function() {
@@ -92,9 +96,13 @@ function initStickyScrollPanel() {
 	let stickyScrollTimeout;
 	const links = [...tags.children];
 	links.forEach(link => {
+		const target = document.getElementById(link.href.split("#")?.[1]);
+		if (!target || target?.dataset?.blockEmpty === "true") {
+			return;
+		}
+		link.classList.remove('d-none');
 		link.addEventListener('click', e => {
 			e.preventDefault();
-			const target = document.getElementById(link.href.split("#")?.[1]);
 			if (target) {
 				const elementPosition = target.getBoundingClientRect().top;
 				// Scroll to element, subtracting the sticky panels height and a little extra
@@ -143,5 +151,33 @@ function initStickyScrollPanel() {
 				element[1].classList.add(activeClass);
 			}
 		}, 50);
+	});
+}
+
+
+function initHomonymScroll() {
+	const key = "homonym-scroll";
+	const savedScroll = sessionStorage.getItem(key);
+	const listContainer = document.querySelector(".homonym-list");
+	if (!listContainer) {
+		return;
+	}
+	if (savedScroll) {
+		const [scrollLeft, url] = savedScroll.split("|||");
+		// Check if the saved partial url is still present in the homonym list to make sure we're on the same homonyms
+		if (document.querySelector(`.homonym-list a[href*="${url}"]`)) {
+			listContainer.scrollTo({
+				left: scrollLeft,
+			});
+		} else {
+			sessionStorage.removeItem(key);
+		}
+	}
+	
+	listContainer.addEventListener("click", (e) => {
+		if (e.target?.closest(".homonym-list-item")) {
+			const href = e.target?.href ?? e.target?.closest("a")?.href;
+			sessionStorage.setItem(key, `${listContainer.scrollLeft}|||${href.split('/search')?.[1]}`);
+		}
 	});
 }
