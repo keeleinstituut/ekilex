@@ -1,4 +1,4 @@
-package eki.ekilex.data;
+package eki.ekilex.data.etym1;
 
 import java.util.List;
 

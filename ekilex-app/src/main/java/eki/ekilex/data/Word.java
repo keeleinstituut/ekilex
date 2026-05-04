@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
+import eki.ekilex.data.etym1.WordEtym;
 
 @JsonInclude(Include.NON_EMPTY)
 public class Word extends AbstractGrantEntity implements DecoratedWordType {

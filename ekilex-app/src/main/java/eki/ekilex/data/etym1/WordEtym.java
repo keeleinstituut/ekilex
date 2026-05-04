@@ -1,8 +1,9 @@
-package eki.ekilex.data;
+package eki.ekilex.data.etym1;
 
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.SourceLink;
 
 @Deprecated
 public class WordEtym extends AbstractDataObject {

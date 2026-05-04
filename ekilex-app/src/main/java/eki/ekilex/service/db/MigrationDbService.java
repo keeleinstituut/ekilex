@@ -23,6 +23,8 @@ import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
@@ -399,5 +401,36 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.set(t.field("value_prese", String.class), valuePrese)
 				.where(t.field("id", Long.class).eq(id))
 				.execute();
+	}
+
+	public Long getWordId(String wordValue, String asWordValue, List<String> languageCodes, String datasetCode) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+
+		Condition where;
+		if (StringUtils.isBlank(asWordValue)) {
+			where = w.VALUE.eq(wordValue);
+		} else {
+			where = DSL.or(w.VALUE.eq(wordValue), w.VALUE_AS_WORD.eq(asWordValue));
+		}
+		if (CollectionUtils.isNotEmpty(languageCodes)) {
+			where = where.and(w.LANG.in(languageCodes));
+		}
+		where = where.andExists(DSL
+				.select(l.ID)
+				.from(l)
+				.where(l.WORD_ID.eq(w.ID)
+						.and(l.DATASET_CODE.eq(datasetCode))));
+
+		return mainDb
+				.select(w.ID)
+				.from(w)
+				.where(where)
+				.orderBy(w.ID)
+				.limit(1)
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+
 	}
 }

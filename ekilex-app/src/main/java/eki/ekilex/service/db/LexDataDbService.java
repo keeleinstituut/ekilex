@@ -17,7 +17,6 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Word;
@@ -28,6 +27,7 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.etym1.WordEtymTuple;
 
 @Component
 public class LexDataDbService extends AbstractDataDbService {

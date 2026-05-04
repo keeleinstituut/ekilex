@@ -1,6 +1,5 @@
 package eki.ekilex.cli.runner;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,34 +11,28 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import eki.common.constant.ClassifierName;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.LanguageGroup;
-import eki.ekilex.service.db.ClassifierDbService;
-import eki.ekilex.service.db.CommonDataDbService;
 
 @Component
-public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
+public class LanguageGroupLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(LanguageGroupLoaderRunner.class);
 
-	private static final String CLASSIF_LANG_GROUP_SS1_FILENAME = "classif-lang-group-ss1.tsv";
+	@Override
+	List<String> getRequiredFilenames() {
+		List<String> requiredFilenames = Arrays.asList(
+				CLASSIF_LANG_GROUP_SS1_FILENAME,
+				CLASSIF_LANG_GROUP_VSL_FILENAME,
+				CLASSIF_LANG_VSL_FILENAME);
+		return requiredFilenames;
+	}
 
-	private static final String CLASSIF_LANG_GROUP_VSL_FILENAME = "classif-lang-group-vsl.tsv";
-
-	private static final String CLASSIF_LANG_VSL_FILENAME = "classif-lang-vsl.tsv";
-
-	@Autowired
-	private CommonDataDbService commonDataDbService;
-
-	@Autowired
-	private ClassifierDbService classifierDbService;
-
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String folderPath) throws Exception {
 
 		validateFilesExist(folderPath);
@@ -47,8 +40,8 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 
 		logger.info("Loading language groups...");
 
-		List<LanguageGroup> languageGroups = classifierDbService.getLanguageGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<String> languageCodes = collectExistingLanguageCodes();
+		List<LanguageGroup> languageGroups = getLanguageGroups();
+		List<String> languageCodes = getLanguageCodes();
 		Map<String, List<String>> languageToGroupMapSs1 = collectLanguageToGroupMapSs1(folderPath);
 		List<String> languageCodesVsl = collectLanguageCodesVsl(folderPath);
 		List<String> languageGroupNamesVsl = collectLanguageGroupNamesVsl(folderPath);
@@ -63,13 +56,6 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 
 		logger.info("Completed load. Added {} languages to {} groups, altogether created {} group members",
 				languageCount, languageGroupCount, languageGroupMemberCount.getValue());
-	}
-
-	private List<String> collectExistingLanguageCodes() {
-
-		List<Classifier> languages = commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
-		List<String> languageCodes = languages.stream().map(Classifier::getCode).collect(Collectors.toList());
-		return languageCodes;
 	}
 
 	private Map<String, List<String>> collectLanguageToGroupMapSs1(String folderPath) throws Exception {
@@ -136,43 +122,6 @@ public class LanguageGroupLoaderRunner extends AbstractLoaderRunner {
 				classifierDbService.createLanguageGroupMember(languageGroupId, languageCode);
 				languageGroupMemberCount.increment();
 			}
-		}
-	}
-
-	private String cleanup(String folderPath) {
-
-		folderPath = StringUtils.trim(folderPath);
-		if (!StringUtils.endsWith(folderPath, "/")) {
-			folderPath = folderPath + "/";
-		}
-		return folderPath;
-	}
-
-	private void validateFilesExist(String folderPath) throws DataLoadingException {
-
-		logger.info("Validating files exist...");
-
-		if (StringUtils.isEmpty(folderPath)) {
-			throw new DataLoadingException("Failide kataloog on määramata!");
-		}
-
-		folderPath = cleanup(folderPath);
-		File folder = new File(folderPath);
-
-		if (!folder.exists()) {
-			throw new DataLoadingException("Sellist failide kataloogi pole!!");
-		}
-
-		List<String> allFilenames = Arrays.asList(folder.list());
-		List<String> requiredFilenames = Arrays.asList(
-				CLASSIF_LANG_GROUP_SS1_FILENAME,
-				CLASSIF_LANG_GROUP_VSL_FILENAME,
-				CLASSIF_LANG_VSL_FILENAME);
-
-		boolean requiredFilesExist = CollectionUtils.containsAll(allFilenames, requiredFilenames);
-
-		if (!requiredFilesExist) {
-			throw new DataLoadingException("Selles kataloogis puuduvad vajalikud failid!");
 		}
 	}
 

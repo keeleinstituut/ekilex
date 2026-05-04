@@ -53,8 +53,6 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEkiRecommendation;
-import eki.ekilex.data.WordEtym;
-import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordOsMorph;
@@ -62,6 +60,8 @@ import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.data.etym1.WordEtym;
+import eki.ekilex.data.etym1.WordEtymTuple;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component

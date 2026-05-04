@@ -10,23 +10,31 @@ import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 import java.util.List;
 
 import org.jooq.CommonTableExpression;
+import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
 import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.WordEtymNodeTuple;
+import eki.common.constant.FreeformConstant;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
+import eki.ekilex.data.etym1.WordEtymNodeTuple;
 
+// TODO soon will be obsolete
 @Component
-public class WordEtymDbService extends AbstractDataDbService {
+public class WordEtymDbService implements GlobalConstant, FreeformConstant {
+
+	@Autowired
+	private DSLContext mainDb;
 
 	public List<WordEtymNodeTuple> getWordEtymTuples(Long wordId) {
 

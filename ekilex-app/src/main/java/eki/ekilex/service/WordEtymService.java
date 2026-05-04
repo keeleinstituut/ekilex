@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.data.IntWrap;
-import eki.ekilex.data.WordEtymNode;
-import eki.ekilex.data.WordEtymNodeLink;
-import eki.ekilex.data.WordEtymNodeTuple;
-import eki.ekilex.data.WordEtymRel;
-import eki.ekilex.data.WordEtymTree;
+import eki.ekilex.data.etym1.WordEtymNode;
+import eki.ekilex.data.etym1.WordEtymNodeLink;
+import eki.ekilex.data.etym1.WordEtymNodeTuple;
+import eki.ekilex.data.etym1.WordEtymRel;
+import eki.ekilex.data.etym1.WordEtymTree;
 import eki.ekilex.service.db.WordEtymDbService;
 
 @Component

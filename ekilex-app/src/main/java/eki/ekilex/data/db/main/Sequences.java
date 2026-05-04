@@ -666,6 +666,61 @@ public class Sequences {
     public static final Sequence<Long> WORD_EKI_RECOMMENDATION_ID_SEQ = Internal.createSequence("word_eki_recommendation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.word_etym_comment_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_COMMENT_ID_SEQ = Internal.createSequence("word_etym_comment_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_comment_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_COMMENT_ORDER_BY_SEQ = Internal.createSequence("word_etym_comment_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_group_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_GROUP_ID_SEQ = Internal.createSequence("word_etym_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_group_member_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_GROUP_MEMBER_ID_SEQ = Internal.createSequence("word_etym_group_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_group_member_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_GROUP_MEMBER_ORDER_BY_SEQ = Internal.createSequence("word_etym_group_member_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_group_tree_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_GROUP_TREE_ID_SEQ = Internal.createSequence("word_etym_group_tree_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_group_tree_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_GROUP_TREE_ORDER_BY_SEQ = Internal.createSequence("word_etym_group_tree_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_ID_SEQ = Internal.createSequence("word_etym_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_note_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_NOTE_ID_SEQ = Internal.createSequence("word_etym_note_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_note_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_NOTE_ORDER_BY_SEQ = Internal.createSequence("word_etym_note_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_ORDER_BY_SEQ = Internal.createSequence("word_etym_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.word_etymology_id_seq</code>
      */
     public static final Sequence<Long> WORD_ETYMOLOGY_ID_SEQ = Internal.createSequence("word_etymology_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

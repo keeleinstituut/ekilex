@@ -98,21 +98,21 @@ $.fn.collocMemberMoveOrCopySelectedPlugin = function() {
 				data: collocMemberMoveOrCopyForm.serialize(),
 				method: "POST",
 			})
-				.done(function(response) {
-					closeWaitDlg();
-					if (response.status == "OK") {
-						collocMemberMoveOrCopyModal.modal("hide");
-						successCallbackFunc();
-						openMessageDlg(response.message);
-					} else {
-						openAlertDlg(messages["common.error"]);
-					}
-				})
-				.fail(function(response) {
-					closeWaitDlg();
-					console.log(response);
+			.done(function(response) {
+				closeWaitDlg();
+				if (response.status == "OK") {
+					collocMemberMoveOrCopyModal.modal("hide");
+					successCallbackFunc();
+					openMessageDlg(response.message);
+				} else {
 					openAlertDlg(messages["common.error"]);
-				});
+				}
+			})
+			.fail(function(response) {
+				closeWaitDlg();
+				console.log(response);
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 };
@@ -268,17 +268,17 @@ $.fn.collocMemberFormSearchPlugin = function() {
 				data: collocMemberSearchForm.serialize(),
 				method: "POST",
 			})
-				.done(function(data) {
-					closeWaitDlg();
-					$("button[name='collocMemberSaveBtn']").prop("disabled", false);
-					$("#add_colloc_member_section").html(data);
-					initCollapse("#add_colloc_member_section");
-				})
-				.fail(function(data) {
-					console.log(data);
-					closeWaitDlg();
-					openAlertDlg(messages["common.error"]);
-				});
+			.done(function(data) {
+				closeWaitDlg();
+				$("button[name='collocMemberSaveBtn']").prop("disabled", false);
+				$("#add_colloc_member_section").html(data);
+				initCollapse("#add_colloc_member_section");
+			})
+			.fail(function(data) {
+				console.log(data);
+				closeWaitDlg();
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 };
@@ -302,19 +302,19 @@ $.fn.collocMemberSavePlugin = function() {
 				data: collocMemberSaveForm.serialize(),
 				method: "POST",
 			})
-				.done(function(data) {
-					if (data.status == "OK") {
-						collocMemberSaveModal.modal("hide");
-						successCallbackFunc();
-						openMessageDlg(data.message);
-					} else if (data.status == "INVALID") {
-						openAlertDlg(data.message);
-					}
-				})
-				.fail(function(data) {
-					console.log(data);
-					openAlertDlg(messages["common.error"]);
-				});
+			.done(function(data) {
+				if (data.status == "OK") {
+					collocMemberSaveModal.modal("hide");
+					successCallbackFunc();
+					openMessageDlg(data.message);
+				} else if (data.status == "INVALID") {
+					openAlertDlg(data.message);
+				}
+			})
+			.fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 };

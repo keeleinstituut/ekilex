@@ -50,7 +50,7 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 	protected MigrationDbService migrationDbService;
 
 	@Autowired
-	private TextDecorationService textDecorationService;
+	protected TextDecorationService textDecorationService;
 
 	protected void createSecurityContext() {
 

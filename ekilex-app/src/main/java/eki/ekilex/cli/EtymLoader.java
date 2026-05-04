@@ -31,7 +31,9 @@ public class EtymLoader implements CommandLineRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EtymLoader.class);
 
-	private static final String ARG_KEY_IMPFILE = "impfile";
+	//private static final String ARG_KEY_IMPFILE = "impfile";
+
+	private static final String ARG_KEY_IMPFOLDER = "impfolder";
 
 	@Autowired
 	private ConfigurableApplicationContext context;
@@ -39,7 +41,8 @@ public class EtymLoader implements CommandLineRunner {
 	@Autowired
 	private EtymLoaderRunner runner;
 
-	//mvn spring-boot:run -P etyl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/projects/ekilex/etym/etymoloogia_ss1.xml"" 
+	//mvn spring-boot:run -P etyl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/projects/ekilex/etym""
+	//-D spring-boot.run.arguments="impfile="/projects/ekilex/etym/etymoloogia_ss1.xml"" 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");
@@ -50,20 +53,14 @@ public class EtymLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		String importFilePath = ConsolePromptUtil.getKeyValue(ARG_KEY_IMPFILE, args);
-		if (StringUtils.isBlank(importFilePath)) {
-			logger.warn("Please provide \"{}\" with arguments", ARG_KEY_IMPFILE);
-			context.close();
-			return;
-		}
-		boolean isValidFilePath = isValidFilePath(importFilePath);
-		if (!isValidFilePath) {
-			logger.warn("Please provide valid \"{}\" with arguments", ARG_KEY_IMPFILE);
+		String importFolderPath = ConsolePromptUtil.getKeyValue(ARG_KEY_IMPFOLDER, args);
+		if (StringUtils.isBlank(importFolderPath)) {
+			logger.warn("Please provide \"{}\" value", ARG_KEY_IMPFOLDER);
 			context.close();
 			return;
 		}
 		try {
-			runner.execute(importFilePath);
+			runner.execute(importFolderPath);
 		} catch (Exception e) {
 			logger.error("Etymology loader failed with", e);
 		} finally {

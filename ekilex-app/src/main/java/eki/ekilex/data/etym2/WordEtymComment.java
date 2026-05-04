@@ -1,18 +1,18 @@
-package eki.ekilex.data.etym1;
+package eki.ekilex.data.etym2;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordEtymSourceLink extends AbstractDataObject {
+public class WordEtymComment extends AbstractDataObject {
 
-	private static final long serialVersionUID = 8896040227578617598L;
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
 	private Long wordEtymId;
 
-	private Long sourceId;
-
 	private String value;
+
+	private String valuePrese;
 
 	public Long getId() {
 		return id;
@@ -30,20 +30,20 @@ public class WordEtymSourceLink extends AbstractDataObject {
 		this.wordEtymId = wordEtymId;
 	}
 
-	public Long getSourceId() {
-		return sourceId;
-	}
-
-	public void setSourceId(Long sourceId) {
-		this.sourceId = sourceId;
-	}
-
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 }

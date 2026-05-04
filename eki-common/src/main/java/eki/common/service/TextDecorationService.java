@@ -278,6 +278,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 	}
 
 	public String removeAccents(String value) {
+
 		if (StringUtils.isBlank(value)) {
 			return null;
 		}

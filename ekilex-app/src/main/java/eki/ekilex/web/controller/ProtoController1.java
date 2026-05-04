@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.WordEtymTree;
+import eki.ekilex.data.etym1.WordEtymTree;
 import eki.ekilex.service.WordEtymService;
 
 @Controller

@@ -153,6 +153,12 @@ import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
+import eki.ekilex.data.db.main.tables.WordEtym;
+import eki.ekilex.data.db.main.tables.WordEtymComment;
+import eki.ekilex.data.db.main.tables.WordEtymGroup;
+import eki.ekilex.data.db.main.tables.WordEtymGroupMember;
+import eki.ekilex.data.db.main.tables.WordEtymGroupTree;
+import eki.ekilex.data.db.main.tables.WordEtymNote;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -958,6 +964,36 @@ public class Public extends SchemaImpl {
     public final WordEkiRecommendation WORD_EKI_RECOMMENDATION = WordEkiRecommendation.WORD_EKI_RECOMMENDATION;
 
     /**
+     * The table <code>public.word_etym</code>.
+     */
+    public final WordEtym WORD_ETYM = WordEtym.WORD_ETYM;
+
+    /**
+     * The table <code>public.word_etym_comment</code>.
+     */
+    public final WordEtymComment WORD_ETYM_COMMENT = WordEtymComment.WORD_ETYM_COMMENT;
+
+    /**
+     * The table <code>public.word_etym_group</code>.
+     */
+    public final WordEtymGroup WORD_ETYM_GROUP = WordEtymGroup.WORD_ETYM_GROUP;
+
+    /**
+     * The table <code>public.word_etym_group_member</code>.
+     */
+    public final WordEtymGroupMember WORD_ETYM_GROUP_MEMBER = WordEtymGroupMember.WORD_ETYM_GROUP_MEMBER;
+
+    /**
+     * The table <code>public.word_etym_group_tree</code>.
+     */
+    public final WordEtymGroupTree WORD_ETYM_GROUP_TREE = WordEtymGroupTree.WORD_ETYM_GROUP_TREE;
+
+    /**
+     * The table <code>public.word_etym_note</code>.
+     */
+    public final WordEtymNote WORD_ETYM_NOTE = WordEtymNote.WORD_ETYM_NOTE;
+
+    /**
      * The table <code>public.word_etymology</code>.
      */
     public final WordEtymology WORD_ETYMOLOGY = WordEtymology.WORD_ETYMOLOGY;
@@ -1218,6 +1254,17 @@ public class Public extends SchemaImpl {
             Sequences.VARIANT_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_EKI_RECOMMENDATION_ID_SEQ,
+            Sequences.WORD_ETYM_COMMENT_ID_SEQ,
+            Sequences.WORD_ETYM_COMMENT_ORDER_BY_SEQ,
+            Sequences.WORD_ETYM_GROUP_ID_SEQ,
+            Sequences.WORD_ETYM_GROUP_MEMBER_ID_SEQ,
+            Sequences.WORD_ETYM_GROUP_MEMBER_ORDER_BY_SEQ,
+            Sequences.WORD_ETYM_GROUP_TREE_ID_SEQ,
+            Sequences.WORD_ETYM_GROUP_TREE_ORDER_BY_SEQ,
+            Sequences.WORD_ETYM_ID_SEQ,
+            Sequences.WORD_ETYM_NOTE_ID_SEQ,
+            Sequences.WORD_ETYM_NOTE_ORDER_BY_SEQ,
+            Sequences.WORD_ETYM_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_RELATION_ID_SEQ,
@@ -1402,6 +1449,12 @@ public class Public extends SchemaImpl {
             Word.WORD,
             WordActivityLog.WORD_ACTIVITY_LOG,
             WordEkiRecommendation.WORD_EKI_RECOMMENDATION,
+            WordEtym.WORD_ETYM,
+            WordEtymComment.WORD_ETYM_COMMENT,
+            WordEtymGroup.WORD_ETYM_GROUP,
+            WordEtymGroupMember.WORD_ETYM_GROUP_MEMBER,
+            WordEtymGroupTree.WORD_ETYM_GROUP_TREE,
+            WordEtymNote.WORD_ETYM_NOTE,
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,

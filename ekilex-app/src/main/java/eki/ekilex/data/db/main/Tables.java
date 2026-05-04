@@ -153,6 +153,12 @@ import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
+import eki.ekilex.data.db.main.tables.WordEtym;
+import eki.ekilex.data.db.main.tables.WordEtymComment;
+import eki.ekilex.data.db.main.tables.WordEtymGroup;
+import eki.ekilex.data.db.main.tables.WordEtymGroupMember;
+import eki.ekilex.data.db.main.tables.WordEtymGroupTree;
+import eki.ekilex.data.db.main.tables.WordEtymNote;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -928,6 +934,36 @@ public class Tables {
      * The table <code>public.word_eki_recommendation</code>.
      */
     public static final WordEkiRecommendation WORD_EKI_RECOMMENDATION = WordEkiRecommendation.WORD_EKI_RECOMMENDATION;
+
+    /**
+     * The table <code>public.word_etym</code>.
+     */
+    public static final WordEtym WORD_ETYM = WordEtym.WORD_ETYM;
+
+    /**
+     * The table <code>public.word_etym_comment</code>.
+     */
+    public static final WordEtymComment WORD_ETYM_COMMENT = WordEtymComment.WORD_ETYM_COMMENT;
+
+    /**
+     * The table <code>public.word_etym_group</code>.
+     */
+    public static final WordEtymGroup WORD_ETYM_GROUP = WordEtymGroup.WORD_ETYM_GROUP;
+
+    /**
+     * The table <code>public.word_etym_group_member</code>.
+     */
+    public static final WordEtymGroupMember WORD_ETYM_GROUP_MEMBER = WordEtymGroupMember.WORD_ETYM_GROUP_MEMBER;
+
+    /**
+     * The table <code>public.word_etym_group_tree</code>.
+     */
+    public static final WordEtymGroupTree WORD_ETYM_GROUP_TREE = WordEtymGroupTree.WORD_ETYM_GROUP_TREE;
+
+    /**
+     * The table <code>public.word_etym_note</code>.
+     */
+    public static final WordEtymNote WORD_ETYM_NOTE = WordEtymNote.WORD_ETYM_NOTE;
 
     /**
      * The table <code>public.word_etymology</code>.
