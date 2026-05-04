@@ -18,7 +18,8 @@ eki-stress {
     position: absolute;
     content: "\301";
     display: flex;
-    width: 100%;
+    // Reduce width in firefox to prevent overflow
+    width: var(--eki-stress-width, 100%);
     top: -2px;
     font-size: inherit;
     left: 30%;

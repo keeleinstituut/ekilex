@@ -106,11 +106,26 @@
   </th:block>
   <th:block th:fragment="homonyms">
     <div th:if="${searchResult.resultExists}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
-      <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
+      <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton" th:with="word = ${searchResult.selectedWordData.word}" aria-controls="homonymList" aria-haspopup="menu" aria-expanded="false">
+        <span th:with="langData=${@viewUtil.getLangData(word.lang)}">
+          <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
+          <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
+        </span>
+        <span class="homonym__body">
+          <span class="text-body-two">
+            <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
+            <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
+          </span>
+          <span class="text-caption homonym__text">
+            <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+            <p th:utext="${word.definitionsWrapup}"></p>
+          </span>
+        </span>
+      </button>
       <ul class="homonym-list list-unstyled w-100">
         <th:block th:each="word : ${searchResult.wordMatchWords}" th:with="langData=${@viewUtil.getLangData(word.lang)}">
           <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
-            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
+            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item">
               <span>
                 <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
@@ -126,29 +141,6 @@
                 </span>
               </span>
             </a>
-            <!-- TODO refactor and remove
-            <form class="h-100">
-              <input type="hidden" name="word-id" th:value="${word.wordId}" />
-              <input type="hidden" name="word-selected" th:value="${word.selected}" />
-              <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.value, word.homonymNr, word.lang)}}" />
-              <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
-                <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
-                  <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
-                  <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
-                </th:block>
-                <div class="homonym__body">
-                  <div class="text-body-two">
-                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
-                    <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
-                  </div>
-                  <div class="text-caption homonym__text">
-                    <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
-                    <p th:utext="${word.definitionsWrapup}"></p>
-                  </div>
-                </div>
-              </button>
-            </form>
-            -->
           </li>
         </th:block>
       </ul>

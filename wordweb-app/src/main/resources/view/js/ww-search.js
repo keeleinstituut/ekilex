@@ -10,6 +10,10 @@ $(window).on('load', function() {
 	initStickyScrollPanel();
 })
 
+document.addEventListener('DOMContentLoaded', () => {
+	initHomonymScroll();
+});
+
 //Dismiss popovers when clicked outside of it
 $(document).on('click', function(e) {
 	$('[data-toggle="popover"],[data-original-title]').each(function() {
@@ -28,40 +32,7 @@ $(document).on("click", ".btn-ellipsis", function(e) {
 	$(this).tooltip('hide');
 });
 
-/*
-// TODO refactor or remove
-function fetchDetails(wordId, wordSelectUrl) {
-	const wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
-	$.get(wordDetailsUrlWithParams).done(function(data) {
-		const wordDetailsWrapper = $('#word-details');
-		if (!wordDetailsWrapper.length) {
-			console.error("Unable to find word details wrapper with id 'word-details'")
-		}
-		wordDetailsWrapper.replaceWith(data);
-		fetchCorpSentences();
-		fetchCorpTranslations();
-		updateBrowserHistory(wordSelectUrl);
-		setHomonymNrVisibility();
-		$('#word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
-		$('[data-toggle="popover"]').popover({
-			placement: 'top'
-		});
-		const lightbox = new SimpleLightbox('.gallery-image', {
-			history: false,
-			captionPosition: 'outside',
-			navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
-			closeText: '<i class="fas fa-times"></i>'
-		});
-		$("#mainContentArea").removeClass("loading");
-		const event = new CustomEvent("wordDetailsLoaded");
-		document.dispatchEvent(event);
-	}).fail(function(data) {
-		alert(messages.search_failure);
-		$("#mainContentArea").removeClass("loading");
-	})
-}
-*/
-
+// TODO: might be removable with new search logic?
 function updateBrowserHistory(wordSelectUrl) {
 	if (currentWord.indexOf('/') !== -1) {
 		wordSelectUrl = wordSelectUrl.replace(currentWord, encodeURIComponent(currentWord));
@@ -100,15 +71,6 @@ $(document).on("click", "button[name='expand-btn']", function() {
 	$(this).parent().find(".collapsable[data-collapse='true']").fadeToggle("slow", "linear");
 });
 
-/* TODO remove?
-$(document).on("click", "button[id^='word-details-link']", function() {
-	const wordWrapperForm = $(this).closest("form");
-	const wordId = wordWrapperForm.children("[name='word-id']").val();
-	const wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
-	fetchDetails(wordId, wordSelectUrl);
-});
-*/
-
 $(document).on("click", "a[id^='feedback-link']", function() {
 	$("button[data-target='#feedback-modal']").trigger('click');
 });
@@ -134,9 +96,13 @@ function initStickyScrollPanel() {
 	let stickyScrollTimeout;
 	const links = [...tags.children];
 	links.forEach(link => {
+		const target = document.getElementById(link.href.split("#")?.[1]);
+		if (!target || target?.dataset?.blockEmpty === "true") {
+			return;
+		}
+		link.classList.remove('d-none');
 		link.addEventListener('click', e => {
 			e.preventDefault();
-			const target = document.getElementById(link.href.split("#")?.[1]);
 			if (target) {
 				const elementPosition = target.getBoundingClientRect().top;
 				// Scroll to element, subtracting the sticky panels height and a little extra
@@ -185,5 +151,33 @@ function initStickyScrollPanel() {
 				element[1].classList.add(activeClass);
 			}
 		}, 50);
+	});
+}
+
+
+function initHomonymScroll() {
+	const key = "homonym-scroll";
+	const savedScroll = sessionStorage.getItem(key);
+	const listContainer = document.querySelector(".homonym-list");
+	if (!listContainer) {
+		return;
+	}
+	if (savedScroll) {
+		const [scrollLeft, url] = savedScroll.split("|||");
+		// Check if the saved partial url is still present in the homonym list to make sure we're on the same homonyms
+		if (document.querySelector(`.homonym-list a[href*="${url}"]`)) {
+			listContainer.scrollTo({
+				left: scrollLeft,
+			});
+		} else {
+			sessionStorage.removeItem(key);
+		}
+	}
+	
+	listContainer.addEventListener("click", (e) => {
+		if (e.target?.closest(".homonym-list-item")) {
+			const href = e.target?.href ?? e.target?.closest("a")?.href;
+			sessionStorage.setItem(key, `${listContainer.scrollLeft}|||${href.split('/search')?.[1]}`);
+		}
 	});
 }

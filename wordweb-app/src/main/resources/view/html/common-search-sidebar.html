@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms" th:with="isBlockEmpty = ${!searchResult.selectedWordData.morphologyExists}">
+  <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms" th:with="isBlockEmpty = ${!searchResult.selectedWordData.morphologyExists}" th:data-block-empty="${isBlockEmpty}">
     <div class="search__sidebar-block-title-wrapper">
       <h2 class="search__sidebar-block-title" th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
         th:text="|#{label.word.forms} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|">Sõnavormid</h2>
@@ -21,7 +21,7 @@
     </th:block>
   </section>
   <th:block th:fragment="word-eki-recommendation">
-    <section class="recommendation__block text-body-two" th:unless="${#lists.isEmpty(searchResult.selectedWordData.word.wordEkiRecommendations)}">
+    <section class="recommendation__block text-body-two" th:unless="${#lists.isEmpty(searchResult.selectedWordData.word.wordEkiRecommendations)}" id="word-recommendation-results">
       <div class="d-flex gap-1 align-items-center">
         <span class="material-symbols-outlined" aria-hidden="true"> info </span>
         <h2 class="recommendation__title" th:text="#{label.word.eki.recommend}">ÕS selgitab</h2>
@@ -87,8 +87,8 @@
     </section>
     <th:block th:if="${not #lists.isEmpty(searchResult.selectedWordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${searchResult.selectedWordData.word.primaryRelatedWordTypeGroups}">
-        <section class="search__sidebar-block search__block text-body-two" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
-          <div class="word-relations" th:with="isBlockEmpty = ${relationTypeGroup.empty}">
+        <section class="search__sidebar-block search__block text-body-two" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}" th:with="isBlockEmpty = ${relationTypeGroup.empty}" th:data-block-empty="${isBlockEmpty}">
+          <div class="word-relations">
             <div class="search__sidebar-block-title-wrapper">
               <h2 class="search__sidebar-block-title" th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
                 th:text="|${#strings.capitalize(relationTypeGroup.wordRelType.value)} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"></h2>
@@ -170,7 +170,7 @@
     </th:block>
   </th:block>
   <th:block th:fragment="etymology">
-    <section class="search__sidebar-block search__block text-body-two" id="word-etymology-results" th:with="isBlockEmpty = ${searchResult.selectedWordData.word.wordEtymologyTree == null}">
+    <section class="search__sidebar-block search__block text-body-two" id="word-etymology-results" th:with="isBlockEmpty = ${searchResult.selectedWordData.word.wordEtymologyTree == null}" th:data-block-empty="${isBlockEmpty}">
       <div>
         <div class="search__sidebar-block-title-wrapper">
           <h2 class="search__sidebar-block-title" th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
