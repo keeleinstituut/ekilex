@@ -51,12 +51,12 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermMeaningWord;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordEtym;
-import eki.ekilex.data.WordEtymRel;
-import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
+import eki.ekilex.data.etym1.WordEtym;
+import eki.ekilex.data.etym1.WordEtymRel;
+import eki.ekilex.data.etym1.WordEtymTuple;
 
 @Component
 public class ConversionUtil implements GlobalConstant {
@@ -66,15 +66,20 @@ public class ConversionUtil implements GlobalConstant {
 
 	public void cleanTermMeanings(List<TermMeaning> termMeanings) {
 
-		termMeanings.forEach(termMeaning -> {
-			List<TermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream()
+		for (TermMeaning termMeaning : termMeanings) {
+
+			List<TermMeaningWord> meaningWords = termMeaning.getMeaningWords();
+			if (CollectionUtils.isEmpty(meaningWords)) {
+				continue;
+			}
+			meaningWords = meaningWords.stream()
 					.filter(meaningWord -> meaningWord.getWordId() != null)
 					.distinct()
 					.collect(Collectors.toList());
 			boolean meaningWordsExist = CollectionUtils.isNotEmpty(meaningWords);
 			termMeaning.setMeaningWords(meaningWords);
 			termMeaning.setMeaningWordsExist(meaningWordsExist);
-		});
+		}
 	}
 
 	public Classifier classifierFromIdString(String idString) {
