@@ -91,6 +91,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		wordConversionUtil.setWordTypeFlags(word);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		wordConversionUtil.composeWordEkiRecommendations(word, searchContext);
+		wordConversionUtil.composeHomonymWrapups(word, searchContext);
 		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
 		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
 		wordConversionUtil.filterWordRelationsBySynonyms(word, lexemeWords);

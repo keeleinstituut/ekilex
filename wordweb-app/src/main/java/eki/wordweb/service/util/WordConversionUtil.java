@@ -36,54 +36,58 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	public void composeHomonymWrapups(List<Word> words, SearchContext searchContext) {
 
 		for (Word word : words) {
+			composeHomonymWrapups(word, searchContext);
+		}
+	}
 
-			String wordLang = word.getLang();
-			List<Definition> definitions = word.getDefinitions();
-			List<MeaningWord> meaningWords = word.getMeaningWords();
-			Long definitionMeaningId = null;
+	public void composeHomonymWrapups(Word word, SearchContext searchContext) {
 
-			if (CollectionUtils.isNotEmpty(definitions)) {
-				List<Definition> primaryDefinitions = definitions.stream()
-						.filter(definition -> isPublishingTargetMatch(definition, searchContext))
-						.collect(Collectors.toList());
-				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
-					Definition firstDefinition = primaryDefinitions.get(0);
-					if (StringUtils.isNotBlank(firstDefinition.getValue())) {
-						Long lexemeId = firstDefinition.getLexemeId();
-						definitionMeaningId = firstDefinition.getMeaningId();
-						List<String> definitionValues = primaryDefinitions.stream()
-								.filter(definition -> definition.getLexemeId().equals(lexemeId))
-								.map(Definition::getValue)
-								.collect(Collectors.toList());
-						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
-						word.setDefinitionsWrapup(definitionsWrapup);
-					}
+		String wordLang = word.getLang();
+		List<Definition> definitions = word.getDefinitions();
+		List<MeaningWord> meaningWords = word.getMeaningWords();
+		Long definitionMeaningId = null;
+
+		if (CollectionUtils.isNotEmpty(definitions)) {
+			List<Definition> primaryDefinitions = definitions.stream()
+					.filter(definition -> isPublishingTargetMatch(definition, searchContext))
+					.collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
+				Definition firstDefinition = primaryDefinitions.get(0);
+				if (StringUtils.isNotBlank(firstDefinition.getValue())) {
+					Long lexemeId = firstDefinition.getLexemeId();
+					definitionMeaningId = firstDefinition.getMeaningId();
+					List<String> definitionValues = primaryDefinitions.stream()
+							.filter(definition -> definition.getLexemeId().equals(lexemeId))
+							.map(Definition::getValue)
+							.collect(Collectors.toList());
+					String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+					word.setDefinitionsWrapup(definitionsWrapup);
 				}
 			}
+		}
 
-			if (definitionMeaningId != null && CollectionUtils.isNotEmpty(meaningWords)) {
-				List<MeaningWord> primaryMeaningWords = meaningWords.stream()
-						.filter(meaningWord -> isPublishingTargetMatch(meaningWord, searchContext))
+		if (definitionMeaningId != null && CollectionUtils.isNotEmpty(meaningWords)) {
+			List<MeaningWord> primaryMeaningWords = meaningWords.stream()
+					.filter(meaningWord -> isPublishingTargetMatch(meaningWord, searchContext))
+					.collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
+				Long meaningWordMeaningId = definitionMeaningId;
+				List<String> meaningWordValues = primaryMeaningWords.stream()
+						.filter(meaningWord -> meaningWord.getMeaningId().equals(meaningWordMeaningId))
+						.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
+						.map(meaningWord -> {
+							if (meaningWord.isPrefixoid()) {
+								return meaningWord.getValue() + "-";
+							} else if (meaningWord.isSuffixoid()) {
+								return "-" + meaningWord.getValue();
+							} else {
+								return meaningWord.getValue();
+							}
+						})
+						.distinct()
 						.collect(Collectors.toList());
-				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
-					Long meaningWordMeaningId = definitionMeaningId;
-					List<String> meaningWordValues = primaryMeaningWords.stream()
-							.filter(meaningWord -> meaningWord.getMeaningId().equals(meaningWordMeaningId))
-							.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
-							.map(meaningWord -> {
-								if (meaningWord.isPrefixoid()) {
-									return meaningWord.getValue() + "-";
-								} else if (meaningWord.isSuffixoid()) {
-									return "-" + meaningWord.getValue();
-								} else {
-									return meaningWord.getValue();
-								}
-							})
-							.distinct()
-							.collect(Collectors.toList());
-					String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
-					word.setMeaningWordsWrapup(meaningWordsWrapup);
-				}
+				String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+				word.setMeaningWordsWrapup(meaningWordsWrapup);
 			}
 		}
 	}

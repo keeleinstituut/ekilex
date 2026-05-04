@@ -104,6 +104,7 @@ public class UnifSearchService extends AbstractSearchService {
 		wordConversionUtil.setWordTypeFlags(word);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		wordConversionUtil.composeWordEkiRecommendations(word, searchContext);
+		wordConversionUtil.composeHomonymWrapups(word, searchContext);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		lexemeConversionUtil.composeLexemes(wordLang, flatDepthLexemes, langOrderByMap, searchContext, displayLang);
 		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
