@@ -18,7 +18,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.data.EkiUserPermSearchResult;
 import eki.ekilex.data.EkiUserRoleData;
 import eki.ekilex.data.proto.PermPageInitModel;
 import eki.ekilex.data.proto.PermPageSearchModel;
@@ -98,8 +98,11 @@ public class ProtoController2 implements WebConstant {
 			return permPageSearchModel;
 		}
 
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
-		permPageSearchModel.setEkiUserPermissions(ekiUserPermissions);
+		final int pageNum = 1;
+		EkiUserPermSearchResult searchResult = permissionService.getEkiUserPermissionsSearchResult(userNameFilter, userPermDatasetCodeFilter,
+				userEnablePendingFilter, orderBy, pageNum);
+
+		permPageSearchModel.setEkiUserPermissions(searchResult.getEkiUserPermissions());
 
 		return permPageSearchModel;
 	}

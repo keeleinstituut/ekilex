@@ -189,9 +189,11 @@ function rejectApplication(applicationId) {
 
 function submitUrlAndUpdatePermissionsData(url) {
 	$.get(url).done(function(data) {
+		$('.modal:visible').modal('hide');
 		$('#permissionsArea').replaceWith(data);
 		$wpm.bindObjects();
 	}).fail(function(data) {
+		$('.modal:visible').modal('hide');
 		console.log(data);
 		openAlertDlg(messages["common.error"]);
 	}).always(function() {

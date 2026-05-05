@@ -23,6 +23,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.data.EkiUserPermSearchResult;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 import eki.ekilex.service.util.DatasetUtil;
@@ -31,6 +32,8 @@ import eki.ekilex.service.util.DatasetUtil;
 public class PermissionService implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
+
+	private static final int PERMISSIONS_PAGE_SIZE = 20;
 
 	@Autowired
 	private UserDbService userDbService;
@@ -45,10 +48,17 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 	private DatasetUtil datasetUtil;
 
 	@Transactional
-	public List<EkiUserPermData> getEkiUserPermissions(
-			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {
+	public EkiUserPermSearchResult getEkiUserPermissionsSearchResult(String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter,
+			OrderingField orderBy, int pageNum) {
 
-		List<EkiUserPermData> users = permissionDbService.getUsers(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
+		int pageSize = PERMISSIONS_PAGE_SIZE;
+		int usersCount = permissionDbService.getUsersCount(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter);
+		int totalPages = (usersCount + pageSize - 1) / pageSize;
+		int offset = (pageNum - 1) * pageSize;
+
+		List<EkiUserPermData> users = permissionDbService.getUsers(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy, offset,
+				pageSize);
+
 		for (EkiUserPermData user : users) {
 			Long userId = user.getId();
 			List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
@@ -57,7 +67,14 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			user.setApplications(userApplications);
 			user.setDatasetPermissions(datasetPermissions);
 		}
-		return users;
+
+		EkiUserPermSearchResult result = new EkiUserPermSearchResult();
+		result.setEkiUserPermissions(users);
+		result.setPageNum(pageNum);
+		result.setTotalPages(totalPages);
+		result.setTotalItems(usersCount);
+
+		return result;
 	}
 
 	@Transactional

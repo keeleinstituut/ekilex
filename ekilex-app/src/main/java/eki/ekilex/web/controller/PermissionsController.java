@@ -8,13 +8,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +22,7 @@ import eki.common.constant.OrderingField;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.data.EkiUserPermSearchResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
@@ -36,6 +34,7 @@ import eki.ekilex.web.bean.PermSearchBean;
 public class PermissionsController extends AbstractPrivatePageController {
 
 	private static final OrderingField DEFAULT_ORDER_BY = OrderingField.NAME;
+	private static final int FIRST_PAGE_NUM = 1;
 
 	@Autowired
 	private UserService userService;
@@ -93,32 +92,20 @@ public class PermissionsController extends AbstractPrivatePageController {
 		permSearchBean.setUserNameFilter(userNameFilter);
 		permSearchBean.setUserPermDatasetCodeFilter(userPermDatasetCodeFilter);
 		permSearchBean.setUserEnablePendingFilter(userEnablePendingFilter);
+		permSearchBean.setPageNum(FIRST_PAGE_NUM);
 
-		populateUserPermDataModel(model);
-
-		return PERMISSIONS_PAGE;
+		return buildSearchResultRedirectUri(permSearchBean.getPageNum());
 	}
 
-	@GetMapping(PERMISSIONS_URI + SEARCH_URI)
-	public String searchGet(
-			@ModelAttribute("userNameFilter") String userNameFilter,
-			@ModelAttribute("userPermDatasetCodeFilter") String userPermDatasetCodeFilter,
-			@ModelAttribute("userEnablePendingFilter") String userEnablePendingFilterStr,
-			Model model) {
-
-		if (StringUtils.isBlank(userNameFilter)
-				&& StringUtils.isBlank(userPermDatasetCodeFilter)
-				&& StringUtils.isBlank(userEnablePendingFilterStr)) {
-			return REDIRECT_PREF + PERMISSIONS_URI;
-		}
-		if (StringUtils.length(userNameFilter) == 1) {
-			return REDIRECT_PREF + PERMISSIONS_URI;
-		}
+	@GetMapping(PERMISSIONS_URI + SEARCH_URI + "/page/{pageNum}")
+	public String searchGetPage(@PathVariable("pageNum") int pageNum, Model model) {
 
 		PermSearchBean permSearchBean = getPermSearchBean(model);
-		permSearchBean.setUserNameFilter(userNameFilter);
-		permSearchBean.setUserPermDatasetCodeFilter(userPermDatasetCodeFilter);
-		permSearchBean.setUserEnablePendingFilter(Boolean.valueOf(userEnablePendingFilterStr));
+		if (!hasActiveFilters(permSearchBean)) {
+			return REDIRECT_PREF + PERMISSIONS_URI;
+		}
+
+		permSearchBean.setPageNum(pageNum);
 
 		populateUserPermDataModel(model);
 
@@ -131,6 +118,8 @@ public class PermissionsController extends AbstractPrivatePageController {
 		PermSearchBean permSearchBean = getPermSearchBean(model);
 		permSearchBean.setUserPermDatasetCodeFilter(datasetCode);
 		permSearchBean.setUserEnablePendingFilter(true);
+		permSearchBean.setUserNameFilter(null);
+		permSearchBean.setPageNum(FIRST_PAGE_NUM);
 
 		populateUserPermDataModel(model);
 
@@ -138,14 +127,13 @@ public class PermissionsController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(PERMISSIONS_URI + "/orderby")
-	public String orderBy(@RequestParam("orderBy") OrderingField orderBy, Model model, RedirectAttributes redirectAttributes) {
+	public String orderBy(@RequestParam("orderBy") OrderingField orderBy, Model model) {
 
 		PermSearchBean permSearchBean = getPermSearchBean(model);
 		permSearchBean.setOrderBy(orderBy);
+		permSearchBean.setPageNum(FIRST_PAGE_NUM);
 
-		prepareSearchRedirect(permSearchBean, redirectAttributes);
-
-		return REDIRECT_PREF + PERMISSIONS_URI + "/search";
+		return buildSearchResultRedirectUri(permSearchBean.getPageNum());
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/enable/{userId}")
@@ -315,27 +303,21 @@ public class PermissionsController extends AbstractPrivatePageController {
 		String userPermDatasetCodeFilter = permSearchBean.getUserPermDatasetCodeFilter();
 		Boolean userEnablePendingFilter = permSearchBean.getUserEnablePendingFilter();
 		OrderingField orderBy = permSearchBean.getOrderBy();
+		int pageNum = permSearchBean.getPageNum();
 
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
-		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+		EkiUserPermSearchResult searchResult = permissionService.getEkiUserPermissionsSearchResult(userNameFilter, userPermDatasetCodeFilter,
+				userEnablePendingFilter, orderBy, pageNum);
+
+		model.addAttribute("ekiUserPermissionsResult", searchResult);
 	}
 
-	private void prepareSearchRedirect(PermSearchBean permSearchBean, RedirectAttributes redirectAttributes) {
+	private boolean hasActiveFilters(PermSearchBean permSearchBean) {
+		return StringUtils.isNotBlank(permSearchBean.getUserNameFilter())
+				|| StringUtils.isNotBlank(permSearchBean.getUserPermDatasetCodeFilter())
+				|| permSearchBean.getUserEnablePendingFilter() != null;
+	}
 
-		String userNameFilter = permSearchBean.getUserNameFilter();
-		String userPermDatasetCodeFilter = permSearchBean.getUserPermDatasetCodeFilter();
-		Boolean userEnablePendingFilter = permSearchBean.getUserEnablePendingFilter();
-		OrderingField orderBy = permSearchBean.getOrderBy();
-
-		if (StringUtils.isNotBlank(userNameFilter)) {
-			redirectAttributes.addFlashAttribute("userNameFilter", userNameFilter);
-		}
-		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
-			redirectAttributes.addFlashAttribute("userPermDatasetCodeFilter", userPermDatasetCodeFilter);
-		}
-		if (userEnablePendingFilter != null) {
-			redirectAttributes.addFlashAttribute("userEnablePendingFilter", userEnablePendingFilter);
-		}
-		redirectAttributes.addFlashAttribute("orderBy", orderBy);
+	private String buildSearchResultRedirectUri(int pageNum) {
+		return REDIRECT_PREF + PERMISSIONS_URI + SEARCH_URI + "/page/" + pageNum;
 	}
 }

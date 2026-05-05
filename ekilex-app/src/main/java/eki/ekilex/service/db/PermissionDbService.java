@@ -60,44 +60,13 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 	private DSLContext mainDb;
 
 	public List<EkiUserPermData> getUsers(
-			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {
+			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy, int offset, int limit) {
 
 		EkiUser eu = EKI_USER.as("eu");
 		EkiUserApplication eua = EKI_USER_APPLICATION.as("eua");
-		DatasetPermission dsp = DATASET_PERMISSION.as("dsp");
 
-		Condition enablePendingCond = DSL.exists(DSL
-				.select(eua.ID)
-				.from(eua)
-				.where(
-						eua.USER_ID.eq(eu.ID)
-								.and(eua.STATUS.eq(ApplicationStatus.NEW.name()))));
-
-		Condition permissionDatasetCond = DSL.exists(DSL
-				.select(dsp.ID)
-				.from(dsp)
-				.where(
-						dsp.USER_ID.eq(eu.ID)
-								.and(dsp.DATASET_CODE.eq(userPermDatasetCodeFilter))));
-
-		Condition applicationDatasetCond = DSL.exists(DSL
-				.select(eua.ID)
-				.from(eua)
-				.where(
-						eua.USER_ID.eq(eu.ID)
-								.and(eua.DATASET_CODE.eq(userPermDatasetCodeFilter))));
-
-		Condition where = DSL.noCondition();
-		if (StringUtils.isNotBlank(userNameFilter)) {
-			String userNameFilterLike = "%" + StringUtils.lowerCase(userNameFilter) + "%";
-			where = where.and(DSL.or(DSL.lower(eu.NAME).like(userNameFilterLike), DSL.lower(eu.EMAIL).like(userNameFilterLike)));
-		}
-		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
-			where = where.and(DSL.or(permissionDatasetCond, applicationDatasetCond));
-		}
-		if (Boolean.TRUE.equals(userEnablePendingFilter)) {
-			where = where.and(enablePendingCond);
-		}
+		Condition where = getUsersCond(eu, eua, userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter);
+		Condition enablePendingCond = getEnablePendingCond(eu, eua);
 
 		SortField<?> orderByField;
 		if (orderBy == OrderingField.NAME) {
@@ -127,7 +96,23 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.from(eu)
 				.where(where)
 				.orderBy(orderByField)
+				.offset(offset)
+				.limit(limit)
 				.fetchInto(EkiUserPermData.class);
+	}
+
+	public int getUsersCount(String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter) {
+
+		EkiUser eu = EKI_USER.as("eu");
+		EkiUserApplication eua = EKI_USER_APPLICATION.as("eua");
+
+		Condition where = getUsersCond(eu, eua, userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter);
+
+		return mainDb
+				.selectCount()
+				.from(eu)
+				.where(where)
+				.fetchSingleInto(int.class);
 	}
 
 	public List<eki.ekilex.data.DatasetPermission> getDatasetPermissions(Long userId) {
@@ -914,5 +899,53 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.from(MEANING_FORUM)
 				.where(MEANING_FORUM.ID.eq(meaningForumId).and(MEANING_FORUM.CREATOR_ID.eq(userId)))
 				.fetchSingleInto(Boolean.class);
+	}
+
+	private Condition getUsersCond(EkiUser eu, EkiUserApplication eua, String userNameFilter, String userPermDatasetCodeFilter,
+			Boolean userEnablePendingFilter) {
+
+		DatasetPermission dsp = DATASET_PERMISSION.as("dsp");
+
+		Condition enablePendingCond = getEnablePendingCond(eu, eua);
+
+		Condition permissionDatasetCond = DSL.exists(DSL
+				.select(dsp.ID)
+				.from(dsp)
+				.where(
+						dsp.USER_ID.eq(eu.ID)
+								.and(dsp.DATASET_CODE.eq(userPermDatasetCodeFilter))));
+
+		Condition applicationDatasetCond = DSL.exists(DSL
+				.select(eua.ID)
+				.from(eua)
+				.where(
+						eua.USER_ID.eq(eu.ID)
+								.and(eua.DATASET_CODE.eq(userPermDatasetCodeFilter))));
+
+		Condition where = DSL.noCondition();
+		if (StringUtils.isNotBlank(userNameFilter)) {
+			String userNameFilterLike = "%" + StringUtils.lowerCase(userNameFilter) + "%";
+			where = where.and(DSL.or(DSL.lower(eu.NAME).like(userNameFilterLike), DSL.lower(eu.EMAIL).like(userNameFilterLike)));
+		}
+
+		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
+			where = where.and(DSL.or(permissionDatasetCond, applicationDatasetCond));
+		}
+
+		if (Boolean.TRUE.equals(userEnablePendingFilter)) {
+			where = where.and(enablePendingCond);
+		}
+
+		return where;
+	}
+
+	private Condition getEnablePendingCond(EkiUser eu, EkiUserApplication eua) {
+
+		return DSL.exists(DSL
+				.select(eua.ID)
+				.from(eua)
+				.where(
+						eua.USER_ID.eq(eu.ID)
+								.and(eua.STATUS.eq(ApplicationStatus.NEW.name()))));
 	}
 }

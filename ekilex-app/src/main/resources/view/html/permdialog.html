@@ -1,18 +1,61 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div th:id="${'addDatasetPermissionDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="add_dataset_perm_dlg">
-    <div class="modal-dialog" role="document">
+  <div th:id="${'manageDatasetPermissionsDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="manage_dataset_permissions_dlg">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/permissions/adddatasetperm}" method="post">
-          <input type="hidden" name="userId" th:value="${userPerm.id}"/>
-          <input type="hidden" name="orderBy" th:value="${orderBy}"/>
-          <div class="modal-body">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <span th:text="#{permissions.dataset.permissions}">Load</span>
+            <span class="font-weight-normal" th:text="${' — ' + userPerm.name}"></span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Existing permissions -->
+          <div th:if="${#lists.isEmpty(userPerm.datasetPermissions)}" class="text-muted mb-3">-</div>
+          <table th:unless="${#lists.isEmpty(userPerm.datasetPermissions)}" class="table table-sm table-hover mb-4">
+            <thead>
+              <tr>
+                <th th:text="#{permissions.dataset}">Sõnakogu</th>
+                <th th:text="#{permissions.auth.op}">Õigus</th>
+                <th th:text="#{permissions.lang}">Keel</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="datasetPerm : ${userPerm.datasetPermissions}">
+                <td th:text="${datasetPerm.datasetName}"></td>
+                <td th:text="${datasetPerm.authOperation}"></td>
+                <td th:text="${datasetPerm.authLang ?: '-'}"></td>
+                <td class="text-right">
+                  <button class="btn badge badge-warning"
+                          th:data-id="${datasetPerm.id}"
+                          data-toggle="delete-confirm"
+                          data-placement="right"
+                          sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                          th:disabled="${#vars.isOwnPermission}">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Inline add form — always visible, no sub-modal -->
+          <h5 class="mb-1" th:text="#{permissions.add.dataset.permission}">Lisa luba</h5>
+          <form th:action="@{/permissions/adddatasetperm}" method="post"
+                sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                th:if="${!#vars.isOwnPermission}">
+            <input type="hidden" name="userId" th:value="${userPerm.id}"/>
+            <input type="hidden" name="orderBy" th:value="${orderBy}"/>
             <div class="form-group row">
               <div class="col-12">
                 <label class="col-form-label" th:text="#{permissions.dataset}">Sõnakogu</label>
-                <select required class="form-control required-field" name="datasetCode" data-plugin="permDatasetCodeSelect">
+                <select required class="form-control required-field"
+                        name="datasetCode" data-plugin="permDatasetCodeSelect">
                   <option value="" disabled selected th:text="#{common.select}">Vali</option>
                   <option th:each="dataset : ${userOwnedDatasets}"
                           th:value="${dataset.code}"
@@ -41,59 +84,123 @@
                 </select>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin" th:text="#{common.add}">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+            <div class="row">
+              <div class="col-12 text-right">
+                <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin" th:text="#{common.add}">Lisa</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  <div th:id="${'approveApplicationDlg_' + userApplication.id}" class="modal" role="dialog" th:fragment="approve_application_dlg">
-    <div class="modal-dialog" role="document">
+  <div th:id="${'manageApplicationsDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="manage_applications_dlg">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/permissions/adddatasetperm}" method="post">
-          <input type="hidden" name="userId" th:value="${userPerm.id}"/>
-          <input type="hidden" name="userApplicationId" th:value="${userApplication.id}"/>
-          <input type="hidden" name="orderBy" th:value="${orderBy}"/>
-          <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-12">
-                <label class="col-form-label" th:text="#{permissions.dataset}">Sõnakogu</label>
-                <select required class="form-control required-field" name="datasetCode" data-plugin="permDatasetCodeSelect" readonly>
-                  <option th:value="${userApplication.datasetCode}" selected th:text="${userApplication.datasetName}"></option>
-                </select>
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <span th:text="#{permissions.applications}">Avaldused</span>
+            <span class="font-weight-normal" th:text="${' — ' + userPerm.name}"></span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div th:if="${#lists.isEmpty(userPerm.applications)}" class="text-muted">-</div>
+          <th:block th:unless="${#lists.isEmpty(userPerm.applications)}">
+            <th:block th:each="userApplication : ${userPerm.applications}"
+                      th:with="isNewApplication=${userApplication.status == T(eki.ekilex.constant.ApplicationStatus).NEW}">
+              <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center py-1 px-2">
+                  <div>
+                    <span class="badge mr-1"
+                          th:classappend="${#vars.isNewApplication ? 'badge-primary' : 'badge-secondary'}"
+                          th:text="#{|applicationstatus.${userApplication.status}|}">Staatus</span>
+                    <span th:text="${userApplication.datasetName}"></span>
+                  </div>
+                  <button class="btn badge badge-warning"
+                          th:if="${#vars.isNewApplication}"
+                          data-toggle="reject-application-confirm"
+                          data-placement="left"
+                          th:data-application-id="${userApplication.id}"
+                          sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                          th:disabled="${#vars.isOwnPermission}">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="card-body py-1 px-2">
+                  <span class="lbl" th:text="#{permissions.time}">Aeg</span>
+                  <span th:text="${#temporals.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                  <br/>
+                  <span class="lbl" th:text="#{permissions.wished.auth.op}">Soovitud õigus</span>
+                  <span th:text="#{|authorityoperation.${userApplication.authOperation}|}"></span>
+                  <br/>
+                  <span class="lbl" th:text="#{permissions.lang}">Keel</span>
+                  <span th:if="${!#strings.isEmpty(userApplication.lang)}"
+                        th:text="${userApplication.langValue}"></span>
+                  <span th:if="${#strings.isEmpty(userApplication.lang)}">-</span>
+                  <th:block th:if="${!#strings.isEmpty(userApplication.comment)}">
+                    <br/>
+                    <span class="lbl" th:text="#{permissions.comment}">Kommentaar</span>
+                    <span th:text="${userApplication.comment}"></span>
+                  </th:block>
+                  <!-- Approve form -->
+                  <th:block th:if="${#vars.isNewApplication}"
+                            sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                            th:unless="${#vars.isOwnPermission}">
+                    <hr class="my-2"/>
+                    <form th:action="@{/permissions/adddatasetperm}" method="post">
+                      <input type="hidden" name="userId" th:value="${userPerm.id}"/>
+                      <input type="hidden" name="userApplicationId" th:value="${userApplication.id}"/>
+                      <input type="hidden" name="orderBy" th:value="${orderBy}"/>
+                      <div class="form-group row mb-1">
+                        <div class="col-12">
+                          <label class="col-form-label" th:text="#{permissions.dataset}">Sõnakogu</label>
+                          <select required class="form-control required-field"
+                                  name="datasetCode" data-plugin="permDatasetCodeSelect" readonly>
+                            <option th:value="${userApplication.datasetCode}" selected
+                                    th:text="${userApplication.datasetName}"></option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row mb-3">
+                        <div class="col-6">
+                          <label class="col-form-label" th:text="#{permissions.auth.op}">Õigus</label>
+                          <select required class="form-control required-field" name="authOp">
+                            <option th:each="authOp : ${T(eki.common.constant.AuthorityOperation).values()}"
+                                    th:value="${authOp}"
+                                    th:selected="${authOp == userApplication.authOperation}"
+                                    th:text="#{|authorityoperation.${authOp}|}">
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-6">
+                          <label class="col-form-label" th:text="#{permissions.lang}">Keel</label>
+                          <select class="form-control" name="authLang">
+                            <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
+                            <option th:each="language : ${languages}"
+                                    th:value="${language.code}"
+                                    th:selected="${language.code == userApplication.lang}"
+                                    th:text="${language.value}">language</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 text-right">
+                          <button type="button" class="btn btn-primary"
+                                  data-plugin="addDatasetPermPlugin"
+                                  th:text="#{permissions.approve.application}">Kinnita avaldus</button>
+                        </div>
+                      </div>
+                    </form>
+                  </th:block>
+                </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-6">
-                <label class="col-form-label" th:text="#{permissions.auth.op}">Õigus</label>
-                <select required class="form-control required-field" name="authOp">
-                  <option th:each="authOp : ${T(eki.common.constant.AuthorityOperation).values()}"
-                          th:value="${authOp}"
-                          th:selected="${authOp == userApplication.authOperation}"
-                          th:text="#{|authorityoperation.${authOp}|}">
-                  </option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="col-form-label" th:text="#{permissions.lang}">Keel</label>
-                <select class="form-control" name="authLang">
-                  <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
-                  <option th:each="language : ${languages}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == userApplication.lang}"
-                          th:text="${language.value}">language</option>
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin" th:text="#{common.add}">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-            </div>
-          </div>
-        </form>
+            </th:block>
+          </th:block>
+        </div>
       </div>
     </div>
   </div>

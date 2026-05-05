@@ -15,6 +15,8 @@ public class PermSearchBean extends AbstractDataObject {
 
 	private OrderingField orderBy;
 
+	private int pageNum;
+
 	public String getUserNameFilter() {
 		return userNameFilter;
 	}
@@ -45,6 +47,14 @@ public class PermSearchBean extends AbstractDataObject {
 
 	public void setOrderBy(OrderingField orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(int pageNum) {
+		this.pageNum = pageNum;
 	}
 
 }

@@ -43,10 +43,10 @@
         <div class="float-left w-100">
           <th:block th:fragment="permissions">
             <div id="permissionsArea">
-              <th:block th:if="${not #lists.isEmpty(ekiUserPermissions)}">
+              <th:block th:if="${not #lists.isEmpty(ekiUserPermissionsResult?.ekiUserPermissions)}">
                 <div class="mb-2">
                   <span th:text="#{permissions.results}">Tulemusi:</span>
-                  <span th:text="${#lists.size(ekiUserPermissions)}"></span>
+                  <span th:text="${ekiUserPermissionsResult.totalItems}"></span>
                 </div>
                 <table class="table table-striped m-0 p-0 table-hover">
                   <tr>
@@ -77,9 +77,9 @@
                     <th class="p-1 text-center" th:text="#{permissions.enabled}">Lubatud</th>
                     <th class="p-1" th:text="#{permissions.comment}">Kommentaar</th>
                     <th class="p-1" th:text="#{permissions.applications}">Avaldused</th>
-                    <th class="p-1" colspan="3" th:text="#{permissions.dataset.permissions}">Load</th>
+                    <th class="p-1" colspan="2" th:text="#{permissions.dataset.permissions}">Load</th>
                   </tr>
-                  <th:block th:each="userPerm : ${ekiUserPermissions}"
+                  <th:block th:each="userPerm : ${ekiUserPermissionsResult.ekiUserPermissions}"
                             th:with="
                               isOwnPermission=${@permDataUtil.isOwnPermission(userPerm.id)},
                               isAdmin=${userRoleData.admin},
@@ -156,75 +156,27 @@
                       </td>
                       <td class="p-1">
                         <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
-                        <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
-                          <div class="border">
-                            <span class="lbl" th:text="#{permissions.status}">Staatus</span>
-                            <span th:text="#{|applicationstatus.${userApplication.status}|}"></span>
-                            <div th:replace="permdialog :: approve_application_dlg"></div>
-                            <th:block th:if="${userApplication.status == T(eki.ekilex.constant.ApplicationStatus).NEW}">
-                              <button type="button" class="btn btn-xs badge badge-success" data-toggle="modal"
-                                      th:title="#{permissions.approve.application}"
-                                      th:data-target="${'#approveApplicationDlg_' + userApplication.id}"
-                                      sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                      th:disabled="${#vars.isOwnPermission}">
-                                <i class="fa fa-check" aria-hidden="true"></i>
-                              </button>
-                              <button class="btn btn-xs badge badge-warning" data-toggle="reject-application-confirm" data-placement="right"
-                                      th:data-application-id="${userApplication.id}"
-                                      sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                      th:disabled="${#vars.isOwnPermission}">
-                                <i class="fa fa-remove" aria-hidden="true"></i>
-                              </button>
-                            </th:block>
-                            <br/>
-                            <span class="lbl" th:text="#{permissions.time}">Aeg</span>
-                            <span th:text="${#temporals.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
-                            <br/>
-                            <span class="lbl" th:text="#{permissions.dataset}">Sõnakogu</span>
-                            <span th:text="${userApplication.datasetName}"></span>
-                            <br/>
-                            <span class="lbl" th:text="#{permissions.wished.auth.op}">Soovitud õigus</span>
-                            <span th:text="#{|authorityoperation.${userApplication.authOperation}|}"></span>
-                            <br/>
-                            <span class="lbl" th:text="#{permissions.lang}">Keel</span>
-                            <span th:if="${!#strings.isEmpty(userApplication.lang)}" th:text="${userApplication.langValue}"></span>
-                            <span th:if="${#strings.isEmpty(userApplication.lang)}">-</span>
-                            <th:block th:if="${!#strings.isEmpty(userApplication.comment)}">
-                              <br/>
-                              <span class="lbl" th:text="#{permissions.comment}">Kommentaar</span>
-                              <span th:text="${userApplication.comment}"></span>
-                            </th:block>
-                          </div>
+                        <th:block th:unless="${#lists.isEmpty(userPerm.applications)}">
+                          <div th:replace="permdialog :: manage_applications_dlg"></div>
+                          <button type="button" class="btn badge"
+                                  th:classappend="${userPerm.enablePending ? 'badge-primary' : 'badge-secondary'}"
+                                  th:title="#{permissions.applications}"
+                                  data-toggle="modal"
+                                  th:data-target="${'#manageApplicationsDlg_' + userPerm.id}">
+                            <i class="fa fa-file-text-o mr-1" aria-hidden="true"></i>
+                            <span th:text="${#lists.size(userPerm.applications)}">0</span>
+                          </button>
                         </th:block>
                       </td>
                       <td class="p-1">
-                        <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
-                        <button type="button" class="btn badge badge-success" th:title="#{permissions.add.dataset.permission}"
+                        <div th:replace="permdialog :: manage_dataset_permissions_dlg"></div>
+                        <button type="button" class="btn badge badge-primary"
+                                th:title="#{permissions.manage.dataset.permissions}"
                                 data-toggle="modal"
-                                th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
-                                sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                th:disabled="${#vars.isOwnPermission}">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
+                                th:data-target="${'#manageDatasetPermissionsDlg_' + userPerm.id}">
+                          <i class="fa fa-pencil mr-1" aria-hidden="true"></i>
+                          <span th:text="${#lists.size(userPerm.datasetPermissions)}">0</span>
                         </button>
-                      </td>
-                      <td class="p-1">
-                        <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
-                          <div class="invisible-buttons text-nowrap">
-                            <span th:text="${datasetPerm.datasetCode}"></span>
-                            <span th:text="${datasetPerm.authOperation}"></span>
-                            <span th:if="${datasetPerm.authLang != null}">
-                              <span th:text="${datasetPerm.authLang}"></span>
-                            </span>
-                            <button class="btn badge badge-warning"
-                                    th:data-id="${datasetPerm.id}"
-                                    data-toggle="delete-confirm"
-                                    data-placement="right"
-                                    sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                    th:disabled="${#vars.isOwnPermission}">
-                              <i class="fa fa-remove" aria-hidden="true"></i>
-                            </button>
-                          </div>
-                        </th:block>
                       </td>
                       <td class="p-1">
                         <button type="button" class="btn badge"
@@ -239,6 +191,21 @@
                     </tr>
                   </th:block>
                 </table>
+                <div class="d-flex justify-content-center mb-2">
+                  <a class="btn badge mr-2"
+                     th:href="|@{/permissions/search/page/}${ekiUserPermissionsResult.pageNum - 1}|"
+                     th:hidden="${ekiUserPermissionsResult.pageNum == 1}"
+                     th:title="#{common.previous.page}">
+                    <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+                  </a>
+                  <span class="mt-1" th:text="|${ekiUserPermissionsResult.pageNum} / ${ekiUserPermissionsResult.totalPages}|"></span>
+                  <a class="btn badge ml-2"
+                     th:href="|@{/permissions/search/page/}${ekiUserPermissionsResult.pageNum + 1}|"
+                     th:hidden="${ekiUserPermissionsResult.pageNum == ekiUserPermissionsResult.totalPages}"
+                     th:title="#{common.next.page}">
+                    <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+                  </a>
+                </div>
               </th:block>
             </div>
             <script type="text/javascript">
