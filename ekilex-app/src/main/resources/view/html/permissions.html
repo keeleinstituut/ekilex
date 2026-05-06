@@ -43,169 +43,172 @@
         <div class="float-left w-100">
           <th:block th:fragment="permissions">
             <div id="permissionsArea">
-              <th:block th:if="${not #lists.isEmpty(searchResult?.ekiUserPermissions)}">
-                <div class="mb-2">
-                  <span th:text="#{permissions.results}">Tulemusi:</span>
-                  <span th:text="${searchResult.totalResultCount}"></span>
-                </div>
-                <table class="table table-striped m-0 p-0 table-hover">
-                  <tr>
-                    <th class="p-1"></th>
-                    <th class="p-1 text-nowrap">
-                      <form th:action="@{/permissions/orderby}" method="post">
-                        <input type="hidden" name="orderBy" value="DATE">
-                        <button type="submit" class="btn badge badge-light">
-                          <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-                        </button>
-                        <span th:text="#{permissions.date}">Kuupäev</span>
-                      </form>
-                    </th>
-                    <th class="p-1 text-nowrap">
-                      <form th:action="@{/permissions/orderby}" method="post">
-                        <input type="hidden" name="orderBy" value="NAME">
-                        <button type="submit" class="btn badge badge-light">
-                          <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-                        </button>
-                        <span th:text="#{permissions.name}">Nimi</span>
-                      </form>
-                    </th>
-                    <th class="p-1" th:text="#{permissions.email}">E-post</th>
-                    <th class="p-1 text-center" th:text="#{permissions.api}">api</th>
-                    <th class="p-1 text-center" th:text="#{permissions.crud}">crud</th>
-                    <th class="p-1 text-center" th:text="#{permissions.admin}">Admin</th>
-                    <th class="p-1 text-center" th:text="#{permissions.master}">Ülevaataja</th>
-                    <th class="p-1 text-center" th:text="#{permissions.enabled}">Lubatud</th>
-                    <th class="p-1" th:text="#{permissions.comment}">Kommentaar</th>
-                    <th class="p-1" th:text="#{permissions.applications}">Avaldused</th>
-                    <th class="p-1" colspan="2" th:text="#{permissions.dataset.permissions}">Load</th>
-                  </tr>
-                  <th:block th:each="userPerm : ${searchResult.ekiUserPermissions}"
-                            th:with="
-                              isOwnPermission=${@permDataUtil.isOwnPermission(userPerm.id)},
-                              isAdmin=${userRoleData.admin},
-                              isDatasetOwnerOrAdmin=${userRoleData.datasetOwnerOrAdmin}">
+              <th:block th:if="${searchResult}">
+                <p th:if="${#lists.isEmpty(searchResult.ekiUserPermissions)}" th:text="#{common.no.results}">Tulemusi ei leitud</p>
+                <th:block th:unless="${#lists.isEmpty(searchResult.ekiUserPermissions)}">
+                  <div class="mb-2">
+                    <span th:text="#{permissions.results}">Tulemusi:</span>
+                    <span th:text="${searchResult.totalResultCount}"></span>
+                  </div>
+                  <table class="table table-striped m-0 p-0 table-hover">
                     <tr>
-                      <td class="p-1 text-center">
-                        <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
-                      </td>
-                      <td class="p-1">
-                        <span th:text="${#temporals.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
-                      </td>
-                      <td class="p-1 text-nowrap">
-                        <span th:text="${userPerm.name}"></span>
-                      </td>
-                      <td class="p-1">
-                        <span th:text="${userPerm.email}"></span>
-                      </td>
-                      <td class="p-1 text-center">
-                        <span class="text-success fa" th:classappend="${userPerm.apiKeyExists ? 'fa-check' : ''}"></span>
-                      </td>
-                      <td class="p-1 text-center">
-                        <input type="checkbox"
-                               th:data-id="${userPerm.id}"
-                               data-plugin="userApiCrudCheck"
-                               th:checked="${userPerm.apiCrud}"
-                               th:disabled="${!(userPerm.apiKeyExists && #vars.isAdmin)}"/>
-                      </td>
-                      <td class="p-1 text-center">
-                        <input type="checkbox"
-                               th:data-id="${userPerm.id}"
-                               data-plugin="userAdminCheck"
-                               th:checked="${userPerm.admin}"
-                               th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
-                      </td>
-                      <td class="p-1 text-center">
-                        <input type="checkbox"
-                               th:data-id="${userPerm.id}"
-                               data-plugin="userMasterCheck"
-                               th:checked="${userPerm.master}"
-                               th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
-                      </td>
-                      <td class="p-1 text-center">
-                        <input type="checkbox"
-                               th:data-id="${userPerm.id}"
-                               data-plugin="userEnableCheck"
-                               th:checked="${userPerm.enabled}"
-                               th:disabled="${#vars.isOwnPermission}"/>
-                      </td>
-                      <td class="p-1">
-                        <div th:replace="permdialog :: edit_review_comment_dlg"></div>
-                        <button type="button" class="btn badge badge-success" th:title="#{permissions.add.comment}"
-                                data-toggle="modal"
-                                th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
-                                sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                th:if="${#strings.isEmpty(userPerm.reviewComment)}">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                        <div class="invisible-buttons" th:unless="${#strings.isEmpty(userPerm.reviewComment)}">
-                          <span th:text="${userPerm.reviewComment}"></span>
-                          <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
+                      <th class="p-1"></th>
+                      <th class="p-1 text-nowrap">
+                        <form th:action="@{/permissions/orderby}" method="post">
+                          <input type="hidden" name="orderBy" value="DATE">
+                          <button type="submit" class="btn badge badge-light">
+                            <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                          </button>
+                          <span th:text="#{permissions.date}">Kuupäev</span>
+                        </form>
+                      </th>
+                      <th class="p-1 text-nowrap">
+                        <form th:action="@{/permissions/orderby}" method="post">
+                          <input type="hidden" name="orderBy" value="NAME">
+                          <button type="submit" class="btn badge badge-light">
+                            <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                          </button>
+                          <span th:text="#{permissions.name}">Nimi</span>
+                        </form>
+                      </th>
+                      <th class="p-1" th:text="#{permissions.email}">E-post</th>
+                      <th class="p-1 text-center" th:text="#{permissions.api}">api</th>
+                      <th class="p-1 text-center" th:text="#{permissions.crud}">crud</th>
+                      <th class="p-1 text-center" th:text="#{permissions.admin}">Admin</th>
+                      <th class="p-1 text-center" th:text="#{permissions.master}">Ülevaataja</th>
+                      <th class="p-1 text-center" th:text="#{permissions.enabled}">Lubatud</th>
+                      <th class="p-1" th:text="#{permissions.comment}">Kommentaar</th>
+                      <th class="p-1" th:text="#{permissions.applications}">Avaldused</th>
+                      <th class="p-1" colspan="2" th:text="#{permissions.dataset.permissions}">Load</th>
+                    </tr>
+                    <th:block th:each="userPerm : ${searchResult.ekiUserPermissions}"
+                              th:with="
+                                isOwnPermission=${@permDataUtil.isOwnPermission(userPerm.id)},
+                                isAdmin=${userRoleData.admin},
+                                isDatasetOwnerOrAdmin=${userRoleData.datasetOwnerOrAdmin}">
+                      <tr>
+                        <td class="p-1 text-center">
+                          <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
+                        </td>
+                        <td class="p-1">
+                          <span th:text="${#temporals.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
+                        </td>
+                        <td class="p-1 text-nowrap">
+                          <span th:text="${userPerm.name}"></span>
+                        </td>
+                        <td class="p-1">
+                          <span th:text="${userPerm.email}"></span>
+                        </td>
+                        <td class="p-1 text-center">
+                          <span class="text-success fa" th:classappend="${userPerm.apiKeyExists ? 'fa-check' : ''}"></span>
+                        </td>
+                        <td class="p-1 text-center">
+                          <input type="checkbox"
+                                 th:data-id="${userPerm.id}"
+                                 data-plugin="userApiCrudCheck"
+                                 th:checked="${userPerm.apiCrud}"
+                                 th:disabled="${!(userPerm.apiKeyExists && #vars.isAdmin)}"/>
+                        </td>
+                        <td class="p-1 text-center">
+                          <input type="checkbox"
+                                 th:data-id="${userPerm.id}"
+                                 data-plugin="userAdminCheck"
+                                 th:checked="${userPerm.admin}"
+                                 th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
+                        </td>
+                        <td class="p-1 text-center">
+                          <input type="checkbox"
+                                 th:data-id="${userPerm.id}"
+                                 data-plugin="userMasterCheck"
+                                 th:checked="${userPerm.master}"
+                                 th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
+                        </td>
+                        <td class="p-1 text-center">
+                          <input type="checkbox"
+                                 th:data-id="${userPerm.id}"
+                                 data-plugin="userEnableCheck"
+                                 th:checked="${userPerm.enabled}"
+                                 th:disabled="${#vars.isOwnPermission}"/>
+                        </td>
+                        <td class="p-1">
+                          <div th:replace="permdialog :: edit_review_comment_dlg"></div>
+                          <button type="button" class="btn badge badge-success" th:title="#{permissions.add.comment}"
                                   data-toggle="modal"
                                   th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
-                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                                  th:if="${#strings.isEmpty(userPerm.reviewComment)}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:title="#{permissions.delete.comment}"
-                                  th:data-id="${userPerm.id}"
-                                  data-plugin="deletePermReviewCommentPlugin"
-                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </td>
-                      <td class="p-1">
-                        <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
-                        <th:block th:unless="${#lists.isEmpty(userPerm.applications)}">
-                          <div th:replace="permdialog :: manage_applications_dlg"></div>
-                          <button type="button" class="btn badge"
-                                  th:classappend="${userPerm.enablePending ? 'badge-primary' : 'badge-secondary'}"
-                                  th:title="#{permissions.applications}"
+                          <div class="invisible-buttons" th:unless="${#strings.isEmpty(userPerm.reviewComment)}">
+                            <span th:text="${userPerm.reviewComment}"></span>
+                            <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
+                                    data-toggle="modal"
+                                    th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
+                                    sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:title="#{permissions.delete.comment}"
+                                    th:data-id="${userPerm.id}"
+                                    data-plugin="deletePermReviewCommentPlugin"
+                                    sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </td>
+                        <td class="p-1">
+                          <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
+                          <th:block th:unless="${#lists.isEmpty(userPerm.applications)}">
+                            <div th:replace="permdialog :: manage_applications_dlg"></div>
+                            <button type="button" class="btn badge"
+                                    th:classappend="${userPerm.enablePending ? 'badge-primary' : 'badge-secondary'}"
+                                    th:title="#{permissions.applications}"
+                                    data-toggle="modal"
+                                    th:data-target="${'#manageApplicationsDlg_' + userPerm.id}">
+                              <i class="fa fa-file-text-o mr-1" aria-hidden="true"></i>
+                              <span th:text="${#lists.size(userPerm.applications)}">0</span>
+                            </button>
+                          </th:block>
+                        </td>
+                        <td class="p-1">
+                          <div th:replace="permdialog :: manage_dataset_permissions_dlg"></div>
+                          <button type="button" class="btn badge badge-primary"
+                                  th:title="#{permissions.manage.dataset.permissions}"
                                   data-toggle="modal"
-                                  th:data-target="${'#manageApplicationsDlg_' + userPerm.id}">
-                            <i class="fa fa-file-text-o mr-1" aria-hidden="true"></i>
-                            <span th:text="${#lists.size(userPerm.applications)}">0</span>
+                                  th:data-target="${'#manageDatasetPermissionsDlg_' + userPerm.id}">
+                            <i class="fa fa-pencil mr-1" aria-hidden="true"></i>
+                            <span th:text="${#lists.size(userPerm.datasetPermissions)}">0</span>
                           </button>
-                        </th:block>
-                      </td>
-                      <td class="p-1">
-                        <div th:replace="permdialog :: manage_dataset_permissions_dlg"></div>
-                        <button type="button" class="btn badge badge-primary"
-                                th:title="#{permissions.manage.dataset.permissions}"
-                                data-toggle="modal"
-                                th:data-target="${'#manageDatasetPermissionsDlg_' + userPerm.id}">
-                          <i class="fa fa-pencil mr-1" aria-hidden="true"></i>
-                          <span th:text="${#lists.size(userPerm.datasetPermissions)}">0</span>
-                        </button>
-                      </td>
-                      <td class="p-1">
-                        <button type="button" class="btn badge"
-                                data-toggle="send-mail-confirm"
-                                data-placement="top"
-                                th:data-user-email="${userPerm.email}"
-                                sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                                th:disabled="${#vars.isOwnPermission}">
-                          <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </th:block>
-                </table>
-                <div class="d-flex justify-content-center mb-2">
-                  <a class="btn badge mr-2"
-                     th:href="|@{/permissions/search/}${searchResult.pageNum - 1}|"
-                     th:hidden="${searchResult.pageNum == 1}"
-                     th:title="#{common.previous.page}">
-                    <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
-                  </a>
-                  <span class="mt-1" th:text="|${searchResult.pageNum} / ${searchResult.pageCount}|"></span>
-                  <a class="btn badge ml-2"
-                     th:href="|@{/permissions/search/}${searchResult.pageNum + 1}|"
-                     th:hidden="${searchResult.pageNum == searchResult.pageCount}"
-                     th:title="#{common.next.page}">
-                    <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
-                  </a>
-                </div>
+                        </td>
+                        <td class="p-1">
+                          <button type="button" class="btn badge"
+                                  data-toggle="send-mail-confirm"
+                                  data-placement="top"
+                                  th:data-user-email="${userPerm.email}"
+                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                                  th:disabled="${#vars.isOwnPermission}">
+                            <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </th:block>
+                  </table>
+                  <div class="d-flex justify-content-center mb-2">
+                    <a class="btn badge mr-2"
+                       th:href="|@{/permissions/search/}${searchResult.pageNum - 1}|"
+                       th:hidden="${searchResult.pageNum == 1}"
+                       th:title="#{common.previous.page}">
+                      <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                    <span class="mt-1" th:text="|${searchResult.pageNum} / ${searchResult.pageCount}|"></span>
+                    <a class="btn badge ml-2"
+                       th:href="|@{/permissions/search/}${searchResult.pageNum + 1}|"
+                       th:hidden="${searchResult.pageNum == searchResult.pageCount}"
+                       th:title="#{common.next.page}">
+                      <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </th:block>
               </th:block>
             </div>
             <script type="text/javascript">
