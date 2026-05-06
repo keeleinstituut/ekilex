@@ -101,7 +101,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.fetchInto(EkiUserPermData.class);
 	}
 
-	public int getUsersCount(String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter) {
+	public int getUserCount(String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter) {
 
 		EkiUser eu = EKI_USER.as("eu");
 		EkiUserApplication eua = EKI_USER_APPLICATION.as("eua");

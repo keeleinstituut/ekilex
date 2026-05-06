@@ -97,7 +97,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return buildSearchResultRedirectUri(permSearchBean.getPageNum());
 	}
 
-	@GetMapping(PERMISSIONS_URI + SEARCH_URI + "/page/{pageNum}")
+	@GetMapping(PERMISSIONS_URI + SEARCH_URI + "/{pageNum}")
 	public String searchGetPage(@PathVariable("pageNum") int pageNum, Model model) {
 
 		PermSearchBean permSearchBean = getPermSearchBean(model);
@@ -308,7 +308,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 		EkiUserPermSearchResult searchResult = permissionService.getEkiUserPermissionsSearchResult(userNameFilter, userPermDatasetCodeFilter,
 				userEnablePendingFilter, orderBy, pageNum);
 
-		model.addAttribute("ekiUserPermissionsResult", searchResult);
+		model.addAttribute("searchResult", searchResult);
 	}
 
 	private boolean hasActiveFilters(PermSearchBean permSearchBean) {
@@ -318,6 +318,6 @@ public class PermissionsController extends AbstractPrivatePageController {
 	}
 
 	private String buildSearchResultRedirectUri(int pageNum) {
-		return REDIRECT_PREF + PERMISSIONS_URI + SEARCH_URI + "/page/" + pageNum;
+		return REDIRECT_PREF + PERMISSIONS_URI + SEARCH_URI + "/" + pageNum;
 	}
 }

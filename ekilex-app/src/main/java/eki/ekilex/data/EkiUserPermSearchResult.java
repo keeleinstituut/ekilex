@@ -12,9 +12,9 @@ public class EkiUserPermSearchResult extends AbstractDataObject {
 
 	private int pageNum;
 
-	private int totalPages;
+	private int pageCount;
 
-	private int totalItems;
+	private int totalResultCount;
 
 	public List<EkiUserPermData> getEkiUserPermissions() {
 		return ekiUserPermissions;
@@ -32,19 +32,19 @@ public class EkiUserPermSearchResult extends AbstractDataObject {
 		this.pageNum = pageNum;
 	}
 
-	public int getTotalPages() {
-		return totalPages;
+	public int getPageCount() {
+		return pageCount;
 	}
 
-	public void setTotalPages(int totalPages) {
-		this.totalPages = totalPages;
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
 	}
 
-	public int getTotalItems() {
-		return totalItems;
+	public int getTotalResultCount() {
+		return totalResultCount;
 	}
 
-	public void setTotalItems(int totalItems) {
-		this.totalItems = totalItems;
+	public void setTotalResultCount(int totalResultCount) {
+		this.totalResultCount = totalResultCount;
 	}
 }

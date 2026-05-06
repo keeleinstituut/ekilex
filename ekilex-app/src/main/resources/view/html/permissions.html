@@ -43,10 +43,10 @@
         <div class="float-left w-100">
           <th:block th:fragment="permissions">
             <div id="permissionsArea">
-              <th:block th:if="${not #lists.isEmpty(ekiUserPermissionsResult?.ekiUserPermissions)}">
+              <th:block th:if="${not #lists.isEmpty(searchResult?.ekiUserPermissions)}">
                 <div class="mb-2">
                   <span th:text="#{permissions.results}">Tulemusi:</span>
-                  <span th:text="${ekiUserPermissionsResult.totalItems}"></span>
+                  <span th:text="${searchResult.totalResultCount}"></span>
                 </div>
                 <table class="table table-striped m-0 p-0 table-hover">
                   <tr>
@@ -79,7 +79,7 @@
                     <th class="p-1" th:text="#{permissions.applications}">Avaldused</th>
                     <th class="p-1" colspan="2" th:text="#{permissions.dataset.permissions}">Load</th>
                   </tr>
-                  <th:block th:each="userPerm : ${ekiUserPermissionsResult.ekiUserPermissions}"
+                  <th:block th:each="userPerm : ${searchResult.ekiUserPermissions}"
                             th:with="
                               isOwnPermission=${@permDataUtil.isOwnPermission(userPerm.id)},
                               isAdmin=${userRoleData.admin},
@@ -193,15 +193,15 @@
                 </table>
                 <div class="d-flex justify-content-center mb-2">
                   <a class="btn badge mr-2"
-                     th:href="|@{/permissions/search/page/}${ekiUserPermissionsResult.pageNum - 1}|"
-                     th:hidden="${ekiUserPermissionsResult.pageNum == 1}"
+                     th:href="|@{/permissions/search/}${searchResult.pageNum - 1}|"
+                     th:hidden="${searchResult.pageNum == 1}"
                      th:title="#{common.previous.page}">
                     <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
                   </a>
-                  <span class="mt-1" th:text="|${ekiUserPermissionsResult.pageNum} / ${ekiUserPermissionsResult.totalPages}|"></span>
+                  <span class="mt-1" th:text="|${searchResult.pageNum} / ${searchResult.pageCount}|"></span>
                   <a class="btn badge ml-2"
-                     th:href="|@{/permissions/search/page/}${ekiUserPermissionsResult.pageNum + 1}|"
-                     th:hidden="${ekiUserPermissionsResult.pageNum == ekiUserPermissionsResult.totalPages}"
+                     th:href="|@{/permissions/search/}${searchResult.pageNum + 1}|"
+                     th:hidden="${searchResult.pageNum == searchResult.pageCount}"
                      th:title="#{common.next.page}">
                     <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
                   </a>

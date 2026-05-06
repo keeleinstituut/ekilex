@@ -48,12 +48,12 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 	private DatasetUtil datasetUtil;
 
 	@Transactional
-	public EkiUserPermSearchResult getEkiUserPermissionsSearchResult(String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter,
-			OrderingField orderBy, int pageNum) {
+	public EkiUserPermSearchResult getEkiUserPermissionsSearchResult(
+			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy, int pageNum) {
 
 		int pageSize = PERMISSIONS_PAGE_SIZE;
-		int usersCount = permissionDbService.getUsersCount(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter);
-		int totalPages = (usersCount + pageSize - 1) / pageSize;
+		int totalResultCount = permissionDbService.getUserCount(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter);
+		int pageCount = (totalResultCount + pageSize - 1) / pageSize;
 		int offset = (pageNum - 1) * pageSize;
 
 		List<EkiUserPermData> users = permissionDbService.getUsers(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy, offset,
@@ -71,8 +71,8 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 		EkiUserPermSearchResult result = new EkiUserPermSearchResult();
 		result.setEkiUserPermissions(users);
 		result.setPageNum(pageNum);
-		result.setTotalPages(totalPages);
-		result.setTotalItems(usersCount);
+		result.setPageCount(pageCount);
+		result.setTotalResultCount(totalResultCount);
 
 		return result;
 	}
