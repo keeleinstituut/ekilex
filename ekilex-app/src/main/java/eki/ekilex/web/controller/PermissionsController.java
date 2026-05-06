@@ -97,6 +97,11 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return buildSearchResultRedirectUri(permSearchBean.getPageNum());
 	}
 
+	@GetMapping(PERMISSIONS_URI + SEARCH_URI)
+	public String searchGet() {
+		return REDIRECT_PREF + PERMISSIONS_URI;
+	}
+
 	@GetMapping(PERMISSIONS_URI + SEARCH_URI + "/{pageNum}")
 	public String searchGetPage(@PathVariable("pageNum") int pageNum, Model model) {
 
