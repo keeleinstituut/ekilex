@@ -3,13 +3,13 @@
 
 	<groupId>eki.common</groupId>
 	<artifactId>eki-common</artifactId>
-	<version>1.47.0</version>
+	<version>1.47.1</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.47.0</version>
+		<version>1.47.1</version>
 	</parent>
 
 	<name>Eki apps Commons</name>
