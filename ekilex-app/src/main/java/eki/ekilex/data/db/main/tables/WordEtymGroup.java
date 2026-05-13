@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,14 +54,24 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
     public final TableField<WordEtymGroupRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.word_etym_group.type</code>.
+     * The column <code>public.word_etym_group.group_type</code>.
      */
-    public final TableField<WordEtymGroupRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordEtymGroupRecord, String> GROUP_TYPE = createField(DSL.name("group_type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.word_etym_group.etymology_type_code</code>.
+     */
+    public final TableField<WordEtymGroupRecord, String> ETYMOLOGY_TYPE_CODE = createField(DSL.name("etymology_type_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word_etym_group.language_group_member_id</code>.
      */
     public final TableField<WordEtymGroupRecord, Long> LANGUAGE_GROUP_MEMBER_ID = createField(DSL.name("language_group_member_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.word_etym_group.is_questionable</code>.
+     */
+    public final TableField<WordEtymGroupRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private WordEtymGroup(Name alias, Table<WordEtymGroupRecord> aliased) {
         this(alias, aliased, null);
@@ -118,10 +128,18 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
 
     @Override
     public List<ForeignKey<WordEtymGroupRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_MEMBER_ID_FKEY);
     }
 
+    private transient EtymologyType _etymologyType;
     private transient LanguageGroupMember _languageGroupMember;
+
+    public EtymologyType etymologyType() {
+        if (_etymologyType == null)
+            _etymologyType = new EtymologyType(this, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY);
+
+        return _etymologyType;
+    }
 
     public LanguageGroupMember languageGroupMember() {
         if (_languageGroupMember == null)
@@ -157,11 +175,11 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, String, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row5<Long, String, String, Long, Boolean> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

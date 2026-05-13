@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,6 +62,11 @@ public class WordEtymGroupMember extends TableImpl<WordEtymGroupMemberRecord> {
      * The column <code>public.word_etym_group_member.word_etym_id</code>.
      */
     public final TableField<WordEtymGroupMemberRecord, Long> WORD_ETYM_ID = createField(DSL.name("word_etym_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.word_etym_group_member.is_questionable</code>.
+     */
+    public final TableField<WordEtymGroupMemberRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_etym_group_member.order_by</code>.
@@ -170,11 +175,11 @@ public class WordEtymGroupMember extends TableImpl<WordEtymGroupMemberRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, Long, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, Long, Boolean, Long> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

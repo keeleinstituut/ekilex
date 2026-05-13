@@ -10,6 +10,8 @@ public class ValueMarkup extends AbstractDataObject {
 
 	private String valuePrese;
 
+	private String attrName;
+
 	public ValueMarkup() {
 	}
 
@@ -32,6 +34,14 @@ public class ValueMarkup extends AbstractDataObject {
 
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
+	}
+
+	public String getAttrName() {
+		return attrName;
+	}
+
+	public void setAttrName(String attrName) {
+		this.attrName = attrName;
 	}
 
 }

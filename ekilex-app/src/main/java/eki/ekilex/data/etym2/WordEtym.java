@@ -10,11 +10,7 @@ public class WordEtym extends AbstractDataObject {
 
 	private Long wordId;
 
-	private String etymologyTypeCode;
-
 	private String etymologyYear;
-
-	private boolean questionable;
 
 	public Long getId() {
 		return id;
@@ -32,28 +28,12 @@ public class WordEtym extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getEtymologyTypeCode() {
-		return etymologyTypeCode;
-	}
-
-	public void setEtymologyTypeCode(String etymologyTypeCode) {
-		this.etymologyTypeCode = etymologyTypeCode;
-	}
-
 	public String getEtymologyYear() {
 		return etymologyYear;
 	}
 
 	public void setEtymologyYear(String etymologyYear) {
 		this.etymologyYear = etymologyYear;
-	}
-
-	public boolean isQuestionable() {
-		return questionable;
-	}
-
-	public void setQuestionable(boolean questionable) {
-		this.questionable = questionable;
 	}
 
 }

@@ -716,9 +716,14 @@ public class Sequences {
     public static final Sequence<Long> WORD_ETYM_NOTE_ORDER_BY_SEQ = Internal.createSequence("word_etym_note_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.word_etym_order_by_seq</code>
+     * The sequence <code>public.word_etym_source_link_id_seq</code>
      */
-    public static final Sequence<Long> WORD_ETYM_ORDER_BY_SEQ = Internal.createSequence("word_etym_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> WORD_ETYM_SOURCE_LINK_ID_SEQ = Internal.createSequence("word_etym_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_etym_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYM_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("word_etym_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_etymology_id_seq</code>

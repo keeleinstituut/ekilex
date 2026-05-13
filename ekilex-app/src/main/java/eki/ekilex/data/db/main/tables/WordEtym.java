@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -59,24 +59,9 @@ public class WordEtym extends TableImpl<WordEtymRecord> {
     public final TableField<WordEtymRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.word_etym.etymology_type_code</code>.
-     */
-    public final TableField<WordEtymRecord, String> ETYMOLOGY_TYPE_CODE = createField(DSL.name("etymology_type_code"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.word_etym.etymology_year</code>.
      */
     public final TableField<WordEtymRecord, String> ETYMOLOGY_YEAR = createField(DSL.name("etymology_year"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.word_etym.is_questionable</code>.
-     */
-    public final TableField<WordEtymRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>public.word_etym.order_by</code>.
-     */
-    public final TableField<WordEtymRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     private WordEtym(Name alias, Table<WordEtymRecord> aliased) {
         this(alias, aliased, null);
@@ -133,24 +118,16 @@ public class WordEtym extends TableImpl<WordEtymRecord> {
 
     @Override
     public List<ForeignKey<WordEtymRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordEtymRecord, ?>>asList(Keys.WORD_ETYM__WORD_ETYM_WORD_ID_FKEY, Keys.WORD_ETYM__WORD_ETYM_ETYMOLOGY_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<WordEtymRecord, ?>>asList(Keys.WORD_ETYM__WORD_ETYM_WORD_ID_FKEY);
     }
 
     private transient Word _word;
-    private transient EtymologyType _etymologyType;
 
     public Word word() {
         if (_word == null)
             _word = new Word(this, Keys.WORD_ETYM__WORD_ETYM_WORD_ID_FKEY);
 
         return _word;
-    }
-
-    public EtymologyType etymologyType() {
-        if (_etymologyType == null)
-            _etymologyType = new EtymologyType(this, Keys.WORD_ETYM__WORD_ETYM_ETYMOLOGY_TYPE_CODE_FKEY);
-
-        return _etymologyType;
     }
 
     @Override
@@ -180,11 +157,11 @@ public class WordEtym extends TableImpl<WordEtymRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, String, Boolean, Long> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row3<Long, Long, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

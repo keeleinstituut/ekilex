@@ -159,6 +159,7 @@ import eki.ekilex.data.db.main.tables.WordEtymGroup;
 import eki.ekilex.data.db.main.tables.WordEtymGroupMember;
 import eki.ekilex.data.db.main.tables.WordEtymGroupTree;
 import eki.ekilex.data.db.main.tables.WordEtymNote;
+import eki.ekilex.data.db.main.tables.WordEtymSourceLink;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -964,6 +965,11 @@ public class Tables {
      * The table <code>public.word_etym_note</code>.
      */
     public static final WordEtymNote WORD_ETYM_NOTE = WordEtymNote.WORD_ETYM_NOTE;
+
+    /**
+     * The table <code>public.word_etym_source_link</code>.
+     */
+    public static final WordEtymSourceLink WORD_ETYM_SOURCE_LINK = WordEtymSourceLink.WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.word_etymology</code>.

@@ -23,7 +23,6 @@ import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -35,12 +34,14 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PublishingConstant;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Publishing;
+import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
@@ -403,7 +404,122 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.execute();
 	}
 
-	public Long getWordId(String wordValue, String asWordValue, List<String> languageCodes, String datasetCode) {
+	public Long createWord(String value, String valuePrese, String valueAsWord, String lang) {
+
+		int homonymNr = getWordNextHomonymNr(value, lang);
+
+		Long wordId = mainDb
+				.insertInto(
+						WORD,
+						WORD.VALUE,
+						WORD.VALUE_PRESE,
+						WORD.VALUE_AS_WORD,
+						WORD.HOMONYM_NR,
+						WORD.LANG)
+				.values(
+						value,
+						valuePrese,
+						valueAsWord,
+						homonymNr,
+						lang)
+				.returning(WORD.ID)
+				.fetchOne()
+				.getId();
+		return wordId;
+	}
+
+	public WordLexemeMeaningIdTuple getLexemeId(Long wordId, Long meaningId, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+
+		return mainDb
+				.select(
+						l.WORD_ID,
+						l.MEANING_ID,
+						l.ID.as("lexeme_id"))
+				.from(l)
+				.where(
+						l.WORD_ID.eq(wordId)
+								.and(l.MEANING_ID.eq(meaningId))
+								.and(l.DATASET_CODE.eq(datasetCode)))
+				.fetchOptionalInto(WordLexemeMeaningIdTuple.class)
+				.orElse(null);
+	}
+
+	public WordLexemeMeaningIdTuple createLexeme(Long wordId, Long meaningId, String datasetCode, boolean isPublic) {
+
+		Long lexemeId = mainDb
+				.insertInto(
+						LEXEME,
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
+						LEXEME.IS_WORD,
+						LEXEME.IS_COLLOCATION,
+						LEXEME.IS_PUBLIC)
+				.values(
+						wordId,
+						meaningId,
+						datasetCode,
+						1,
+						0,
+						true,
+						false,
+						isPublic)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
+		wordLexemeMeaningId.setWordId(wordId);
+		wordLexemeMeaningId.setLexemeId(lexemeId);
+		wordLexemeMeaningId.setMeaningId(meaningId);
+
+		return wordLexemeMeaningId;
+	}
+
+	public WordLexemeMeaningIdTuple createWordAndLexeme(
+			String value,
+			String valuePrese,
+			String valueAsWord,
+			String lang,
+			String datasetCode,
+			boolean isPublic,
+			Long meaningId) throws Exception {
+
+		Long wordId = createWord(value, valuePrese, valueAsWord, lang);
+
+		return createLexeme(wordId, meaningId, datasetCode, isPublic);
+	}
+
+	public WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(
+			String value,
+			String valuePrese,
+			String valueAsWord,
+			String lang,
+			String datasetCode,
+			boolean isPublic) throws Exception {
+
+		Long wordId = createWord(value, valuePrese, valueAsWord, lang);
+
+		return createLexemeAndMeaning(wordId, datasetCode, isPublic);
+	}
+
+	public WordLexemeMeaningIdTuple createLexemeAndMeaning(Long wordId, String datasetCode, boolean isPublic) {
+
+		Long meaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
+				.fetchOne()
+				.getId();
+
+		return createLexeme(wordId, meaningId, datasetCode, isPublic);
+	}
+
+	public Long getWordId(String wordValue, String asWordValue, String languageCode, String datasetCode) {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
@@ -412,16 +528,15 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 		if (StringUtils.isBlank(asWordValue)) {
 			where = w.VALUE.eq(wordValue);
 		} else {
-			where = DSL.or(w.VALUE.eq(wordValue), w.VALUE_AS_WORD.eq(asWordValue));
+			where = DSL.or(w.VALUE.eq(wordValue), w.VALUE.eq(asWordValue), w.VALUE_AS_WORD.eq(asWordValue));
 		}
-		if (CollectionUtils.isNotEmpty(languageCodes)) {
-			where = where.and(w.LANG.in(languageCodes));
-		}
-		where = where.andExists(DSL
-				.select(l.ID)
-				.from(l)
-				.where(l.WORD_ID.eq(w.ID)
-						.and(l.DATASET_CODE.eq(datasetCode))));
+		where = where
+				.and(w.LANG.eq(languageCode))
+				.andExists(DSL
+						.select(l.ID)
+						.from(l)
+						.where(l.WORD_ID.eq(w.ID)
+								.and(l.DATASET_CODE.eq(datasetCode))));
 
 		return mainDb
 				.select(w.ID)
@@ -432,5 +547,20 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 
+	}
+
+	public Long getSourceId(String sourceName, String datasetCode) {
+
+		Source s = SOURCE.as("s");
+
+		return mainDb
+				.select(s.ID)
+				.from(s)
+				.where(
+						s.NAME.eq(sourceName)
+								.and(s.DATASET_CODE.eq(datasetCode)))
+				.limit(1)
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
 	}
 }

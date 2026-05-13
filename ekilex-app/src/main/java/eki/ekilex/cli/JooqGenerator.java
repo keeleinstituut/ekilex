@@ -28,10 +28,10 @@ public class JooqGenerator implements CommandLineRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(JooqGenerator.class);
 
-	@Value("${spring.datasource.main.driver-class-name}")
+	@Value("${spring.datasource.main.driverClassName}")
 	private String mainDataSourceDriver;
 
-	@Value("${spring.datasource.main.url}")
+	@Value("${spring.datasource.main.jdbcUrl}")
 	private String mainDataSourceUrl;
 
 	@Value("${spring.datasource.main.username}")
@@ -40,10 +40,10 @@ public class JooqGenerator implements CommandLineRunner {
 	@Value("${spring.datasource.main.password}")
 	private String mainDataSourcePassword;
 
-	@Value("${spring.datasource.arch.driver-class-name}")
+	@Value("${spring.datasource.arch.driverClassName}")
 	private String archDataSourceDriver;
 
-	@Value("${spring.datasource.arch.url}")
+	@Value("${spring.datasource.arch.jdbcUrl}")
 	private String archDataSourceUrl;
 
 	@Value("${spring.datasource.arch.username}")

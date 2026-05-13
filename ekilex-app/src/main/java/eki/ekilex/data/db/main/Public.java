@@ -159,6 +159,7 @@ import eki.ekilex.data.db.main.tables.WordEtymGroup;
 import eki.ekilex.data.db.main.tables.WordEtymGroupMember;
 import eki.ekilex.data.db.main.tables.WordEtymGroupTree;
 import eki.ekilex.data.db.main.tables.WordEtymNote;
+import eki.ekilex.data.db.main.tables.WordEtymSourceLink;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -994,6 +995,11 @@ public class Public extends SchemaImpl {
     public final WordEtymNote WORD_ETYM_NOTE = WordEtymNote.WORD_ETYM_NOTE;
 
     /**
+     * The table <code>public.word_etym_source_link</code>.
+     */
+    public final WordEtymSourceLink WORD_ETYM_SOURCE_LINK = WordEtymSourceLink.WORD_ETYM_SOURCE_LINK;
+
+    /**
      * The table <code>public.word_etymology</code>.
      */
     public final WordEtymology WORD_ETYMOLOGY = WordEtymology.WORD_ETYMOLOGY;
@@ -1264,7 +1270,8 @@ public class Public extends SchemaImpl {
             Sequences.WORD_ETYM_ID_SEQ,
             Sequences.WORD_ETYM_NOTE_ID_SEQ,
             Sequences.WORD_ETYM_NOTE_ORDER_BY_SEQ,
-            Sequences.WORD_ETYM_ORDER_BY_SEQ,
+            Sequences.WORD_ETYM_SOURCE_LINK_ID_SEQ,
+            Sequences.WORD_ETYM_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_RELATION_ID_SEQ,
@@ -1455,6 +1462,7 @@ public class Public extends SchemaImpl {
             WordEtymGroupMember.WORD_ETYM_GROUP_MEMBER,
             WordEtymGroupTree.WORD_ETYM_GROUP_TREE,
             WordEtymNote.WORD_ETYM_NOTE,
+            WordEtymSourceLink.WORD_ETYM_SOURCE_LINK,
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,

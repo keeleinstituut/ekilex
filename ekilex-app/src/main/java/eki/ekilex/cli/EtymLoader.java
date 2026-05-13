@@ -42,7 +42,6 @@ public class EtymLoader implements CommandLineRunner {
 	private EtymLoaderRunner runner;
 
 	//mvn spring-boot:run -P etyl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/projects/ekilex/etym""
-	//-D spring-boot.run.arguments="impfile="/projects/ekilex/etym/etymoloogia_ss1.xml"" 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");

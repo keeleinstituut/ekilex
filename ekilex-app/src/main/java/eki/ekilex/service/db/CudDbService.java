@@ -973,7 +973,7 @@ public class CudDbService extends AbstractDataDbService {
 		return wordLexemeMeaningId;
 	}
 
-	public Long createWord(String wordValue, String valuePrese, String valueAsWord, String lang, int homNr) {
+	public Long createWord(String wordValue, String valuePrese, String valueAsWord, String lang, int homonNr) {
 
 		Long wordId = mainDb
 				.insertInto(
@@ -989,7 +989,7 @@ public class CudDbService extends AbstractDataDbService {
 						valuePrese,
 						valueAsWord,
 						wordValue,
-						homNr,
+						homonNr,
 						lang)
 				.returning(WORD.ID)
 				.fetchOne()
