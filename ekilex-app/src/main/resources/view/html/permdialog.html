@@ -3,7 +3,7 @@
 <head></head>
 <body>
   <div th:id="${'manageDatasetPermissionsDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="manage_dataset_permissions_dlg">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -96,7 +96,7 @@
     </div>
   </div>
   <div th:id="${'manageApplicationsDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="manage_applications_dlg">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
@@ -113,22 +113,11 @@
             <th:block th:each="userApplication : ${userPerm.applications}"
                       th:with="isNewApplication=${userApplication.status == T(eki.ekilex.constant.ApplicationStatus).NEW}">
               <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center py-1 px-2">
-                  <div>
-                    <span class="badge mr-1"
-                          th:classappend="${#vars.isNewApplication ? 'badge-primary' : 'badge-secondary'}"
-                          th:text="#{|applicationstatus.${userApplication.status}|}">Staatus</span>
-                    <span th:text="${userApplication.datasetName}"></span>
-                  </div>
-                  <button class="btn badge badge-warning"
-                          th:if="${#vars.isNewApplication}"
-                          data-toggle="reject-application-confirm"
-                          data-placement="left"
-                          th:data-application-id="${userApplication.id}"
-                          sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
-                          th:disabled="${#vars.isOwnPermission}">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
+                <div class="card-header py-1 px-2">
+                  <span class="badge mr-1"
+                        th:classappend="${#vars.isNewApplication ? 'badge-primary' : 'badge-secondary'}"
+                        th:text="#{|applicationstatus.${userApplication.status}|}">Staatus</span>
+                  <span th:text="${userApplication.datasetName}"></span>
                 </div>
                 <div class="card-body py-1 px-2">
                   <span class="lbl" th:text="#{permissions.time}">Aeg</span>
@@ -187,11 +176,16 @@
                           </select>
                         </div>
                       </div>
-                      <div class="row">
+                      <div class="row mb-1">
                         <div class="col-12 text-right">
-                          <button type="button" class="btn btn-primary"
+                          <button type="button" class="btn btn-primary mr-2"
                                   data-plugin="addDatasetPermPlugin"
                                   th:text="#{permissions.approve.application}">Kinnita avaldus</button>
+                          <button type="button" class="btn btn-danger"
+                                  data-toggle="reject-application-confirm"
+                                  data-placement="top"
+                                  th:data-application-id="${userApplication.id}"
+                                  th:text="#{permissions.reject.application}">Lükka avaldus tagasi</button>
                         </div>
                       </div>
                     </form>
