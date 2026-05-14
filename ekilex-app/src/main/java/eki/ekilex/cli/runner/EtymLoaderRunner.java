@@ -55,7 +55,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private final String reportFileName = "missing-word-or-id-report.txt";
 
-	private boolean makeReport = false;
+	private boolean makeReport = true;
 
 	@Override
 	List<String> getRequiredFilenames() {
@@ -148,7 +148,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 				boolean headwordExists = migrationDbService.wordExists(headwordId);
 				if (!headwordExists) {
 					ignoredArticleCount.increment();
-					writeLogRow(reportWriter, "puudub sõna", headwordValueTuple.getValue());
+					if (makeReport) {
+						writeLogRow(reportWriter, "puudub sõna", headwordValueTuple.getValue());
+					}
 					continue;
 				}
 				handleArticleSs1(
