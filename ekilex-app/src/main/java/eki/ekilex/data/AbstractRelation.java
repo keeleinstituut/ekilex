@@ -6,6 +6,8 @@ public class AbstractRelation extends AbstractPublishingEntity implements Decora
 
 	private Long id;
 
+	private Long oppositeRelationId;
+
 	private Long lexemeId;
 
 	private Long meaningId;
@@ -38,8 +40,6 @@ public class AbstractRelation extends AbstractPublishingEntity implements Decora
 
 	private Long orderBy;
 
-	private Long oppositeRelationId;
-
 	public Long getId() {
 		return id;
 	}
@@ -50,6 +50,14 @@ public class AbstractRelation extends AbstractPublishingEntity implements Decora
 
 	public Long getLexemeId() {
 		return lexemeId;
+	}
+
+	public Long getOppositeRelationId() {
+		return oppositeRelationId;
+	}
+
+	public void setOppositeRelationId(Long oppositeRelationId) {
+		this.oppositeRelationId = oppositeRelationId;
 	}
 
 	public void setLexemeId(Long lexemeId) {
@@ -174,14 +182,6 @@ public class AbstractRelation extends AbstractPublishingEntity implements Decora
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public Long getOppositeRelationId() {
-		return oppositeRelationId;
-	}
-
-	public void setOppositeRelationId(Long oppositeRelationId) {
-		this.oppositeRelationId = oppositeRelationId;
 	}
 
 }

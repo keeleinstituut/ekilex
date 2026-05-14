@@ -35,8 +35,11 @@ public class PublishingService implements PublishingConstant {
 	public void publish(PublishItemRequest publishingItem, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String entityIdStr = publishingItem.getEntityId();
-		List<Long> entityIds = Arrays.stream(entityIdStr.split(","))
-				.map(entityId -> Long.parseLong(entityId.trim()))
+		String[] entityIdStrParts = StringUtils.split(entityIdStr, ',');
+		List<Long> entityIds = Arrays.stream(entityIdStrParts)
+				.map(StringUtils::trim)
+				.filter(StringUtils::isNumeric)
+				.map(Long::parseLong)
 				.toList();
 
 		for (Long entityId : entityIds) {

@@ -1503,10 +1503,10 @@
       </button>
     </div>
     <div class="col pl-0">
-      <table class="table table-striped">
+      <table class="table table-sm table-borderless">
         <tr th:each="relations : ${lexeme.meaning.viewRelations}" th:with="relSample = ${relations.get(0)}" th:data-id="${relSample.id}" class="hidden-buttons">
           <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
-            <span class="text-monospace" th:text="${relSample.meaningId}"></span>
+            <span th:text="|M${relSample.meaningId}|"></span>
           </td>
           <td class="pr-3">
             <th:block th:each="relation, relIter : ${relations}">
@@ -1577,7 +1577,7 @@
             <th:block
                 sec:authorize="#vars.lexeme.meaning.crudGrant"
                 th:replace="components :: entity_publishing(
-                    entityId = ${relSample.id + (relSample.oppositeRelationId != null ? ',' + relSample.oppositeRelationId : '')},
+                    entityId = |${relSample.id},${relSample.oppositeRelationId}|,
                     entityName = 'meaning_relation',
                     isWwUnif = ${relSample.wwUnif},
                     isWwLite = ${relSample.wwLite},

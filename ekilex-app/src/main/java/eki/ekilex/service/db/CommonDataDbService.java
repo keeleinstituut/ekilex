@@ -1004,20 +1004,20 @@ public class CommonDataDbService extends AbstractDataDbService {
 	public List<eki.ekilex.data.MeaningRelation> getMeaningRelations(
 			Long meaningId, List<String> meaningWordPreferredOrderDatasetCodes, String classifierLabelLang) {
 
-		MeaningRelation mr = MEANING_RELATION.as("mr");
+		MeaningRelation mr1 = MEANING_RELATION.as("mr");
+		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
+		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
 		MeaningRelTypeLabel mrtl = MEANING_REL_TYPE_LABEL.as("mrtl");
 		Meaning m2 = MEANING.as("m2");
 		Lexeme l2 = LEXEME.as("l2");
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Government lg = GOVERNMENT.as("lg");
 		Word w2 = WORD.as("w2");
-		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
-		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
 
 		Field<String> mrtf = DSL.field(DSL
 				.select(mrtl.VALUE)
 				.from(mrtl)
-				.where(mr.MEANING_REL_TYPE_CODE.eq(mrtl.CODE))
+				.where(mr1.MEANING_REL_TYPE_CODE.eq(mrtl.CODE))
 				.and(mrtl.LANG.eq(classifierLabelLang))
 				.and(mrtl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)));
 
@@ -1077,20 +1077,21 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(mr2.ID)
 				.from(mr2, mrm)
 				.where(
-						mr.MEANING1_ID.eq(mr2.MEANING2_ID)
-								.and(mr.MEANING2_ID.eq(mr2.MEANING1_ID))
-								.and(mr.MEANING_REL_TYPE_CODE.eq(mrm.CODE1))
+						mr1.MEANING1_ID.eq(mr2.MEANING2_ID)
+								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
+								.and(mr1.MEANING_REL_TYPE_CODE.eq(mrm.CODE1))
 								.and(mr2.MEANING_REL_TYPE_CODE.eq(mrm.CODE2))
-								.and(mr2.ID.ne(mr.ID)))
+								.and(mr2.ID.ne(mr1.ID)))
 				.limit(1));
 
-		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_RELATION, mr.ID);
-		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_RELATION, mr.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_RELATION, mr.ID);
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_RELATION, mr1.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_RELATION, mr1.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_RELATION, mr1.ID);
 
 		return mainDb
 				.select(
-						mr.ID.as("id"),
+						mr1.ID.as("id"),
+						orif.as("opposite_relation_id"),
 						m2.ID.as("meaning_id"),
 						lvsf.as("lexeme_value_state_codes"),
 						lrf.as("lexeme_register_codes"),
@@ -1106,22 +1107,23 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						ldsf.as("dataset_codes"),
-						mr.MEANING_REL_TYPE_CODE.as("rel_type_code"),
+						mr1.MEANING_REL_TYPE_CODE.as("rel_type_code"),
 						mrtf.as("rel_type_label"),
-						mr.WEIGHT,
-						mr.ORDER_BY,
-						orif.as("opposite_relation_id"),
+						mr1.WEIGHT,
+						mr1.ORDER_BY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_os"))
 				.from(
-						mr
-								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
+						mr1
+								.innerJoin(m2).on(m2.ID.eq(mr1.MEANING2_ID))
 								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID))
 								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue())))
-				.where(mr.MEANING1_ID.eq(meaningId).and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
-				.groupBy(m2.ID, mr.ID, w2.ID)
-				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
+				.where(
+						mr1.MEANING1_ID.eq(meaningId)
+						.and(mr1.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
+				.groupBy(m2.ID, mr1.ID, w2.ID)
+				.orderBy(mr1.ID, DSL.field("lexeme_order_by"))
 				.fetchInto(eki.ekilex.data.MeaningRelation.class);
 	}
 
