@@ -53,9 +53,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-	private final String reportFileName = "missing-wordid-report.txt";
+	private final String reportFileName = "missing-word-or-id-report.txt";
 
-	private boolean makeReport = true;
+	private boolean makeReport = false;
 
 	@Override
 	List<String> getRequiredFilenames() {
@@ -132,7 +132,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			if (!ekilexIdExists) {
 				ignoredArticleCount.increment();
 				if (makeReport) {
-					writeLogRow(reportWriter, headwordValueTuple.getValue());
+					writeLogRow(reportWriter, "puudub id", headwordValueTuple.getValue());
 				}
 				continue;
 			}
@@ -144,6 +144,13 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			List<Long> headwordIds = toLongs(ekilexIdStr);
 
 			for (Long headwordId : headwordIds) {
+
+				boolean headwordExists = migrationDbService.wordExists(headwordId);
+				if (!headwordExists) {
+					ignoredArticleCount.increment();
+					writeLogRow(reportWriter, "puudub sõna", headwordValueTuple.getValue());
+					continue;
+				}
 				handleArticleSs1(
 						headwordId, mNode, etpNode, langCodeMap, langGroupNameMap,
 						headwordEtymCount, etymWordEtymCount, wordEtymGroupCount, wordEtymGroupMemberCount, etymWordVariantCount,

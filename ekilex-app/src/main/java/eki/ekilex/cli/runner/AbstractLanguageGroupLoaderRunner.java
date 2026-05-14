@@ -89,9 +89,9 @@ public abstract class AbstractLanguageGroupLoaderRunner extends AbstractLoaderRu
 		}
 	}
 
-	protected void writeLogRow(OutputStreamWriter reportWriter, String logRow) throws Exception {
+	protected void writeLogRow(OutputStreamWriter reportWriter, String... logRow) throws Exception {
 
-		String logRowStr = logRow + "\n";
+		String logRowStr = StringUtils.join(logRow, CSV_SEPARATOR) + "\n";
 		reportWriter.write(logRowStr);
 	}
 
