@@ -37,6 +37,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
@@ -112,6 +113,7 @@ import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningMedia;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningRelMapping;
 import eki.ekilex.data.db.main.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.main.tables.MeaningRelation;
 import eki.ekilex.data.db.main.tables.Source;
@@ -1009,6 +1011,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Government lg = GOVERNMENT.as("lg");
 		Word w2 = WORD.as("w2");
+		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
+		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
 
 		Field<String> mrtf = DSL.field(DSL
 				.select(mrtl.VALUE)
@@ -1069,6 +1073,21 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
+		Field<Long> orif = DSL.field(DSL
+				.select(mr2.ID)
+				.from(mr2, mrm)
+				.where(
+						mr.MEANING1_ID.eq(mr2.MEANING2_ID)
+								.and(mr.MEANING2_ID.eq(mr2.MEANING1_ID))
+								.and(mr.MEANING_REL_TYPE_CODE.eq(mrm.CODE1))
+								.and(mr2.MEANING_REL_TYPE_CODE.eq(mrm.CODE2))
+								.and(mr2.ID.ne(mr.ID)))
+				.limit(1));
+
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_RELATION, mr.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_RELATION, mr.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_RELATION, mr.ID);
+
 		return mainDb
 				.select(
 						mr.ID.as("id"),
@@ -1090,7 +1109,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mr.MEANING_REL_TYPE_CODE.as("rel_type_code"),
 						mrtf.as("rel_type_label"),
 						mr.WEIGHT,
-						mr.ORDER_BY)
+						mr.ORDER_BY,
+						orif.as("opposite_relation_id"),
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_os"))
 				.from(
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))

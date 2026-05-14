@@ -1,6 +1,8 @@
 package eki.ekilex.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +34,20 @@ public class PublishingService implements PublishingConstant {
 
 	public void publish(PublishItemRequest publishingItem, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		String entityIdStr = publishingItem.getEntityId();
+		List<Long> entityIds = Arrays.stream(entityIdStr.split(","))
+				.map(entityId -> Long.parseLong(entityId.trim()))
+				.toList();
+
+		for (Long entityId : entityIds) {
+			publishItem(entityId, publishingItem, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
+	}
+
+	private void publishItem(Long entityId, PublishItemRequest publishingItem, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		String targetName = publishingItem.getTargetName();
 		String entityName = publishingItem.getEntityName();
-		Long entityId = publishingItem.getEntityId();
 		boolean isPublicOrPublish = publishingItem.isValue();
 
 		if (!ArrayUtils.contains(PUBLISHING_ENTITY_NAMES, entityName)) {

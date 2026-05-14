@@ -853,7 +853,7 @@ public class EditController extends AbstractMutableDataPageController implements
 				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			case "syn_meaning_relation":
-				synCudService.createSynMeaningRelation(id1, id2, weightStr, roleDatasetCode, isManualEventOnUpdateEnabled);
+				synCudService.createSynMeaningRelation(id1, id2, weightStr, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			case "raw_relation":
 				synCudService.createSynWordRelation(id1, id2, weightStr, user, roleDatasetCode, isManualEventOnUpdateEnabled);

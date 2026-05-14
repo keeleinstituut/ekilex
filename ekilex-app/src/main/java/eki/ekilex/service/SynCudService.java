@@ -45,11 +45,12 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 	private SynSearchDbService synSearchDbService;
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createSynMeaningRelation(
+			Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
 		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, roleDatasetCode, isManualEventOnUpdateEnabled);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		updateWordRelationStatus("createSynMeaningRelation", wordRelationId, RelationStatus.PROCESSED.name(), roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
@@ -81,18 +82,21 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createSynMeaningRelation(
+			Long targetMeaningId, Long sourceMeaningId, String weightStr, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Float meaningRelationWeight = NumberUtils.toFloat(weightStr);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, roleDatasetCode, isManualEventOnUpdateEnabled);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	private void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private void createSynMeaningRelation(
+			Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
 		Long meaningRelationId;
 		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
+		publishMeaningRelation(user, roleDatasetCode, meaningRelationId);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 
 		boolean oppositeRelationExists = lookupDbService.meaningRelationExists(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR);
@@ -102,6 +106,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 
 		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
+		publishMeaningRelation(user, roleDatasetCode, meaningRelationId);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}
 
@@ -258,5 +263,10 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 				relIdx++;
 			}
 		}
+	}
+
+	private void publishMeaningRelation(EkiUser user, String roleDatasetCode, Long entityId) {
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_RELATION, entityId);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_RELATION, entityId);
 	}
 }

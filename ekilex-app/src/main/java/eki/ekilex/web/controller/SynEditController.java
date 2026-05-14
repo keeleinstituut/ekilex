@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SynCudService;
 import eki.ekilex.web.bean.SessionBean;
@@ -65,9 +66,10 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@PathVariable Long wordRelationId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		EkiUser user = userContext.getUser();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getRoleDatasetCode();
-		synCudService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		synCudService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 

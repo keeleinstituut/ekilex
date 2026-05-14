@@ -1504,7 +1504,7 @@
     </div>
     <div class="col pl-0">
       <table class="table table-striped">
-        <tr th:each="relations : ${lexeme.meaning.viewRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
+        <tr th:each="relations : ${lexeme.meaning.viewRelations}" th:with="relSample = ${relations.get(0)}" th:data-id="${relSample.id}" class="hidden-buttons">
           <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
             <span class="text-monospace" th:text="${relSample.meaningId}"></span>
           </td>
@@ -1554,16 +1554,38 @@
           <td>
             <span th:text="${relSample.relTypeLabel}"></span>
           </td>
-          <td>
-            <button type="button" class="btn badge badge-warning"
-                    data-placement="right"
-                    data-op-code="meaning_relation"
-                    th:data-id="${relSample.id}"
-                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                    data-toggle="delete-confirm"
-                    sec:authorize="#vars.lexeme.meaning.crudGrant">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
+          <td class="text-right text-nowrap">
+            <th:block
+                sec:authorize="#vars.lexeme.meaning.crudGrant"
+                th:replace="components :: action_dropdown(
+                  idPrefix = |meaning-relation-actions-${relSample.id}|,
+                  triggerTitle = #{common.edit},
+                  triggerIcon = 'more_horiz',
+                  content = ~{:: meaning_relation_actions})">
+              <th:block th:fragment="meaning_relation_actions">
+                <button type="button" class="plain-action plain-action--red"
+                        data-op-code="meaning_relation"
+                        th:data-id="${relSample.id}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant"
+                        th:text="#{common.delete}">
+                </button>
+              </th:block>
+            </th:block>
+            <th:block
+                sec:authorize="#vars.lexeme.meaning.crudGrant"
+                th:replace="components :: entity_publishing(
+                    entityId = ${relSample.id + (relSample.oppositeRelationId != null ? ',' + relSample.oppositeRelationId : '')},
+                    entityName = 'meaning_relation',
+                    isWwUnif = ${relSample.wwUnif},
+                    isWwLite = ${relSample.wwLite},
+                    isWwOs = ${relSample.wwOs},
+                    callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                    initAccordion = false,
+                    withPublicSwitch = false)">
+            </th:block>
           </td>
         </tr>
       </table>

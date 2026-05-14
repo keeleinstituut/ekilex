@@ -232,6 +232,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_MEANING_MEDIA)) {
 			Long ownerId = activityLogDbService.getMeaningMediaOwnerId(entityId);
 			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.MEANING_MEDIA);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_MEANING_RELATION)) {
+			Long ownerId = activityLogDbService.getMeaningRelationOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.MEANING_RELATION);
 		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_DEFINITION)) {
 			Long ownerId = activityLogDbService.getDefinitionOwnerId(entityId);
 			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.DEFINITION);

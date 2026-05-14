@@ -73,3 +73,64 @@ insert into language_group (name) values ('tunguusi-mandžu keeled');
 insert into language_group (name) values ('tupii-guaranii keeled');
 insert into language_group (name) values ('turgi keeled');
 
+-- #2 --
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+    'Laadur',
+    'ww_unif',
+    'meaning_relation',
+    mr.id
+from
+    meaning_relation mr
+where
+    exists (
+        select
+            1
+        from
+            lexeme l
+        where
+            l.meaning_id = mr.meaning1_id
+          and l.dataset_code = 'eki'
+    )
+    and not exists (
+        select
+            1
+        from
+            publishing p
+        where
+            p.target_name = 'ww_unif'
+            and p.entity_name = 'meaning_relation'
+            and p.entity_id = mr.id
+    )
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+    'Laadur',
+    'ww_lite',
+    'meaning_relation',
+    mr.id
+from
+    meaning_relation mr
+where
+    exists (
+        select
+            1
+        from
+            lexeme l
+        where
+            l.meaning_id = mr.meaning1_id
+          and l.dataset_code = 'eki'
+    )
+    and not exists (
+        select
+            1
+        from
+            publishing p
+        where
+            p.target_name = 'ww_lite'
+            and p.entity_name = 'meaning_relation'
+            and p.entity_id = mr.id
+    )
+;

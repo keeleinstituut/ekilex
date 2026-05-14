@@ -22,6 +22,8 @@ public interface PublishingConstant {
 
 	String ENTITY_NAME_MEANING_MEDIA = "meaning_media";
 
+	String ENTITY_NAME_MEANING_RELATION = "meaning_relation";
+
 	String ENTITY_NAME_DEFINITION = "definition";
 
 	String ENTITY_NAME_USAGE = "usage";
@@ -40,6 +42,7 @@ public interface PublishingConstant {
 			ENTITY_NAME_MEANING_NOTE,
 			ENTITY_NAME_MEANING_IMAGE,
 			ENTITY_NAME_MEANING_MEDIA,
+			ENTITY_NAME_MEANING_RELATION,
 			ENTITY_NAME_DEFINITION,
 			ENTITY_NAME_USAGE,
 			ENTITY_NAME_GRAMMAR,
