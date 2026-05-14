@@ -53,9 +53,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-	private final String reportFileName = "report.txt";
+	private final String reportFileName = "missing-wordid-report.txt";
 
-	private boolean makeReport = false;
+	private boolean makeReport = true;
 
 	@Override
 	List<String> getRequiredFilenames() {
@@ -124,14 +124,16 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		for (Element articleElement : articleElements) {
 
-			//totalArticleCount.increment();
 			// headword
 			Node mNode = articleElement.selectSingleNode("s:m");
 			boolean ekilexIdExists = hasAttribute(mNode, "ekilex_id");
+			ValueMarkup headwordValueTuple = getNodeText(mNode);
 
 			if (!ekilexIdExists) {
 				ignoredArticleCount.increment();
-				// TODO report
+				if (makeReport) {
+					writeLogRow(reportWriter, headwordValueTuple.getValue());
+				}
 				continue;
 			}
 
