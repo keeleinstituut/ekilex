@@ -3553,7 +3553,7 @@ from (
 		where
 			g.lexeme_id = l2.id
 		) lex_government_values,
- 		(exists (
+ 		((exists (
 			select
 				p.id
 			from
@@ -3562,6 +3562,15 @@ from (
 				p.target_name = 'ww_unif'
 				and p.entity_name = 'lexeme'
 				and p.entity_id = l2.id)
+		and exists (
+			select
+				p.id
+			from
+				publishing p
+			where
+				p.target_name = 'ww_unif'
+				and p.entity_name = 'meaning_relation'
+				and p.entity_id = mr.id))
 		or l2.dataset_code != 'eki'
 		) is_ww_unif,
 		(exists (
@@ -3572,8 +3581,17 @@ from (
 			where
 				p.target_name = 'ww_lite'
 				and p.entity_name = 'lexeme'
-				and p.entity_id = l2.id
-		)) is_ww_lite,
+				and p.entity_id = l2.id)
+		and exists (
+			select
+				p.id
+			from
+				publishing p
+			where
+				p.target_name = 'ww_lite'
+				and p.entity_name = 'meaning_relation'
+				and p.entity_id = mr.id)
+		) is_ww_lite,
 		(exists (
 			select
 				p.id
@@ -3582,8 +3600,17 @@ from (
 			where
 				p.target_name = 'ww_os'
 				and p.entity_name = 'lexeme'
-				and p.entity_id = l2.id
-		)) is_ww_os
+				and p.entity_id = l2.id)
+		and exists (
+			select
+				p.id
+			from
+				publishing p
+			where
+				p.target_name = 'ww_os'
+				and p.entity_name = 'meaning_relation'
+				and p.entity_id = mr.id)
+		) is_ww_os
 	from 
 		meaning_relation mr,
 		meaning m2,
@@ -3631,6 +3658,15 @@ from (
 				where
 					p.entity_name = 'lexeme'
 					and p.entity_id = l2.id)
+			or l2.dataset_code != 'eki')
+		and (exists (
+				select
+					1
+				from
+					publishing p
+				where
+					p.entity_name = 'meaning_relation'
+					and p.entity_id = mr.id)
 			or l2.dataset_code != 'eki')
 	) mr
 group by mr.m1_id
