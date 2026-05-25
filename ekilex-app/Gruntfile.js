@@ -72,10 +72,21 @@ module.exports = function (grunt) {
     },
 
     sass: {
+      options: {
+        implementation: require("sass"),
+        style: "compressed",
+        sourceMap: false,
+        quietDeps: true,
+        silenceDeprecations: [
+          "import",
+          "global-builtin",
+          "color-functions",
+          "slash-div",
+          "abs-percent",
+          "if-function",
+        ],
+      },
       dist: {
-        options: {
-          style: "compressed",
-        },
         files: {
           "src/main/resources/view/css/styles.css":
             "src/main/resources/scss/styles.scss",

@@ -18,6 +18,8 @@ function initializeDatasets() {
 
 	$('.dataset-domain-select').selectpicker({ width: '100%' });
 	$('.dataset-origin-select').selectpicker();
+
+	$('#addDatasetDlg, #editDatasetDlg').find('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 }
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
