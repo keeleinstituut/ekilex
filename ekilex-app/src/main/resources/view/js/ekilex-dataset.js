@@ -19,6 +19,17 @@ function initializeDatasets() {
 	$('.dataset-domain-select').selectpicker({ width: '100%' });
 	$('.dataset-origin-select').selectpicker();
 
+	const defaultOriginCode = 'lenoch';
+	const addOriginsSelect = $('#datasetAddOriginsSelect');
+	const defaultOriginOption = addOriginsSelect.find(`option[value='${defaultOriginCode}']`);
+	if (defaultOriginOption.length) {
+		defaultOriginOption.prop('selected', true);
+		addOriginsSelect.selectpicker('refresh');
+		const addDomainsSelect = $('#addDatasetForm').find('select[name="domains"]');
+		addDomainsSelect.attr('disabled', false);
+		populateDomains(addDomainsSelect, defaultOriginCode);
+	}
+
 	$('#addDatasetDlg, #editDatasetDlg').find('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 }
 
