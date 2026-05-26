@@ -75,7 +75,7 @@ function markClassifierDomains(form, dataset) {
 		domainsSelect.attr("disabled", false);
 		$.each(dataset.origins, function(key, origin) {
 			let originOption = originSelect.find("option[value='" + origin + "']");
-			originOption.attr("selected", "selected");
+			originOption.prop("selected", true);
 
 		});
 		originSelect.selectpicker('refresh');
@@ -92,7 +92,7 @@ function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	const classifSelect = form.find('select[name="' + classifSelectName + '"]');
 	$.each(classifArray, function(key, classif) {
 		const classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
-		classifOption.attr("selected", "selected");
+		classifOption.prop("selected", true);
 	});
 	classifSelect.selectpicker('refresh');
 };
