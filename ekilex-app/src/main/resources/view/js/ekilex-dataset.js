@@ -31,6 +31,10 @@ function initializeDatasets() {
 	}
 
 	$('#addDatasetDlg, #editDatasetDlg').find('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+
+	$('#addDatasetDlg, #editDatasetDlg').on('show.bs.modal', function() {
+		$(this).find('.ekiAccordion--section-divider .ekiAccordion__instance').removeClass('ekiAccordion__instance--active');
+	});
 }
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {

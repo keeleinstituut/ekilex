@@ -2,6 +2,67 @@
   margin: -1px 0 0 0;
   position: relative;
 
+  &--section-divider {
+    .ekiAccordion__instance {
+      border: none;
+      margin-bottom: 0;
+    }
+
+    .ekiAccordion__title {
+      background: none;
+      padding: 0;
+      color: var(--color-gray-350);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+
+      &::before,
+      &::after {
+        content: '';
+        flex: 1 0 0;
+        height: 1px;
+        background: var(--color-gray-100);
+        font-family: inherit;
+        width: auto;
+        position: static;
+        display: block;
+      }
+    }
+
+    .ekiAccordion__instance--active .ekiAccordion__title::before {
+      content: '';
+    }
+
+    .ekiAccordion__content {
+      display: block;
+      max-height: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, padding 0.5s ease;
+
+      label {
+        color: var(--color-gray-900);
+        font-size: 14px;
+        line-height: 21px;
+        margin-bottom: 4px;
+      }
+
+      .bootstrap-select > .dropdown-toggle {
+        height: 32px;
+        padding: 4px 8px;
+        background-color: var(--color-white);
+        border: 1px solid var(--color-gray-350);
+        border-radius: 2px;
+      }
+    }
+
+    .ekiAccordion__instance--active > .ekiAccordion__content {
+      max-height: 500px;
+      padding-top: 24px;
+    }
+  }
+
   &__instance {
     border: $gray-200 1px solid;
     margin-bottom: -1px;
