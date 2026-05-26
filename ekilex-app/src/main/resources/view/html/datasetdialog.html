@@ -6,14 +6,18 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form id="addDatasetForm" th:action="@{/create_dataset}" method="post" th:object="${datasetData}">
+          <th:block th:replace="components :: modal_header(title = #{datasets.add.new.dataset})"></th:block>
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.code}">Sõnakogu kood</label>
+              <label class="col-md-2 col-form-label">
+                <span th:text="#{datasets.dataset.code}">Sõnakogu kood</span>
+                <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.code.tooltip}" aria-hidden="true"></i>
+              </label>
               <input type="text" name="code" class="col-md-3 form-control required-field" maxlength="10" />
               <small class="col-md-4 text-danger field-error" style="display: none"></small>
             </div>
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimi</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimetus</label>
               <input type="text" name="name" class="col-md-6 form-control required-field" />
             </div>
             <div class="form-group row">
@@ -42,7 +46,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Valdkonna klassifikaatori päritolu</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Mõistekirjete valdkonnaloend</label>
               <div class="col-md-12">
                 <select name="origins" id="datasetAddOriginsSelect" class="dataset-origin-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.origin}"
                   data-plugin="datasetOriginsPlugin">
@@ -52,7 +56,10 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
+              <label class="col-md-auto col-form-label">
+                <span th:text="#{datasets.dataset.domains}">Mõiste valdkonnad</span>
+                <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.domains.tooltip}" aria-hidden="true"></i>
+              </label>
               <div class="col-md-12">
                 <select name="domains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}" data-actions-box="true" disabled
                   th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
@@ -70,50 +77,64 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.word.freeforms}">Keelendi vabavormid</label>
-              <div class="col-md-12">
-                <select name="wordFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.lexeme.freeforms}">Ilmiku vabavormid</label>
-              <div class="col-md-12">
-                <select name="lexemeFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.meaning.freeforms}">Tähenduse vabavormid</label>
-              <div class="col-md-12">
-                <select name="meaningFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
             <div class="form-check mt-1">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="visible" checked="checked" />
                 <span th:text="#{datasets.dataset.is.visible}">Nähtav</span>
               </label>
+              <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.is.visible.tooltip}" aria-hidden="true"></i>
             </div>
             <div class="form-check mt-1">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="public" />
                 <span th:text="#{datasets.dataset.is.public}">Avalik</span>
               </label>
+              <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.is.public.tooltip}" aria-hidden="true"></i>
+            </div>
+            <div class="ekiAccordion ekiAccordion--section-divider mt-3" data-plugin="ekiAccordion">
+              <div class="ekiAccordion__instance">
+                <div class="ekiAccordion__title">
+                  <span th:text="#{datasets.dataset.optional.settings}">Valikulised lisaseadistused</span>
+                </div>
+                <div class="ekiAccordion__content">
+                  <div class="form-group">
+                    <label>
+                      <span th:text="#{datasets.dataset.word.freeforms}">Keelendi vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.word.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="wordFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <span th:text="#{datasets.dataset.lexeme.freeforms}">Ilmiku vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.lexeme.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="lexemeFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label>
+                      <span th:text="#{datasets.dataset.meaning.freeforms}">Tähenduse vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.meaning.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="meaningFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -128,13 +149,17 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_dataset}" method="post" th:object="${datasetData}">
+          <th:block th:replace="components :: modal_header(title = #{datasets.edit.dataset})"></th:block>
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.code}">Sõnakogu kood</label>
+              <label class="col-md-2 col-form-label">
+                <span th:text="#{datasets.dataset.code}">Sõnakogu kood</span>
+                <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.code.tooltip}" aria-hidden="true"></i>
+              </label>
               <input class="col-md-3 form-control" readonly name="code">
             </div>
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimi</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimetus</label>
               <input class="col-md-6 form-control required-field" name="name">
             </div>
             <div class="form-group row">
@@ -162,7 +187,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Päritolu</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Mõistekirjete valdkonnaloend</label>
               <div class="col-md-12">
                 <select name="origins" id="datasetEditOriginsSelect" class="dataset-origin-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.origin}"
                   data-plugin="datasetOriginsPlugin">
@@ -172,7 +197,10 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
+              <label class="col-md-auto col-form-label">
+                <span th:text="#{datasets.dataset.domains}">Mõiste valdkonnad</span>
+                <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.domains.tooltip}" aria-hidden="true"></i>
+              </label>
               <div class="col-md-12">
                 <select name="domains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}" disabled data-actions-box="true"
                   th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
@@ -190,50 +218,64 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.word.freeforms}">Keelendi vabavormid</label>
-              <div class="col-md-12">
-                <select name="wordFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.lexeme.freeforms}">Ilmiku vabavormid</label>
-              <div class="col-md-12">
-                <select name="lexemeFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.meaning.freeforms}">Tähenduse vabavormid</label>
-              <div class="col-md-12">
-                <select name="meaningFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                  th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
             <div class="form-check mt-1">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="visible" />
                 <span th:text="#{datasets.dataset.is.visible}">Nähtav</span>
               </label>
+              <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.is.visible.tooltip}" aria-hidden="true"></i>
             </div>
             <div class="form-check mt-1">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="public" />
                 <span th:text="#{datasets.dataset.is.public}">Avalik</span>
               </label>
+              <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.is.public.tooltip}" aria-hidden="true"></i>
+            </div>
+            <div class="ekiAccordion ekiAccordion--section-divider mt-3" data-plugin="ekiAccordion">
+              <div class="ekiAccordion__instance">
+                <div class="ekiAccordion__title">
+                  <span th:text="#{datasets.dataset.optional.settings}">Valikulised lisaseadistused</span>
+                </div>
+                <div class="ekiAccordion__content">
+                  <div class="form-group">
+                    <label>
+                      <span th:text="#{datasets.dataset.word.freeforms}">Keelendi vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.word.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="wordFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <span th:text="#{datasets.dataset.lexeme.freeforms}">Ilmiku vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.lexeme.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="lexemeFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label>
+                      <span th:text="#{datasets.dataset.meaning.freeforms}">Tähenduse vabavormid</span>
+                      <i class="fa fa-info-circle text-muted ml-1" data-toggle="tooltip" data-placement="top" th:title="#{datasets.dataset.meaning.freeforms.tooltip}" aria-hidden="true"></i>
+                    </label>
+                    <select name="meaningFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                      th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
+                      <th:block th:each="freeformType : ${availableFreeformTypes}">
+                        <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
+                      </th:block>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

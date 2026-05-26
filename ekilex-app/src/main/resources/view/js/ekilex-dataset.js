@@ -18,6 +18,23 @@ function initializeDatasets() {
 
 	$('.dataset-domain-select').selectpicker({ width: '100%' });
 	$('.dataset-origin-select').selectpicker();
+
+	const defaultOriginCode = 'lenoch';
+	const addOriginsSelect = $('#datasetAddOriginsSelect');
+	const defaultOriginOption = addOriginsSelect.find(`option[value='${defaultOriginCode}']`);
+	if (defaultOriginOption.length) {
+		defaultOriginOption.prop('selected', true);
+		addOriginsSelect.selectpicker('refresh');
+		const addDomainsSelect = $('#addDatasetForm').find('select[name="domains"]');
+		addDomainsSelect.attr('disabled', false);
+		populateDomains(addDomainsSelect, defaultOriginCode);
+	}
+
+	$('#addDatasetDlg, #editDatasetDlg').find('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+
+	$('#addDatasetDlg, #editDatasetDlg').on('show.bs.modal', function() {
+		$(this).find('.ekiAccordion--section-divider .ekiAccordion__instance').removeClass('ekiAccordion__instance--active');
+	});
 }
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
@@ -58,7 +75,7 @@ function markClassifierDomains(form, dataset) {
 		domainsSelect.attr("disabled", false);
 		$.each(dataset.origins, function(key, origin) {
 			let originOption = originSelect.find("option[value='" + origin + "']");
-			originOption.attr("selected", "selected");
+			originOption.prop("selected", true);
 
 		});
 		originSelect.selectpicker('refresh');
@@ -75,7 +92,7 @@ function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	const classifSelect = form.find('select[name="' + classifSelectName + '"]');
 	$.each(classifArray, function(key, classif) {
 		const classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
-		classifOption.attr("selected", "selected");
+		classifOption.prop("selected", true);
 	});
 	classifSelect.selectpicker('refresh');
 };
