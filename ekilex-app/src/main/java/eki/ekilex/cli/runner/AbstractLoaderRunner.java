@@ -88,6 +88,16 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 		entity.setModifiedOn(now);
 	}
 
+	protected String readFileContent(String filePath) throws Exception {
+		InputStream fileInputStream = new FileInputStream(filePath);
+		try {
+			String content = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
+			return content;
+		} finally {
+			fileInputStream.close();
+		}
+	}
+
 	protected List<String> readFileLines(String filePath) throws Exception {
 		InputStream fileInputStream = new FileInputStream(filePath);
 		try {

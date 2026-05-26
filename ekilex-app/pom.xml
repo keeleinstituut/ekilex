@@ -101,6 +101,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.EtymLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>conl</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.ConstructLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

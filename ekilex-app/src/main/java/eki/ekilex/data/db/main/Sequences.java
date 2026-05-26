@@ -36,9 +36,74 @@ public class Sequences {
     public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = Internal.createSequence("aspect_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.cgovernment_order_by_seq</code>
+     */
+    public static final Sequence<Long> CGOVERNMENT_ORDER_BY_SEQ = Internal.createSequence("cgovernment_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.collocation_member_id_seq</code>
      */
     public static final Sequence<Long> COLLOCATION_MEMBER_ID_SEQ = Internal.createSequence("collocation_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_ID_SEQ = Internal.createSequence("construct_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_deprel_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_DEPREL_ID_SEQ = Internal.createSequence("construct_member_deprel_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_deprel_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_DEPREL_ORDER_BY_SEQ = Internal.createSequence("construct_member_deprel_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_ID_SEQ = Internal.createSequence("construct_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_lemma_morph_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_LEMMA_MORPH_ID_SEQ = Internal.createSequence("construct_member_lemma_morph_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_lemma_morph_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_LEMMA_MORPH_ORDER_BY_SEQ = Internal.createSequence("construct_member_lemma_morph_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_morph_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_MORPH_ID_SEQ = Internal.createSequence("construct_member_morph_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_morph_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_MORPH_ORDER_BY_SEQ = Internal.createSequence("construct_member_morph_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_pos_group_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_POS_GROUP_ID_SEQ = Internal.createSequence("construct_member_pos_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_pos_group_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_POS_GROUP_ORDER_BY_SEQ = Internal.createSequence("construct_member_pos_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_subtype_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_SUBTYPE_ORDER_BY_SEQ = Internal.createSequence("construct_subtype_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_TYPE_ORDER_BY_SEQ = Internal.createSequence("construct_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.data_request_id_seq</code>
@@ -109,6 +174,11 @@ public class Sequences {
      * The sequence <code>public.definition_type_order_by_seq</code>
      */
     public static final Sequence<Long> DEFINITION_TYPE_ORDER_BY_SEQ = Internal.createSequence("definition_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.deprel_order_by_seq</code>
+     */
+    public static final Sequence<Long> DEPREL_ORDER_BY_SEQ = Internal.createSequence("deprel_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.deriv_order_by_seq</code>
@@ -576,9 +646,24 @@ public class Sequences {
     public static final Sequence<Long> REL_GROUP_ORDER_BY_SEQ = Internal.createSequence("rel_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.schematicity_order_by_seq</code>
+     */
+    public static final Sequence<Long> SCHEMATICITY_ORDER_BY_SEQ = Internal.createSequence("schematicity_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.semantic_type_order_by_seq</code>
      */
     public static final Sequence<Long> SEMANTIC_TYPE_ORDER_BY_SEQ = Internal.createSequence("semantic_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.sentence_id_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_ID_SEQ = Internal.createSequence("sentence_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.sentence_member_id_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_MEMBER_ID_SEQ = Internal.createSequence("sentence_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.source_activity_log_id_seq</code>

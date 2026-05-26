@@ -9,7 +9,16 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
+import eki.ekilex.data.db.main.tables.Cgovernment;
 import eki.ekilex.data.db.main.tables.CollocationMember;
+import eki.ekilex.data.db.main.tables.Construct;
+import eki.ekilex.data.db.main.tables.ConstructMember;
+import eki.ekilex.data.db.main.tables.ConstructMemberDeprel;
+import eki.ekilex.data.db.main.tables.ConstructMemberLemmaMorph;
+import eki.ekilex.data.db.main.tables.ConstructMemberMorph;
+import eki.ekilex.data.db.main.tables.ConstructMemberPosGroup;
+import eki.ekilex.data.db.main.tables.ConstructSubtype;
+import eki.ekilex.data.db.main.tables.ConstructType;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.DatasetFreeformType;
@@ -22,6 +31,8 @@ import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionType;
 import eki.ekilex.data.db.main.tables.DefinitionTypeLabel;
+import eki.ekilex.data.db.main.tables.Deprel;
+import eki.ekilex.data.db.main.tables.DeprelLabel;
 import eki.ekilex.data.db.main.tables.Deriv;
 import eki.ekilex.data.db.main.tables.DerivLabel;
 import eki.ekilex.data.db.main.tables.DisplayMorph;
@@ -107,8 +118,11 @@ import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
+import eki.ekilex.data.db.main.tables.Schematicity;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
+import eki.ekilex.data.db.main.tables.Sentence;
+import eki.ekilex.data.db.main.tables.SentenceMember;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
 import eki.ekilex.data.db.main.tables.Tag;
@@ -217,9 +231,54 @@ public class Tables {
     public static final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
 
     /**
+     * The table <code>public.cgovernment</code>.
+     */
+    public static final Cgovernment CGOVERNMENT = Cgovernment.CGOVERNMENT;
+
+    /**
      * The table <code>public.collocation_member</code>.
      */
     public static final CollocationMember COLLOCATION_MEMBER = CollocationMember.COLLOCATION_MEMBER;
+
+    /**
+     * The table <code>public.construct</code>.
+     */
+    public static final Construct CONSTRUCT = Construct.CONSTRUCT;
+
+    /**
+     * The table <code>public.construct_member</code>.
+     */
+    public static final ConstructMember CONSTRUCT_MEMBER = ConstructMember.CONSTRUCT_MEMBER;
+
+    /**
+     * The table <code>public.construct_member_deprel</code>.
+     */
+    public static final ConstructMemberDeprel CONSTRUCT_MEMBER_DEPREL = ConstructMemberDeprel.CONSTRUCT_MEMBER_DEPREL;
+
+    /**
+     * The table <code>public.construct_member_lemma_morph</code>.
+     */
+    public static final ConstructMemberLemmaMorph CONSTRUCT_MEMBER_LEMMA_MORPH = ConstructMemberLemmaMorph.CONSTRUCT_MEMBER_LEMMA_MORPH;
+
+    /**
+     * The table <code>public.construct_member_morph</code>.
+     */
+    public static final ConstructMemberMorph CONSTRUCT_MEMBER_MORPH = ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH;
+
+    /**
+     * The table <code>public.construct_member_pos_group</code>.
+     */
+    public static final ConstructMemberPosGroup CONSTRUCT_MEMBER_POS_GROUP = ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP;
+
+    /**
+     * The table <code>public.construct_subtype</code>.
+     */
+    public static final ConstructSubtype CONSTRUCT_SUBTYPE = ConstructSubtype.CONSTRUCT_SUBTYPE;
+
+    /**
+     * The table <code>public.construct_type</code>.
+     */
+    public static final ConstructType CONSTRUCT_TYPE = ConstructType.CONSTRUCT_TYPE;
 
     /**
      * The table <code>public.data_request</code>.
@@ -280,6 +339,16 @@ public class Tables {
      * The table <code>public.definition_type_label</code>.
      */
     public static final DefinitionTypeLabel DEFINITION_TYPE_LABEL = DefinitionTypeLabel.DEFINITION_TYPE_LABEL;
+
+    /**
+     * The table <code>public.deprel</code>.
+     */
+    public static final Deprel DEPREL = Deprel.DEPREL;
+
+    /**
+     * The table <code>public.deprel_label</code>.
+     */
+    public static final DeprelLabel DEPREL_LABEL = DeprelLabel.DEPREL_LABEL;
 
     /**
      * The table <code>public.deriv</code>.
@@ -707,6 +776,11 @@ public class Tables {
     public static final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
 
     /**
+     * The table <code>public.schematicity</code>.
+     */
+    public static final Schematicity SCHEMATICITY = Schematicity.SCHEMATICITY;
+
+    /**
      * The table <code>public.semantic_type</code>.
      */
     public static final SemanticType SEMANTIC_TYPE = SemanticType.SEMANTIC_TYPE;
@@ -715,6 +789,16 @@ public class Tables {
      * The table <code>public.semantic_type_label</code>.
      */
     public static final SemanticTypeLabel SEMANTIC_TYPE_LABEL = SemanticTypeLabel.SEMANTIC_TYPE_LABEL;
+
+    /**
+     * The table <code>public.sentence</code>.
+     */
+    public static final Sentence SENTENCE = Sentence.SENTENCE;
+
+    /**
+     * The table <code>public.sentence_member</code>.
+     */
+    public static final SentenceMember SENTENCE_MEMBER = SentenceMember.SENTENCE_MEMBER;
 
     /**
      * The table <code>public.source</code>.

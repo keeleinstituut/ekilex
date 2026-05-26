@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.GRAMMAR;
 import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
@@ -12,6 +13,8 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.USAGE;
@@ -38,8 +41,11 @@ import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Paradigm;
+import eki.ekilex.data.db.main.tables.ParadigmForm;
 import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
@@ -562,5 +568,85 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.limit(1)
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
+	}
+
+	public List<Long> getWordIds(String wordValue, String languageCode, String formValue, String morphCode, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+		Word w = WORD.as("w");
+		Form f = FORM.as("f");
+		Paradigm p = PARADIGM.as("p");
+		ParadigmForm pf = PARADIGM_FORM.as("pf");
+
+		return mainDb
+				.select(w.ID)
+				.from(w)
+				.where(
+						w.VALUE.eq(wordValue)
+								.and(w.LANG.eq(languageCode))
+								.and(w.IS_PUBLIC.isTrue())
+								.andExists(DSL
+										.select(f.ID)
+										.from(p, pf, f)
+										.where(
+												p.WORD_ID.eq(w.ID)
+														.and(pf.PARADIGM_ID.eq(p.ID))
+														.and(pf.FORM_ID.eq(f.ID))
+														.and(pf.IS_QUESTIONABLE.isFalse())
+														.and(pf.MORPH_EXISTS.isTrue())
+														.and(f.MORPH_CODE.eq(morphCode))
+														.and(f.VALUE.eq(formValue))))
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(l.WORD_ID.eq(w.ID)
+												.and(l.IS_WORD.isTrue())
+												.and(l.IS_PUBLIC.isTrue())
+												.and(l.DATASET_CODE.eq(datasetCode)))))
+				.orderBy(w.HOMONYM_NR)
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getLexemeIds(Long wordId, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+
+		return mainDb
+				.select(l.ID)
+				.from(l)
+				.where(
+						l.WORD_ID.eq(wordId)
+								.and(l.DATASET_CODE.eq(datasetCode))
+								.and(l.IS_WORD.isTrue())
+								.and(l.IS_PUBLIC.isTrue()))
+				.orderBy(
+						l.LEVEL1,
+						l.LEVEL2)
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getFormIds(Long wordId, String formValue, String morphCode) {
+
+		Form f = FORM.as("f");
+		Paradigm p = PARADIGM.as("p");
+		ParadigmForm pf = PARADIGM_FORM.as("pf");
+
+		return mainDb
+				.select(f.ID)
+				.from(f)
+				.where(
+						f.MORPH_CODE.eq(morphCode)
+								.and(f.VALUE.eq(formValue))
+								.andExists(DSL
+										.select(pf.ID)
+										.from(p, pf)
+										.where(
+												p.WORD_ID.eq(wordId)
+														.and(pf.PARADIGM_ID.eq(p.ID))
+														.and(pf.FORM_ID.eq(f.ID))
+														.and(pf.IS_QUESTIONABLE.isFalse())
+														.and(pf.MORPH_EXISTS.isTrue()))))
+				.orderBy(f.ID)
+				.fetchInto(Long.class);
 	}
 }
