@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<th:block th:fragment="term_dataset_form">
+  <form id="term-dataset-form" th:action="@{/reports/generate/term-dataset}" method="post" data-plugin="generateReportPlugin">
+    <div class="form-group row">
+      <label class="col-md-2 col-form-label" th:text="#{report.period}">Periood</label>
+      <div class="col-md-2 input-group date"
+           data-provide="datepicker"
+           data-date-language="et"
+           data-date-autoclose="true"
+           th:title="#{report.period.from}">
+        <input type="text" class="form-control bg-white required-field" name="dateFrom" readonly>
+        <div class="input-group-addon input-group-append">
+          <div class="input-group-text">
+            <i class="fa fa-calendar fa-lg"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 input-group date"
+           data-provide="datepicker"
+           data-date-language="et"
+           data-date-autoclose="true"
+           th:title="#{report.period.until}">
+        <input type="text" class="form-control bg-white required-field" name="dateUntil" readonly>
+        <div class="input-group-addon input-group-append">
+          <div class="input-group-text">
+            <i class="fa fa-calendar fa-lg"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-md-2 col-form-label" th:text="#{report.datasets}">Sõnakogud</label>
+      <div class="col-md-4">
+        <select id="term-dataset-select" name="datasetCodes" class="form-control classifier-select multi-select required-field" multiple
+                data-live-search="true"
+                data-actions-box="true"
+                th:title="#{report.select.datasets}"
+                th:data-select-all-text="#{common.select.all}"
+                th:data-deselect-all-text="#{common.unselect.all}">
+          <option th:each="dataset : ${reportDatasets}"
+                  th:value="${dataset.code}"
+                  th:text="${dataset.name}">
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-md-2 col-md-4">
+        <button type="submit" class="btn btn-primary" th:text="#{report.generate}">Genereeri</button>
+      </div>
+    </div>
+  </form>
+</th:block>
+<th:block th:fragment="term_dataset_content">
+  <div class="mb-3">
+    <span th:text="#{report.period}">Periood</span>:
+    <span th:text="${#temporals.format(reportContent.parameters.dateFrom, 'dd.MM.yyyy')}"></span>
+    –
+    <span th:text="${#temporals.format(reportContent.parameters.dateUntil, 'dd.MM.yyyy')}"></span>
+  </div>
+  <table class="table table-striped table-sm m-0 p-0">
+    <tr>
+      <th class="p-1" th:text="#{report.termdataset.dataset}">Sõnakogu</th>
+      <th class="p-1" th:text="#{report.termdataset.public.meaning.count}">Avalikud mõisted</th>
+      <th class="p-1" th:text="#{report.termdataset.all.meaning.count}">Kõik mõisted</th>
+      <th class="p-1" th:text="#{report.termdataset.public.term.count}">Avalikud terminid</th>
+      <th class="p-1" th:text="#{report.termdataset.all.term.count}">Kõik terminid</th>
+      <th class="p-1" th:text="#{report.termdataset.create.meaning.count}">Lisatud mõisted</th>
+      <th class="p-1" th:text="#{report.termdataset.update.meaning.count}">Muudetud mõisted</th>
+    </tr>
+    <tr th:each="row : ${reportContent.rows}">
+      <td class="p-1" th:text="${row.datasetName}"></td>
+      <td class="p-1" th:text="${row.publicMeaningCount}"></td>
+      <td class="p-1" th:text="${row.allMeaningCount}"></td>
+      <td class="p-1" th:text="${row.publicTermCount}"></td>
+      <td class="p-1" th:text="${row.allTermCount}"></td>
+      <td class="p-1" th:text="${row.createMeaningCount}"></td>
+      <td class="p-1" th:text="${row.updateMeaningCount}"></td>
+    </tr>
+  </table>
+</th:block>
+</body>
+</html>

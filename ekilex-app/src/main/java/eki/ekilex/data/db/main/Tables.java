@@ -118,6 +118,7 @@ import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
+import eki.ekilex.data.db.main.tables.Report;
 import eki.ekilex.data.db.main.tables.Schematicity;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
@@ -774,6 +775,11 @@ public class Tables {
      * The table <code>public.rel_group_label</code>.
      */
     public static final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
+
+    /**
+     * The table <code>public.report</code>.
+     */
+    public static final Report REPORT = Report.REPORT;
 
     /**
      * The table <code>public.schematicity</code>.

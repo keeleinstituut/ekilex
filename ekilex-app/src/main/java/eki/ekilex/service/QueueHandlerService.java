@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.util.CodeGenerator;
+import eki.ekilex.constant.ReportType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FedTermUploadQueueContent;
 import eki.ekilex.data.QueueContent;
+import eki.ekilex.data.ReportParameters;
+import eki.ekilex.data.ReportQueueContent;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.TermSearchResultQueueContent;
@@ -40,6 +43,9 @@ public class QueueHandlerService implements WebConstant {
 
 	@Autowired	
 	private FedTermUploadService fedTermUploadService;
+
+	@Autowired
+  private ReportGenerationService reportGenerationService;
 
 	public void handleTermSearchResultSerialisation(EkiUser user, QueueContent content) throws Exception {
 
@@ -84,5 +90,19 @@ public class QueueHandlerService implements WebConstant {
 		fedTermUploadService.uploadFedTermConceptEntries(fedTermCollectionId, fedTermUploadQueueContent);
 
 		logger.info("FedTerm upload step of \"{}\" for \"{}\" complete", datasetCode, user.getName());
+	}
+
+	public void handleReportGeneration(EkiUser user, QueueContent content) {
+
+		ReportQueueContent reportQueueContent = (ReportQueueContent) content;
+
+		logger.info("Handling report generation of \"{}\" for \"{}\"", reportQueueContent.getType(), user.getName());
+
+		Long reportId = reportQueueContent.getReportId();
+		ReportType reportType = reportQueueContent.getType();
+		ReportParameters parameters = reportQueueContent.getParameters();
+		reportGenerationService.generate(reportId, reportType, parameters);
+
+		logger.info("Report generation of \"{}\" for \"{}\" complete", reportQueueContent.getType(), user.getName());
 	}
 }

@@ -297,6 +297,8 @@ create index language_group_parent_language_group_id_idx on language_group(paren
 create index language_group_name_idx on language_group(name);
 create index language_group_member_language_group_id_idx on language_group_member(language_group_id);
 create index language_group_member_lang_idx on language_group_member(lang);
+create index report_type_idx on report(type);
+create index report_user_id_idx on report(user_id);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value));

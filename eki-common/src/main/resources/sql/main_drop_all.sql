@@ -108,6 +108,7 @@ drop table if exists meaning_tag;
 drop table if exists paradigm_form;
 drop table if exists form;
 drop table if exists paradigm;
+drop table if exists report;
 drop table if exists word_forum;
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;

@@ -65,6 +65,9 @@
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
             </div>
+            <div sec:authorize="#vars.userRoleData.datasetCrudOwnerOrAdmin" class="p-1">
+              <a th:href="@{/reports}" th:text="#{menu.reports}">Raportid</a>
+            </div>
           </div>
         </div>
         <div class="row">

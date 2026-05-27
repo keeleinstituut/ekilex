@@ -646,6 +646,11 @@ public class Sequences {
     public static final Sequence<Long> REL_GROUP_ORDER_BY_SEQ = Internal.createSequence("rel_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.report_id_seq</code>
+     */
+    public static final Sequence<Long> REPORT_ID_SEQ = Internal.createSequence("report_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.schematicity_order_by_seq</code>
      */
     public static final Sequence<Long> SCHEMATICITY_ORDER_BY_SEQ = Internal.createSequence("schematicity_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

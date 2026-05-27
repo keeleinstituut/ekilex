@@ -118,6 +118,7 @@ import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
+import eki.ekilex.data.db.main.tables.Report;
 import eki.ekilex.data.db.main.tables.Schematicity;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
@@ -804,6 +805,11 @@ public class Public extends SchemaImpl {
     public final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
 
     /**
+     * The table <code>public.report</code>.
+     */
+    public final Report REPORT = Report.REPORT;
+
+    /**
      * The table <code>public.schematicity</code>.
      */
     public final Schematicity SCHEMATICITY = Schematicity.SCHEMATICITY;
@@ -1340,6 +1346,7 @@ public class Public extends SchemaImpl {
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.REL_GROUP_ORDER_BY_SEQ,
+            Sequences.REPORT_ID_SEQ,
             Sequences.SCHEMATICITY_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.SENTENCE_ID_SEQ,
@@ -1522,6 +1529,7 @@ public class Public extends SchemaImpl {
             RegisterLabel.REGISTER_LABEL,
             RelGroup.REL_GROUP,
             RelGroupLabel.REL_GROUP_LABEL,
+            Report.REPORT,
             Schematicity.SCHEMATICITY,
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,

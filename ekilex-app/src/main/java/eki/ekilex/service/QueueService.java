@@ -80,6 +80,8 @@ public class QueueService implements InitializingBean, SystemConstant {
 			} catch (Exception e) {
 				logger.error("Failed to handle FedTerm upload", e);
 			}
+		} else if (QueueAction.REPORT.equals(action)) {
+			queueHandlerService.handleReportGeneration(user, content);
 		}
 
 		logger.info("Remaining steps in queue: {}", queueItems.size());
