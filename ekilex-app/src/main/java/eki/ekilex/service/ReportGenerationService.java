@@ -1,5 +1,7 @@
 package eki.ekilex.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,22 +75,37 @@ public class ReportGenerationService {
 		Map<String, Integer> allTermCounts = termDatasetReportDbService.getAllTermCounts(datasetCodes);
 		Map<String, Integer> createMeaningCounts = termDatasetReportDbService.getCreateMeaningCounts(datasetCodes, from, until);
 		Map<String, Integer> updateMeaningCounts = termDatasetReportDbService.getUpdateMeaningCounts(datasetCodes, from, until);
+		Map<String, Integer> withDomainMeaningCounts = termDatasetReportDbService.getWithDomainMeaningCounts(datasetCodes);
+		Map<String, Integer> withDomainUpdateMeaningCounts = termDatasetReportDbService.getWithDomainUpdateMeaningCounts(datasetCodes, from, until);
+		Map<String, String> withoutDomainTermSamples = termDatasetReportDbService.getWithoutDomainTermSamples(datasetCodes);
 
 		List<TermDatasetReportRow> datasetRows = new ArrayList<>();
 
 		for (Dataset dataset : datasets) {
 			String datasetCode = dataset.getCode();
 
+			int publicMeaningCount = publicMeaningCounts.getOrDefault(datasetCode, 0);
+			int updateMeaningCount = updateMeaningCounts.getOrDefault(datasetCode, 0);
+			int withDomainMeaningCount = withDomainMeaningCounts.getOrDefault(datasetCode, 0);
+			int withDomainUpdateMeaningCount = withDomainUpdateMeaningCounts.getOrDefault(datasetCode, 0);
+			BigDecimal withDomainMeaningPercent = computePercent(withDomainMeaningCount, publicMeaningCount);
+			BigDecimal withDomainUpdateMeaningPercent = computePercent(withDomainUpdateMeaningCount, updateMeaningCount);
+
 			TermDatasetReportRow row = new TermDatasetReportRow();
 			row.setDatasetCode(datasetCode);
 			row.setDatasetName(dataset.getName());
 
-			row.setPublicMeaningCount(publicMeaningCounts.getOrDefault(datasetCode, 0));
+			row.setPublicMeaningCount(publicMeaningCount);
 			row.setAllMeaningCount(allMeaningCounts.getOrDefault(datasetCode, 0));
 			row.setPublicTermCount(publicTermCounts.getOrDefault(datasetCode, 0));
 			row.setAllTermCount(allTermCounts.getOrDefault(datasetCode, 0));
 			row.setCreateMeaningCount(createMeaningCounts.getOrDefault(datasetCode, 0));
-			row.setUpdateMeaningCount(updateMeaningCounts.getOrDefault(datasetCode, 0));
+			row.setUpdateMeaningCount(updateMeaningCount);
+			row.setWithDomainMeaningCount(withDomainMeaningCount);
+			row.setWithDomainUpdateMeaningCount(withDomainUpdateMeaningCount);
+			row.setWithDomainMeaningPercent(withDomainMeaningPercent);
+			row.setWithDomainUpdateMeaningPercent(withDomainUpdateMeaningPercent);
+			row.setWithoutDomainTermSample(withoutDomainTermSamples.get(datasetCode));
 
 			datasetRows.add(row);
 		}
@@ -99,6 +116,22 @@ public class ReportGenerationService {
 
 		String contentJson = objectMapper.writeValueAsString(content);
 		return contentJson;
+	}
+
+	private BigDecimal computePercent(int part, int total) {
+
+		if (total == 0) {
+			return BigDecimal.ZERO.setScale(2);
+		}
+
+		BigDecimal partValue = BigDecimal.valueOf(part);
+		BigDecimal totalValue = BigDecimal.valueOf(total);
+
+		BigDecimal percent = partValue.divide(totalValue, 4, RoundingMode.HALF_UP)
+				.multiply(BigDecimal.valueOf(100))
+				.setScale(2, RoundingMode.HALF_UP);
+
+		return percent;
 	}
 
 }

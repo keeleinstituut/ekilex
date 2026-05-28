@@ -2,6 +2,8 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
+import java.math.BigDecimal;
+
 public class TermDatasetReportRow extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -15,6 +17,11 @@ public class TermDatasetReportRow extends AbstractDataObject {
 	private int allTermCount;
 	private int createMeaningCount;
 	private int updateMeaningCount;
+	private int withDomainMeaningCount;
+	private int withDomainUpdateMeaningCount;
+	private BigDecimal withDomainMeaningPercent;
+	private BigDecimal withDomainUpdateMeaningPercent;
+	private String withoutDomainTermSample;
 
 	public String getDatasetCode() {
 		return datasetCode;
@@ -78,5 +85,45 @@ public class TermDatasetReportRow extends AbstractDataObject {
 
 	public void setUpdateMeaningCount(int updateMeaningCount) {
 		this.updateMeaningCount = updateMeaningCount;
+	}
+
+	public int getWithDomainMeaningCount() {
+		return withDomainMeaningCount;
+	}
+
+	public void setWithDomainMeaningCount(int withDomainMeaningCount) {
+		this.withDomainMeaningCount = withDomainMeaningCount;
+	}
+
+	public int getWithDomainUpdateMeaningCount() {
+		return withDomainUpdateMeaningCount;
+	}
+
+	public void setWithDomainUpdateMeaningCount(int withDomainUpdateMeaningCount) {
+		this.withDomainUpdateMeaningCount = withDomainUpdateMeaningCount;
+	}
+
+	public BigDecimal getWithDomainMeaningPercent() {
+		return withDomainMeaningPercent;
+	}
+
+	public void setWithDomainMeaningPercent(BigDecimal withDomainMeaningPercent) {
+		this.withDomainMeaningPercent = withDomainMeaningPercent;
+	}
+
+	public BigDecimal getWithDomainUpdateMeaningPercent() {
+		return withDomainUpdateMeaningPercent;
+	}
+
+	public void setWithDomainUpdateMeaningPercent(BigDecimal withDomainUpdateMeaningPercent) {
+		this.withDomainUpdateMeaningPercent = withDomainUpdateMeaningPercent;
+	}
+
+	public String getWithoutDomainTermSample() {
+		return withoutDomainTermSample;
+	}
+
+	public void setWithoutDomainTermSample(String withoutDomainTermSample) {
+		this.withoutDomainTermSample = withoutDomainTermSample;
 	}
 }
