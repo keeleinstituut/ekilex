@@ -64,9 +64,9 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
     public final TableField<WordEtymGroupRecord, String> ETYMOLOGY_TYPE_CODE = createField(DSL.name("etymology_type_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.word_etym_group.language_group_member_id</code>.
+     * The column <code>public.word_etym_group.language_group_id</code>.
      */
-    public final TableField<WordEtymGroupRecord, Long> LANGUAGE_GROUP_MEMBER_ID = createField(DSL.name("language_group_member_id"), SQLDataType.BIGINT, this, "");
+    public final TableField<WordEtymGroupRecord, Long> LANGUAGE_GROUP_ID = createField(DSL.name("language_group_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.word_etym_group.is_questionable</code>.
@@ -128,11 +128,11 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
 
     @Override
     public List<ForeignKey<WordEtymGroupRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_MEMBER_ID_FKEY);
+        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_ID_FKEY);
     }
 
     private transient EtymologyType _etymologyType;
-    private transient LanguageGroupMember _languageGroupMember;
+    private transient LanguageGroup _languageGroup;
 
     public EtymologyType etymologyType() {
         if (_etymologyType == null)
@@ -141,11 +141,11 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
         return _etymologyType;
     }
 
-    public LanguageGroupMember languageGroupMember() {
-        if (_languageGroupMember == null)
-            _languageGroupMember = new LanguageGroupMember(this, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_MEMBER_ID_FKEY);
+    public LanguageGroup languageGroup() {
+        if (_languageGroup == null)
+            _languageGroup = new LanguageGroup(this, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_ID_FKEY);
 
-        return _languageGroupMember;
+        return _languageGroup;
     }
 
     @Override

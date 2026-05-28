@@ -7,6 +7,8 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.GRAMMAR;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
@@ -42,6 +44,8 @@ import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Form;
+import eki.ekilex.data.db.main.tables.LanguageGroup;
+import eki.ekilex.data.db.main.tables.LanguageGroupMember;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Paradigm;
@@ -647,6 +651,26 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 														.and(pf.IS_QUESTIONABLE.isFalse())
 														.and(pf.MORPH_EXISTS.isTrue()))))
 				.orderBy(f.ID)
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getLanguageGroupIdsByLanguage(String lang, List<String> includingLanguageGroupNames) {
+
+		LanguageGroup lg = LANGUAGE_GROUP.as("lg");
+		LanguageGroupMember lgm = LANGUAGE_GROUP_MEMBER.as("lgm");
+
+		return mainDb
+				.select(lg.ID)
+				.from(lg)
+				.where(
+						lg.NAME.in(includingLanguageGroupNames)
+								.andExists(DSL
+										.select(lgm.ID)
+										.from(lgm)
+										.where(
+												lgm.LANGUAGE_GROUP_ID.eq(lg.ID)
+														.and(lgm.LANG.eq(lang)))))
+				.orderBy(lg.NAME)
 				.fetchInto(Long.class);
 	}
 }

@@ -115,12 +115,12 @@ public class EtymDbService {
 						WORD_ETYM_GROUP,
 						WORD_ETYM_GROUP.GROUP_TYPE,
 						WORD_ETYM_GROUP.ETYMOLOGY_TYPE_CODE,
-						WORD_ETYM_GROUP.LANGUAGE_GROUP_MEMBER_ID,
+						WORD_ETYM_GROUP.LANGUAGE_GROUP_ID,
 						WORD_ETYM_GROUP.IS_QUESTIONABLE)
 				.values(
 						wordEtymGroup.getGroupType().name(),
 						wordEtymGroup.getEtymologyTypeCode(),
-						wordEtymGroup.getLanguageGroupMemberId(),
+						wordEtymGroup.getLanguageGroupId(),
 						wordEtymGroup.isQuestionable())
 				.returning(WORD_ETYM_GROUP.ID)
 				.fetchOne()

@@ -31,7 +31,7 @@ public abstract class AbstractLanguageGroupLoaderRunner extends AbstractLoaderRu
 
 	protected static final String CLASSIF_LANG_VSL_FILENAME = "classif-lang-vsl.tsv";
 
-	protected static final String SS1_FILENAME = "etymoloogia_ss1_v3.xml";
+	protected static final String SS1_FILENAME = "etymoloogia_ss1.xml";
 
 	protected static final String VSL_FILENAME = "etymoloogia_vsl.xml";
 
