@@ -97,4 +97,36 @@ public class ValueUtil implements SystemConstant, GlobalConstant {
 		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
 		return value;
 	}
+
+	public boolean toBoolean(Object objValue) {
+		if (objValue == null) {
+			return false;
+		}
+		return Boolean.valueOf(objValue.toString());
+	}
+
+	public String toString(Object objValue) {
+		if (objValue == null) {
+			return null;
+		}
+		return objValue.toString();
+	}
+
+	public Integer toInteger(Object objValue) {
+		if (objValue == null) {
+			return null;
+		}
+		String valueStr = objValue.toString();
+		if (!StringUtils.isNumeric(valueStr)) {
+			return null;
+		}
+		return Integer.valueOf(valueStr);
+	}
+
+	public <T extends Enum<T>> T toEnum(Object objValue, Class<T> enumClass) {
+		if (objValue == null) {
+			return null;
+		}
+		return Enum.valueOf(enumClass, objValue.toString());
+	}
 }

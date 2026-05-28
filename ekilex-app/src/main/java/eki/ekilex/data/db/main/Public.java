@@ -9,7 +9,16 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
+import eki.ekilex.data.db.main.tables.Cgovernment;
 import eki.ekilex.data.db.main.tables.CollocationMember;
+import eki.ekilex.data.db.main.tables.Construct;
+import eki.ekilex.data.db.main.tables.ConstructMember;
+import eki.ekilex.data.db.main.tables.ConstructMemberDeprel;
+import eki.ekilex.data.db.main.tables.ConstructMemberLemmaMorph;
+import eki.ekilex.data.db.main.tables.ConstructMemberMorph;
+import eki.ekilex.data.db.main.tables.ConstructMemberPosGroup;
+import eki.ekilex.data.db.main.tables.ConstructSubtype;
+import eki.ekilex.data.db.main.tables.ConstructType;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.DatasetFreeformType;
@@ -22,6 +31,8 @@ import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionType;
 import eki.ekilex.data.db.main.tables.DefinitionTypeLabel;
+import eki.ekilex.data.db.main.tables.Deprel;
+import eki.ekilex.data.db.main.tables.DeprelLabel;
 import eki.ekilex.data.db.main.tables.Deriv;
 import eki.ekilex.data.db.main.tables.DerivLabel;
 import eki.ekilex.data.db.main.tables.DisplayMorph;
@@ -107,8 +118,12 @@ import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
+import eki.ekilex.data.db.main.tables.Report;
+import eki.ekilex.data.db.main.tables.Schematicity;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
+import eki.ekilex.data.db.main.tables.Sentence;
+import eki.ekilex.data.db.main.tables.SentenceMember;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
 import eki.ekilex.data.db.main.tables.Tag;
@@ -245,9 +260,54 @@ public class Public extends SchemaImpl {
     public final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
 
     /**
+     * The table <code>public.cgovernment</code>.
+     */
+    public final Cgovernment CGOVERNMENT = Cgovernment.CGOVERNMENT;
+
+    /**
      * The table <code>public.collocation_member</code>.
      */
     public final CollocationMember COLLOCATION_MEMBER = CollocationMember.COLLOCATION_MEMBER;
+
+    /**
+     * The table <code>public.construct</code>.
+     */
+    public final Construct CONSTRUCT = Construct.CONSTRUCT;
+
+    /**
+     * The table <code>public.construct_member</code>.
+     */
+    public final ConstructMember CONSTRUCT_MEMBER = ConstructMember.CONSTRUCT_MEMBER;
+
+    /**
+     * The table <code>public.construct_member_deprel</code>.
+     */
+    public final ConstructMemberDeprel CONSTRUCT_MEMBER_DEPREL = ConstructMemberDeprel.CONSTRUCT_MEMBER_DEPREL;
+
+    /**
+     * The table <code>public.construct_member_lemma_morph</code>.
+     */
+    public final ConstructMemberLemmaMorph CONSTRUCT_MEMBER_LEMMA_MORPH = ConstructMemberLemmaMorph.CONSTRUCT_MEMBER_LEMMA_MORPH;
+
+    /**
+     * The table <code>public.construct_member_morph</code>.
+     */
+    public final ConstructMemberMorph CONSTRUCT_MEMBER_MORPH = ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH;
+
+    /**
+     * The table <code>public.construct_member_pos_group</code>.
+     */
+    public final ConstructMemberPosGroup CONSTRUCT_MEMBER_POS_GROUP = ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP;
+
+    /**
+     * The table <code>public.construct_subtype</code>.
+     */
+    public final ConstructSubtype CONSTRUCT_SUBTYPE = ConstructSubtype.CONSTRUCT_SUBTYPE;
+
+    /**
+     * The table <code>public.construct_type</code>.
+     */
+    public final ConstructType CONSTRUCT_TYPE = ConstructType.CONSTRUCT_TYPE;
 
     /**
      * The table <code>public.data_request</code>.
@@ -308,6 +368,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.definition_type_label</code>.
      */
     public final DefinitionTypeLabel DEFINITION_TYPE_LABEL = DefinitionTypeLabel.DEFINITION_TYPE_LABEL;
+
+    /**
+     * The table <code>public.deprel</code>.
+     */
+    public final Deprel DEPREL = Deprel.DEPREL;
+
+    /**
+     * The table <code>public.deprel_label</code>.
+     */
+    public final DeprelLabel DEPREL_LABEL = DeprelLabel.DEPREL_LABEL;
 
     /**
      * The table <code>public.deriv</code>.
@@ -735,6 +805,16 @@ public class Public extends SchemaImpl {
     public final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
 
     /**
+     * The table <code>public.report</code>.
+     */
+    public final Report REPORT = Report.REPORT;
+
+    /**
+     * The table <code>public.schematicity</code>.
+     */
+    public final Schematicity SCHEMATICITY = Schematicity.SCHEMATICITY;
+
+    /**
      * The table <code>public.semantic_type</code>.
      */
     public final SemanticType SEMANTIC_TYPE = SemanticType.SEMANTIC_TYPE;
@@ -743,6 +823,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.semantic_type_label</code>.
      */
     public final SemanticTypeLabel SEMANTIC_TYPE_LABEL = SemanticTypeLabel.SEMANTIC_TYPE_LABEL;
+
+    /**
+     * The table <code>public.sentence</code>.
+     */
+    public final Sentence SENTENCE = Sentence.SENTENCE;
+
+    /**
+     * The table <code>public.sentence_member</code>.
+     */
+    public final SentenceMember SENTENCE_MEMBER = SentenceMember.SENTENCE_MEMBER;
 
     /**
      * The table <code>public.source</code>.
@@ -1134,7 +1224,20 @@ public class Public extends SchemaImpl {
             Sequences.API_ERROR_COUNT_ID_SEQ,
             Sequences.API_REQUEST_COUNT_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
+            Sequences.CGOVERNMENT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
+            Sequences.CONSTRUCT_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_DEPREL_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_DEPREL_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_MEMBER_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_LEMMA_MORPH_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_LEMMA_MORPH_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_MEMBER_MORPH_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_MORPH_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_MEMBER_POS_GROUP_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_POS_GROUP_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_SUBTYPE_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_TYPE_ORDER_BY_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
             Sequences.DATASET_FREEFORM_TYPE_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
@@ -1149,6 +1252,7 @@ public class Public extends SchemaImpl {
             Sequences.DEFINITION_SOURCE_LINK_ID_SEQ,
             Sequences.DEFINITION_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.DEFINITION_TYPE_ORDER_BY_SEQ,
+            Sequences.DEPREL_ORDER_BY_SEQ,
             Sequences.DERIV_ORDER_BY_SEQ,
             Sequences.DISPLAY_MORPH_ORDER_BY_SEQ,
             Sequences.DOMAIN_ORDER_BY_SEQ,
@@ -1242,7 +1346,11 @@ public class Public extends SchemaImpl {
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.REL_GROUP_ORDER_BY_SEQ,
+            Sequences.REPORT_ID_SEQ,
+            Sequences.SCHEMATICITY_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.SENTENCE_ID_SEQ,
+            Sequences.SENTENCE_MEMBER_ID_SEQ,
             Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.TAG_ORDER_BY_SEQ,
@@ -1312,7 +1420,16 @@ public class Public extends SchemaImpl {
             ApiRequestCount.API_REQUEST_COUNT,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
+            Cgovernment.CGOVERNMENT,
             CollocationMember.COLLOCATION_MEMBER,
+            Construct.CONSTRUCT,
+            ConstructMember.CONSTRUCT_MEMBER,
+            ConstructMemberDeprel.CONSTRUCT_MEMBER_DEPREL,
+            ConstructMemberLemmaMorph.CONSTRUCT_MEMBER_LEMMA_MORPH,
+            ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH,
+            ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP,
+            ConstructSubtype.CONSTRUCT_SUBTYPE,
+            ConstructType.CONSTRUCT_TYPE,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
             DatasetFreeformType.DATASET_FREEFORM_TYPE,
@@ -1325,6 +1442,8 @@ public class Public extends SchemaImpl {
             DefinitionSourceLink.DEFINITION_SOURCE_LINK,
             DefinitionType.DEFINITION_TYPE,
             DefinitionTypeLabel.DEFINITION_TYPE_LABEL,
+            Deprel.DEPREL,
+            DeprelLabel.DEPREL_LABEL,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
             DisplayMorph.DISPLAY_MORPH,
@@ -1410,8 +1529,12 @@ public class Public extends SchemaImpl {
             RegisterLabel.REGISTER_LABEL,
             RelGroup.REL_GROUP,
             RelGroupLabel.REL_GROUP_LABEL,
+            Report.REPORT,
+            Schematicity.SCHEMATICITY,
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
+            Sentence.SENTENCE,
+            SentenceMember.SENTENCE_MEMBER,
             Source.SOURCE,
             SourceActivityLog.SOURCE_ACTIVITY_LOG,
             Tag.TAG,

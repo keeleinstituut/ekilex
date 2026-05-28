@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+  <title th:text="#{reports.title}">Raportid</title>
+  <th:block th:fragment="links"></th:block>
+</head>
+<body class="body-with-navbar">
+<th:block th:replace="common :: nav_bar(activeItem = 'reports')"></th:block>
+<div class="container-fluid">
+  <div class="card mt-4 shadow">
+    <div class="card-header">
+      <div class="col-3">
+        <select id="report-type-select" class="form-control" data-plugin="reportTypeSelectPlugin">
+          <option value="" th:text="#{report.select.type}">Vali raporti tüüp</option>
+          <option th:each="reportType : ${accessibleReportTypes}"
+                  th:value="${reportType.name()}"
+                  th:text="#{|report.type.${reportType.name()}|}"
+                  th:selected="${selectedReportType == reportType}">
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body">
+      <th:block th:if="${selectedReportType != null}">
+        <th:block th:switch="${selectedReportType}">
+          <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
+            <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
+          </th:block>
+          <th:block th:case="${T(eki.ekilex.constant.ReportType).REPORT_2}">
+            <th:block th:replace="reportscomp :: report_2_form"></th:block>
+          </th:block>
+        </th:block>
+        <hr class="my-3">
+        <div th:fragment="reports" id="report-list" class="mt-4">
+          <h6 th:text="#{report.list.heading}">Varasemad raportid</h6>
+          <th:block th:if="${reports.isEmpty()}">
+            <span th:text="#{common.no.results}">Tulemusi ei leitud</span>
+          </th:block>
+          <th:block th:if="${!reports.isEmpty()}">
+            <table class="table table-striped table-sm m-0 p-0">
+              <tr>
+                <th class="p-1" th:text="#{report.created.by}">Koostaja</th>
+                <th class="p-1" th:text="#{report.created.on}">Loodud</th>
+                <th class="p-1" th:text="#{report.status}">Staatus</th>
+                <th class="p-1" th:text="#{report.completed.on}">Valminud</th>
+                <th class="p-1"></th>
+              </tr>
+              <tr th:each="report : ${reports}">
+                <td class="p-1" th:text="${report.userName}"></td>
+                <td class="p-1" th:text="${#temporals.format(report.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+                <td class="p-1">
+                  <span class="badge"
+                        th:classappend="${report.pending} ? 'badge-warning' : (${report.completed} ? 'badge-success' : 'badge-danger')"
+                        th:text="#{|report.status.${report.status.name()}|}"></span>
+                </td>
+                <td class="p-1">
+                  <span th:if="${report.completedOn == null}">-</span>
+                  <span th:if="${report.completedOn != null}"
+                        th:text="${#temporals.format(report.completedOn, 'dd.MM.yyyy HH:mm')}"></span>
+                </td>
+                <td class="p-1 text-right">
+                  <button th:if="${report.completed}" type="button" class="btn btn-sm btn-primary mr-1"
+                          data-plugin="reportContentPlugin"
+                          th:text="#{report.view}"
+                          th:data-report-id="${report.id}">Vaata</button>
+                  <button th:if="${report.deletable}" type="button" class="btn btn-sm btn-warning"
+                          data-plugin="deleteReportPlugin"
+                          th:data-report-id="${report.id}">
+                    <i class="fa fa-remove"></i>
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </th:block>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</div>
+<div id="report-content-dlg" class="modal" tabindex="-1" role="dialog" >
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{report.content.title}">Raporti sisu</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div id="report-content-body" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="common :: #alertDlg"></div>
+<div th:replace="common :: #alertSmall"></div>
+<script th:inline="javascript">
+  initForm();
+</script>
+</body>
+</html>

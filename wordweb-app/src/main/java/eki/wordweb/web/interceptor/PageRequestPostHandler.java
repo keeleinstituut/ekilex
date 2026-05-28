@@ -37,7 +37,7 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 		long startTime = System.currentTimeMillis();
 		request.setAttribute(REQUEST_START_TIME_KEY, startTime);
 
-		return true;
+		return isSafeRequest(request);
 	}
 
 	@Override
@@ -72,5 +72,14 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 		long requestTime = endTime - startTime;
 
 		logger.info("Request process time for \"{} {}\" - {} ms", requestMethod, servletPath, requestTime);
+	}
+
+	private boolean isSafeRequest(HttpServletRequest request) {
+
+		String userAgent = request.getHeader("user-agent");
+		if (StringUtils.isBlank(userAgent)) {
+			return false;
+		}
+		return true;
 	}
 }

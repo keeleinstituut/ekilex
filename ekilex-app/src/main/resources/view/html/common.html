@@ -135,6 +135,8 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" sec:authorize="#vars.userRoleData.master"
                 th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'reports' ? 'active' : ''}" th:href="@{/reports}" sec:authorize="#vars.userRoleData.datasetCrudOwnerOrAdmin"
+                 th:text="#{menu.reports}">Raportid</a>
               <div class="dropdown-divider"></div>
             </div>
           </div>

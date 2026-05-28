@@ -136,3 +136,19 @@ where
 			and p.entity_id = mr.id
 	)
 ;
+
+-- #3 --
+
+create table report (
+	id bigserial primary key,
+	user_id bigint references eki_user(id) on delete cascade not null,
+	type varchar(100) not null,
+	status varchar(100) not null,
+	content jsonb null,
+	created_on timestamp not null default statement_timestamp(),
+	completed_on timestamp null
+);
+alter sequence report_id_seq restart with 10000;
+
+create index report_user_id_idx on report(user_id);
+create index report_type_idx on report(type);
