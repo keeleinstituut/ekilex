@@ -88,11 +88,9 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");
 	const tags = panel?.querySelector(".sticky-scroll-panel__tags");
-	const header = document.querySelector('.header');
 	if (!tags) {
 		return;
 	}
-	const panelHeight = panel.offsetHeight ?? 0;
 	let stickyScrollTimeout;
 	const links = [...tags.children];
 	links.forEach(link => {
@@ -104,12 +102,14 @@ function initStickyScrollPanel() {
 		link.addEventListener('click', e => {
 			e.preventDefault();
 			if (target) {
-				const elementPosition = target.getBoundingClientRect().top;
 				// Scroll to element, subtracting the sticky panels height and a little extra
-				const offsetPosition = elementPosition + window.scrollY - panelHeight - (header.offsetHeight ?? 0);
+				const currentPanelHeight = panel.offsetHeight;
+				const stickyTop = parseInt(getComputedStyle(panel).top) || 0;
+				const elementPosition = target.getBoundingClientRect().top;
+				const offsetPosition = elementPosition + window.scrollY - currentPanelHeight - stickyTop - 8;
 
 				window.scrollTo({
-					top: offsetPosition,
+					top: Math.max(offsetPosition, 0),
 					behavior: "smooth"
 				});
 			}
