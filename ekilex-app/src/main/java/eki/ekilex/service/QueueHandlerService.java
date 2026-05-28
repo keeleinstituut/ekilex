@@ -41,11 +41,11 @@ public class QueueHandlerService implements WebConstant {
 	@Autowired
 	private EmailService emailService;
 
-	@Autowired	
+	@Autowired
 	private FedTermUploadService fedTermUploadService;
 
 	@Autowired
-  private ReportGenerationService reportGenerationService;
+	private ReportGenerationService reportGenerationService;
 
 	public void handleTermSearchResultSerialisation(EkiUser user, QueueContent content) throws Exception {
 

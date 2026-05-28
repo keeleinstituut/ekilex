@@ -13,99 +13,107 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.constant.ReportStatus;
 import eki.ekilex.constant.ReportType;
-import eki.ekilex.data.Report;
+import eki.ekilex.data.db.main.tables.EkiUser;
+import eki.ekilex.data.db.main.tables.Report;
 
 @Component
 public class ReportDbService {
 
-  @Autowired
-  protected DSLContext mainDb;
+	@Autowired
+	protected DSLContext mainDb;
 
-  public Long createReport(ReportType reportType, Long userId) {
+	public Long createReport(ReportType reportType, Long userId) {
 
-    LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now();
 
-    return mainDb
-        .insertInto(
-            REPORT,
-            REPORT.USER_ID,
-            REPORT.TYPE,
-            REPORT.STATUS,
-            REPORT.CREATED_ON)
-        .values(
-            userId,
-            reportType.name(),
-            ReportStatus.PENDING.name(),
-            now)
-        .returning(REPORT.ID)
-        .fetchOne()
-        .getId();
-  }
+		return mainDb
+				.insertInto(
+						REPORT,
+						REPORT.USER_ID,
+						REPORT.TYPE,
+						REPORT.STATUS,
+						REPORT.CREATED_ON)
+				.values(
+						userId,
+						reportType.name(),
+						ReportStatus.PENDING.name(),
+						now)
+				.returning(REPORT.ID)
+				.fetchOne()
+				.getId();
+	}
 
-  public List<Report> getReports(ReportType reportType) {
+	public List<eki.ekilex.data.Report> getReports(ReportType reportType) {
 
-    return mainDb
-        .select(
-            REPORT.ID,
-            REPORT.TYPE,
-            REPORT.STATUS,
-            REPORT.CREATED_ON,
-            REPORT.COMPLETED_ON,
-            EKI_USER.NAME.as("user_name"))
-        .from(REPORT
-            .join(EKI_USER).on(EKI_USER.ID.eq(REPORT.USER_ID)))
-        .where(REPORT.TYPE.eq(reportType.name()))
-        .orderBy(REPORT.ID.desc())
-        .fetchInto(Report.class);
-  }
+		Report r = REPORT.as("r");
+		EkiUser eu = EKI_USER.as("eu");
 
-  public Report getReport(Long id) {
+		return mainDb
+				.select(
+						r.ID,
+						r.TYPE,
+						r.STATUS,
+						r.CREATED_ON,
+						r.COMPLETED_ON,
+						eu.NAME.as("user_name"))
+				.from(r, eu)
+				.where(
+						r.TYPE.eq(reportType.name())
+								.and(r.USER_ID.eq(eu.ID)))
+				.orderBy(r.ID.desc())
+				.fetchInto(eki.ekilex.data.Report.class);
+	}
 
-    return mainDb.
-        select(
-            REPORT.ID,
-            REPORT.TYPE,
-            REPORT.STATUS,
-            REPORT.CREATED_ON,
-            REPORT.COMPLETED_ON,
-            REPORT.CONTENT,
-            EKI_USER.NAME.as("user_name"))
-        .from(REPORT
-            .join(EKI_USER).on(EKI_USER.ID.eq(REPORT.USER_ID)))
-        .where(REPORT.ID.eq(id))
-        .fetchOneInto(Report.class);
-  }
+	public eki.ekilex.data.Report getReport(Long id) {
 
-  public void updateReportCompleted(Long reportId, String content) {
+		Report r = REPORT.as("r");
+		EkiUser eu = EKI_USER.as("eu");
 
-    LocalDateTime now = LocalDateTime.now();
+		return mainDb.select(
+				r.ID,
+				r.TYPE,
+				r.STATUS,
+				r.CREATED_ON,
+				r.COMPLETED_ON,
+				r.CONTENT,
+				eu.NAME.as("user_name"))
+				.from(r, eu)
+				.where(
+						r.ID.eq(id)
+								.and(r.USER_ID.eq(eu.ID)))
+				.fetchOneInto(eki.ekilex.data.Report.class);
+	}
 
-    mainDb
-        .update(REPORT)
-        .set(REPORT.STATUS, ReportStatus.COMPLETED.name())
-        .set(REPORT.CONTENT, JSONB.valueOf(content))
-        .set(REPORT.COMPLETED_ON, now)
-        .where(REPORT.ID.eq(reportId))
-        .execute();
-  }
+	public void updateReportCompleted(Long reportId, String content) {
 
-  public void updateReportFailed(Long reportId) {
+		LocalDateTime now = LocalDateTime.now();
 
-    LocalDateTime now = LocalDateTime.now();
+		mainDb
+				.update(REPORT)
+				.set(REPORT.STATUS, ReportStatus.COMPLETED.name())
+				.set(REPORT.CONTENT, JSONB.valueOf(content))
+				.set(REPORT.COMPLETED_ON, now)
+				.where(REPORT.ID.eq(reportId))
+				.execute();
+	}
 
-    mainDb
-        .update(REPORT)
-        .set(REPORT.STATUS, ReportStatus.FAILED.name())
-        .set(REPORT.COMPLETED_ON, now)
-        .where(REPORT.ID.eq(reportId))
-        .execute();
-  }
+	public void updateReportFailed(Long reportId) {
 
-  public void deleteReport(Long reportId) {
+		LocalDateTime now = LocalDateTime.now();
 
-    mainDb
-        .deleteFrom(REPORT)
-        .where(REPORT.ID.eq(reportId))
-        .execute();
-  }
+		mainDb
+				.update(REPORT)
+				.set(REPORT.STATUS, ReportStatus.FAILED.name())
+				.set(REPORT.COMPLETED_ON, now)
+				.where(REPORT.ID.eq(reportId))
+				.execute();
+	}
+
+	public void deleteReport(Long reportId) {
+
+		mainDb
+				.deleteFrom(REPORT)
+				.where(REPORT.ID.eq(reportId))
+				.execute();
+	}
 }

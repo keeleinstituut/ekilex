@@ -61,26 +61,38 @@
     –
     <span th:text="${#temporals.format(reportContent.parameters.dateUntil, 'dd.MM.yyyy')}"></span>
   </div>
-  <table class="table table-striped table-sm m-0 p-0">
-    <tr>
-      <th class="p-1" th:text="#{report.termdataset.dataset}">Sõnakogu</th>
-      <th class="p-1" th:text="#{report.termdataset.public.meaning.count}">Avalikud mõisted</th>
-      <th class="p-1" th:text="#{report.termdataset.all.meaning.count}">Kõik mõisted</th>
-      <th class="p-1" th:text="#{report.termdataset.public.term.count}">Avalikud terminid</th>
-      <th class="p-1" th:text="#{report.termdataset.all.term.count}">Kõik terminid</th>
-      <th class="p-1" th:text="#{report.termdataset.create.meaning.count}">Lisatud mõisted</th>
-      <th class="p-1" th:text="#{report.termdataset.update.meaning.count}">Muudetud mõisted</th>
-    </tr>
-    <tr th:each="row : ${reportContent.rows}">
-      <td class="p-1" th:text="${row.datasetName}"></td>
-      <td class="p-1" th:text="${row.publicMeaningCount}"></td>
-      <td class="p-1" th:text="${row.allMeaningCount}"></td>
-      <td class="p-1" th:text="${row.publicTermCount}"></td>
-      <td class="p-1" th:text="${row.allTermCount}"></td>
-      <td class="p-1" th:text="${row.createMeaningCount}"></td>
-      <td class="p-1" th:text="${row.updateMeaningCount}"></td>
-    </tr>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm m-0 p-0">
+      <tr>
+        <th class="py-1 px-3 align-bottom" th:text="#{report.termdataset.dataset}">Sõnakogu</th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.public.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.all.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.public.term.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.all.term.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.create.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.update.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.with.domain.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.with.domain.meaning.percent}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.with.domain.update.meaning.count}"></th>
+        <th class="py-1 px-3 text-right align-bottom" th:text="#{report.termdataset.with.domain.update.meaning.percent}"></th>
+        <th class="py-1 px-3 align-bottom" th:text="#{report.termdataset.without.domain.term.sample}"></th>
+      </tr>
+      <tr th:each="row : ${reportContent.rows}">
+        <td class="py-1 px-3 text-nowrap" th:text="${row.datasetName}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.publicMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.allMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.publicTermCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.allTermCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.createMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.updateMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.withDomainMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.withDomainMeaningPercent}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.withDomainUpdateMeaningCount}"></td>
+        <td class="py-1 px-3 text-right" th:text="${row.withDomainUpdateMeaningPercent}"></td>
+        <td class="py-1 px-3 text-nowrap" th:text="${row.withoutDomainTermSample}"></td>
+      </tr>
+    </table>
+  </div>
 </th:block>
 </body>
 </html>
