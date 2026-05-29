@@ -111,11 +111,11 @@ public class QueryLoggerListener extends DefaultExecuteListener implements Globa
 			if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
 
 				boolean isIgnoreQueryLog = queryStr.contains(IGNORE_QUERY_LOG);
-				if (!isIgnoreQueryLog) {
-
-					logger.info("Prolonging query \n{}", queryStr);
-					logger.info("Executed in {} ms", exec);
+				if (isIgnoreQueryLog) {
+					queryStr = "<hidden as irrelevant>";
 				}
+				logger.info("Prolonging query \n{}", queryStr);
+				logger.info("Executed in {} ms", exec);
 			}
 		}
 	}
