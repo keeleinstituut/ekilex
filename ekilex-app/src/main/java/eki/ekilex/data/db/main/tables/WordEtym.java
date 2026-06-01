@@ -113,7 +113,7 @@ public class WordEtym extends TableImpl<WordEtymRecord> {
 
     @Override
     public List<UniqueKey<WordEtymRecord>> getKeys() {
-        return Arrays.<UniqueKey<WordEtymRecord>>asList(Keys.WORD_ETYM_PKEY);
+        return Arrays.<UniqueKey<WordEtymRecord>>asList(Keys.WORD_ETYM_PKEY, Keys.WORD_ETYM_WORD_ID_KEY);
     }
 
     @Override

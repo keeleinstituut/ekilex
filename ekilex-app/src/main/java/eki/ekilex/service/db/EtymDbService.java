@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.constant.WordEtymGroupType;
 import eki.ekilex.data.Note;
+import eki.ekilex.data.db.main.tables.WordEtym;
 import eki.ekilex.data.etym2.WordEtymGroup;
 
 // TODO separate service until new etym generation is introduced
@@ -22,6 +23,19 @@ public class EtymDbService {
 
 	@Autowired
 	protected DSLContext mainDb;
+
+	public eki.ekilex.data.etym2.WordEtym getWordEtymForWord(Long wordId) {
+
+		WordEtym we = WORD_ETYM.as("we");
+
+		return mainDb
+				.selectFrom(we)
+				.where(we.WORD_ID.eq(wordId))
+				.orderBy(we.ID)
+				.limit(1)
+				.fetchOptionalInto(eki.ekilex.data.etym2.WordEtym.class)
+				.orElse(null);
+	}
 
 	public Long createWordEtym(Long wordId, eki.ekilex.data.etym2.WordEtym wordEtym) {
 

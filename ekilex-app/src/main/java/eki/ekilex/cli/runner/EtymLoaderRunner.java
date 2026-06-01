@@ -108,7 +108,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		Count ignoredArticleCount = new Count();
 		Count headwordEtymCount = new Count();
+		Count headwordEtymExistsCount = new Count();
 		Count etymWordEtymCount = new Count();
+		Count etymWordEtymExistsCount = new Count();
 		Count wordEtymGroupCount = new Count();
 		Count wordEtymGroupMemberCount = new Count();
 		Count etymWordVariantCount = new Count();
@@ -122,8 +124,6 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 		List<LanguageGroup> languageGroups = getLanguageGroups();
 		Map<String, Long> langGroupNameIdMap = languageGroups.stream()
 				.collect(Collectors.toMap(LanguageGroup::getName, LanguageGroup::getId));
-
-		//List<Element> articleElements = rootElement.elements();
 
 		List<Node> regularArticleNodes = rootElement.selectNodes("s:A[count(s:etp/s:etg)=0 or s:etp/s:etg[count(s:kr)<2]]");
 		List<Node> irregularArticleNodes = rootElement.selectNodes("s:A[s:etp/s:etg[count(s:kr)>1]]");
@@ -140,7 +140,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 				progressCounter,
 				ignoredArticleCount,
 				headwordEtymCount,
+				headwordEtymExistsCount,
 				etymWordEtymCount,
+				etymWordEtymExistsCount,
 				wordEtymGroupCount,
 				wordEtymGroupMemberCount,
 				etymWordVariantCount,
@@ -155,7 +157,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 				progressCounter,
 				ignoredArticleCount,
 				headwordEtymCount,
+				headwordEtymExistsCount,
 				etymWordEtymCount,
+				etymWordEtymExistsCount,
 				wordEtymGroupCount,
 				wordEtymGroupMemberCount,
 				etymWordVariantCount,
@@ -163,7 +167,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		logger.info("Article count with unspecified headword id: {}", ignoredArticleCount.getValue());
 		logger.info("Headword etym count: {}", headwordEtymCount.getValue());
+		logger.info("Headword etym exists count: {}", headwordEtymExistsCount.getValue());
 		logger.info("Etym word etym count: {}", etymWordEtymCount.getValue());
+		logger.info("Etym word etym exists count: {}", etymWordEtymExistsCount.getValue());
 		logger.info("Etym group count: {}", wordEtymGroupCount.getValue());
 		logger.info("Etym group member count: {}", wordEtymGroupMemberCount.getValue());
 		logger.info("Etym word variant count: {}", etymWordVariantCount.getValue());
@@ -179,7 +185,9 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			ProgressCounter progressCounter,
 			Count ignoredArticleCount,
 			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
 			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
 			Count wordEtymGroupCount,
 			Count wordEtymGroupMemberCount,
 			Count etymWordVariantCount,
@@ -220,14 +228,16 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 					handleRegularArticleSs1(
 							headwordId, mNode, etpNode, langCodeMap, langGroupNameMap, langGroupNameIdMap,
-							headwordEtymCount, etymWordEtymCount, wordEtymGroupCount, wordEtymGroupMemberCount, etymWordVariantCount,
+							headwordEtymCount, headwordEtymExistsCount, etymWordEtymCount, etymWordEtymExistsCount, wordEtymGroupCount,
+							wordEtymGroupMemberCount, etymWordVariantCount,
 							reportWriter);
 
 				} else if (regularity == IRREGULAR_ARTICLES_SS1) {
 
 					handleIrregularArticleSs1(
 							headwordId, mNode, etpNode, langCodeMap, langGroupNameMap, langGroupNameIdMap,
-							headwordEtymCount, etymWordEtymCount, wordEtymGroupCount, wordEtymGroupMemberCount, etymWordVariantCount,
+							headwordEtymCount, headwordEtymExistsCount, etymWordEtymCount, etymWordEtymExistsCount, wordEtymGroupCount,
+							wordEtymGroupMemberCount, etymWordVariantCount,
 							reportWriter);
 				}
 			}
@@ -247,13 +257,15 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			Map<String, String> langGroupNameMap,
 			Map<String, Long> langGroupNameIdMap,
 			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
 			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
 			Count wordEtymGroupCount,
 			Count wordEtymGroupMemberCount,
 			Count etymWordVariantCount,
 			OutputStreamWriter reportWriter) throws Exception {
 
-		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount);
+		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount, headwordEtymExistsCount);
 
 		// -- word etym groups --
 
@@ -283,6 +295,17 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 					parentWordEtymGroupId = wordEtymGroupId;
 				}
 
+				// -- word etym group members --
+
+				List<Node> etggNodes = etgNode.selectNodes("s:etgg");
+				int etymGroupMemberCount = 0;
+				boolean isEtymGroupCompound = false;
+
+				if (CollectionUtils.isEmpty(etggNodes) && (etymWordLanguageGroupId == null)) {
+
+					continue;
+				}
+
 				// -- word etym group --
 
 				WordEtymGroup wordEtymGroup = new WordEtymGroup();
@@ -293,17 +316,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 				wordEtymGroupCount.increment();
 				etymDbService.createWordEtymGroupTree(parentWordEtymGroupId, wordEtymGroupId);
 
-				// -- word etym group members --
-
-				List<Node> etggNodes = etgNode.selectNodes("s:etgg");
-				int etymGroupMemberCount = 0;
-				boolean isEtymGroupCompound = false;
-
-				if (CollectionUtils.isEmpty(etggNodes)) {
-
-					// no group members
-
-				} else {
+				if (CollectionUtils.isNotEmpty(etggNodes)) {
 
 					for (Node etggNode : etggNodes) {
 
@@ -361,8 +374,16 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 							// -- etym word etym --
 
-							Long etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
-							etymWordEtymCount.increment();
+							WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+							Long etymWordEtymId = null;
+							if (existingEtymWordEtym == null) {
+								etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
+								etymWordEtymCount.increment();
+							} else {
+								etymWordEtymId = existingEtymWordEtym.getId();
+								etymWordEtymExistsCount.increment();
+							}
+
 							etymDbService.createWordEtymGroupMember(etymWordEtymId, wordEtymGroupId, isEtymGroupMemberQuestionable);
 							wordEtymGroupMemberCount.increment();
 							etymGroupMemberCount++;
@@ -426,13 +447,15 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			Map<String, String> langGroupNameMap,
 			Map<String, Long> langGroupNameIdMap,
 			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
 			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
 			Count wordEtymGroupCount,
 			Count wordEtymGroupMemberCount,
 			Count etymWordVariantCount,
 			OutputStreamWriter reportWriter) throws Exception {
 
-		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount);
+		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount, headwordEtymExistsCount);
 
 		// -- word etym groups --
 
@@ -521,8 +544,16 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 			// -- etym word etym --
 
-			Long etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
-			etymWordEtymCount.increment();
+			WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+			Long etymWordEtymId = null;
+			if (existingEtymWordEtym == null) {
+				etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
+				etymWordEtymCount.increment();
+			} else {
+				etymWordEtymId = existingEtymWordEtym.getId();
+				etymWordEtymExistsCount.increment();
+			}
+
 			etymDbService.createWordEtymGroupMember(etymWordEtymId, wordEtymGroupId, isEtymGroupMemberQuestionable);
 			wordEtymGroupMemberCount.increment();
 
@@ -560,7 +591,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	}
 
-	public Long createHeadwordEtymGroupSs1(Long headwordId, Node mNode, Node etpNode, Count headwordEtymCount) {
+	public Long createHeadwordEtymGroupSs1(Long headwordId, Node mNode, Node etpNode, Count headwordEtymCount, Count headwordEtymExistsCount) {
 
 		WordEtym headwordEtym = new WordEtym();
 
@@ -600,8 +631,16 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		// -- headword etym --
 
-		Long headwordEtymId = etymDbService.createWordEtym(headwordId, headwordEtym);
-		headwordEtymCount.increment();
+		WordEtym existingHeadwordEtym = etymDbService.getWordEtymForWord(headwordId);
+		Long headwordEtymId = null;
+		if (existingHeadwordEtym == null) {
+			headwordEtymId = etymDbService.createWordEtym(headwordId, headwordEtym);
+			headwordEtymCount.increment();
+		} else {
+			headwordEtymId = existingHeadwordEtym.getId();
+			headwordEtymExistsCount.increment();
+		}
+
 		WordEtymGroup headwordEtymGroup = new WordEtymGroup();
 		headwordEtymGroup.setGroupType(WordEtymGroupType.ROOT);
 		headwordEtymGroup.setEtymologyTypeCode(etymTypeCode);
@@ -753,6 +792,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			String mappedValue = valueMap.get(origValue);
 			if (StringUtils.isBlank(mappedValue)) {
 				String placeholderValue = "(" + origValue + ")?";
+				System.out.println(placeholderValue);
 				mappedValues.add(placeholderValue);
 			} else {
 				mappedValues.add(mappedValue);
