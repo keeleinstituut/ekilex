@@ -26,9 +26,6 @@
           <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
             <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
           </th:block>
-          <th:block th:case="${T(eki.ekilex.constant.ReportType).REPORT_2}">
-            <th:block th:replace="reportscomp :: report_2_form"></th:block>
-          </th:block>
         </th:block>
         <hr class="my-3">
         <div th:fragment="reports" id="report-list" class="mt-4">
@@ -59,10 +56,9 @@
                         th:text="${#temporals.format(report.completedOn, 'dd.MM.yyyy HH:mm')}"></span>
                 </td>
                 <td class="p-1 text-right">
-                  <button th:if="${report.completed}" type="button" class="btn btn-sm btn-primary mr-1"
-                          data-plugin="reportContentPlugin"
-                          th:text="#{report.view}"
-                          th:data-report-id="${report.id}">Vaata</button>
+                  <a th:if="${report.completed}" class="btn btn-sm btn-primary mr-1"
+                     th:href="@{|/reports/download/${report.id}|}"
+                     th:text="#{common.download}">Laadi alla</a>
                   <button th:if="${report.deletable}" type="button" class="btn btn-sm btn-warning"
                           data-plugin="deleteReportPlugin"
                           th:data-report-id="${report.id}">
@@ -74,22 +70,6 @@
           </th:block>
         </div>
       </th:block>
-    </div>
-  </div>
-</div>
-<div id="report-content-dlg" class="modal" tabindex="-1" role="dialog" >
-  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" th:text="#{report.content.title}">Raporti sisu</h5>
-        <button type="button" class="close" data-dismiss="modal">
-          <span>&times;</span>
-        </button>
-      </div>
-      <div id="report-content-body" class="modal-body"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
-      </div>
     </div>
   </div>
 </div>
