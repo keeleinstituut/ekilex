@@ -23,6 +23,20 @@ public class TermDatasetReportRow extends AbstractDataObject {
 	private BigDecimal withDomainUpdateMeaningPercent;
 	private String withoutDomainTermSample;
 
+	private int singleTermMeaningCount;
+	private String singleTermMeaningTermSample;
+	private int singleLangMeaningCount;
+	private String singleLangMeaningTermSample;
+	private int specificCharTermCount;
+	private String specificCharTermSample;
+	private int initialCapTermCount;
+	private String initialCapTermSample;
+	private int withSourceLinkTermCount;
+	private int withSourceLinkMeaningUpdateTermCount;
+	private int withoutSourceLinkTermCount;
+	private int withoutSourceLinkMeaningUpdateTermCount;
+	private String withoutSourceLinkMeaningUpdateTermSample;
+
 	public String getDatasetCode() {
 		return datasetCode;
 	}
@@ -125,5 +139,109 @@ public class TermDatasetReportRow extends AbstractDataObject {
 
 	public void setWithoutDomainTermSample(String withoutDomainTermSample) {
 		this.withoutDomainTermSample = withoutDomainTermSample;
+	}
+
+	public int getSingleTermMeaningCount() {
+		return singleTermMeaningCount;
+	}
+
+	public void setSingleTermMeaningCount(int singleTermMeaningCount) {
+		this.singleTermMeaningCount = singleTermMeaningCount;
+	}
+
+	public String getSingleTermMeaningTermSample() {
+		return singleTermMeaningTermSample;
+	}
+
+	public void setSingleTermMeaningTermSample(String singleTermMeaningTermSample) {
+		this.singleTermMeaningTermSample = singleTermMeaningTermSample;
+	}
+
+	public int getSingleLangMeaningCount() {
+		return singleLangMeaningCount;
+	}
+
+	public void setSingleLangMeaningCount(int singleLangMeaningCount) {
+		this.singleLangMeaningCount = singleLangMeaningCount;
+	}
+
+	public String getSingleLangMeaningTermSample() {
+		return singleLangMeaningTermSample;
+	}
+
+	public void setSingleLangMeaningTermSample(String singleLangMeaningTermSample) {
+		this.singleLangMeaningTermSample = singleLangMeaningTermSample;
+	}
+
+	public int getSpecificCharTermCount() {
+		return specificCharTermCount;
+	}
+
+	public void setSpecificCharTermCount(int specificCharTermCount) {
+		this.specificCharTermCount = specificCharTermCount;
+	}
+
+	public String getSpecificCharTermSample() {
+		return specificCharTermSample;
+	}
+
+	public void setSpecificCharTermSample(String specificCharTermSample) {
+		this.specificCharTermSample = specificCharTermSample;
+	}
+
+	public int getInitialCapTermCount() {
+		return initialCapTermCount;
+	}
+
+	public void setInitialCapTermCount(int initialCapTermCount) {
+		this.initialCapTermCount = initialCapTermCount;
+	}
+
+	public String getInitialCapTermSample() {
+		return initialCapTermSample;
+	}
+
+	public void setInitialCapTermSample(String initialCapTermSample) {
+		this.initialCapTermSample = initialCapTermSample;
+	}
+
+	public int getWithSourceLinkTermCount() {
+		return withSourceLinkTermCount;
+	}
+
+	public void setWithSourceLinkTermCount(int withSourceLinkTermCount) {
+		this.withSourceLinkTermCount = withSourceLinkTermCount;
+	}
+
+	public int getWithSourceLinkMeaningUpdateTermCount() {
+		return withSourceLinkMeaningUpdateTermCount;
+	}
+
+	public void setWithSourceLinkMeaningUpdateTermCount(int withSourceLinkMeaningUpdateTermCount) {
+		this.withSourceLinkMeaningUpdateTermCount = withSourceLinkMeaningUpdateTermCount;
+	}
+
+	public int getWithoutSourceLinkTermCount() {
+		return withoutSourceLinkTermCount;
+	}
+
+	public void setWithoutSourceLinkTermCount(int withoutSourceLinkTermCount) {
+		this.withoutSourceLinkTermCount = withoutSourceLinkTermCount;
+	}
+
+	public int getWithoutSourceLinkMeaningUpdateTermCount() {
+		return withoutSourceLinkMeaningUpdateTermCount;
+	}
+
+	public void setWithoutSourceLinkMeaningUpdateTermCount(int withoutSourceLinkMeaningUpdateTermCount) {
+		this.withoutSourceLinkMeaningUpdateTermCount = withoutSourceLinkMeaningUpdateTermCount;
+	}
+
+	public String getWithoutSourceLinkMeaningUpdateTermSample() {
+		return withoutSourceLinkMeaningUpdateTermSample;
+	}
+
+	public void setWithoutSourceLinkMeaningUpdateTermSample(String withoutSourceLinkMeaningUpdateTermSample) {
+		this.withoutSourceLinkMeaningUpdateTermSample = withoutSourceLinkMeaningUpdateTermSample;
 	}
 }

@@ -1,8 +1,10 @@
 package eki.ekilex.service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,9 @@ public class ReportService implements PermConstant {
 
 	@Autowired
 	private DatasetDbService datasetDbService;
+
+	@Autowired
+	private WorkbookService workbookService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -108,6 +113,23 @@ public class ReportService implements PermConstant {
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteReport(Long reportId) {
 		reportDbService.deleteReport(reportId);
+	}
+
+	@Transactional
+	public byte[] getReportFileBytes(Long reportId) throws Exception {
+
+		Report report = reportDbService.getReport(reportId);
+		ReportContent content = deserializeContent(report);
+
+		Workbook workbook = switch (report.getType()) {
+		case TERM_DATASET -> workbookService.toTermDatasetWorkbook((TermDatasetReportContent) content);
+		default -> throw new IllegalArgumentException("File download not implemented for report type: " + report.getType());
+		};
+
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		workbook.write(byteStream);
+		workbook.close();
+		return byteStream.toByteArray();
 	}
 
 	public List<Dataset> getAccessibleTermDatasets(EkiUser user) {

@@ -18,23 +18,6 @@ $.fn.generateReportPlugin = function() {
   });
 }
 
-$.fn.reportContentPlugin = function() {
-  const btn = $(this);
-  btn.on('click', function() {
-    const reportId = btn.data('report-id');
-    $.ajax({
-      url: applicationUrl + 'reports/content/' + reportId,
-      method: 'GET'
-    }).done(function(data) {
-      $('#report-content-body').html(data);
-      $('#report-content-dlg').modal('show');
-    }).fail(function(data) {
-      console.log(data);
-      openAlertDlg(messages['common.error']);
-    });
-  });
-}
-
 $.fn.deleteReportPlugin = function() {
   const btn = $(this);
   btn.confirmation({
