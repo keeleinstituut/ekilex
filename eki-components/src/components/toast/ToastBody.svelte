@@ -35,7 +35,7 @@
     class="w-6 h-6 flex justify-center items-center"
     type="button"
     aria-label={toast.closeLabel}
-    on:click={() => closeToast(toast)}
+    onclick={() => closeToast(toast)}
   >
     <svg
       width="14"
@@ -54,8 +54,7 @@
 
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import Toast from "./Toast.svelte";
+  import type { Toast } from "./toast.model";
 
-  export let toast: Toast;
-  export let closeToast: (toast: Toast) => void;
+  let { toast, closeToast }: { toast: Toast; closeToast: (toast: Toast) => void } = $props();
 </script>
