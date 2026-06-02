@@ -264,10 +264,12 @@ $.fn.editDatasetDlgPlugin = function() {
 $.fn.deleteDatasetConfirmPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
+		const name = obj.data('name');
+		const title = messages["datasets.confirm.delete"].replace('{0}', name);
 		obj.confirmation({
 			btnOkLabel: messages["common.yes"],
 			btnCancelLabel: messages["common.no"],
-			title: messages["common.confirm.delete"],
+			title: title,
 			onConfirm: function() {
 				const code = obj.data('code');
 				deleteDataset(code);
