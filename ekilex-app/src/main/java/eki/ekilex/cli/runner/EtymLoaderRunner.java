@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eki.common.constant.SourceType;
 import eki.common.data.Count;
 import eki.common.data.KeyValuePair;
+import eki.ekilex.cli.util.ProgressCounter;
 import eki.ekilex.constant.WordEtymGroupType;
 import eki.ekilex.data.LanguageGroup;
 import eki.ekilex.data.Note;
@@ -42,6 +44,10 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EtymLoaderRunner.class);
 
+	private static final int REGULAR_ARTICLES_SS1 = 1;
+
+	private static final int IRREGULAR_ARTICLES_SS1 = 2;
+
 	@Autowired
 	private EtymDbService etymDbService;
 
@@ -55,7 +61,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	private final String reportFileName = "missing-word-or-id-report.txt";
 
-	private boolean makeReport = true;
+	private boolean makeReport = false;
 
 	@Override
 	List<String> getRequiredFilenames() {
@@ -84,9 +90,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			reportWriter = new OutputStreamWriter(reportStream, StandardCharsets.UTF_8);
 		}
 
-		List<LanguageGroup> languageGroups = getLanguageGroups();
-
-		handleEtymSs1(folderPath, languageGroups, reportWriter);
+		handleEtymSs1(folderPath, reportWriter);
 		// TODO implement
 		//handleEtymVsl(folderPath, reportWriter);
 
@@ -100,11 +104,13 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 		logger.info("End");
 	}
 
-	private void handleEtymSs1(String folderPath, List<LanguageGroup> languageGroups, OutputStreamWriter reportWriter) throws Exception {
+	private void handleEtymSs1(String folderPath, OutputStreamWriter reportWriter) throws Exception {
 
 		Count ignoredArticleCount = new Count();
 		Count headwordEtymCount = new Count();
+		Count headwordEtymExistsCount = new Count();
 		Count etymWordEtymCount = new Count();
+		Count etymWordEtymExistsCount = new Count();
 		Count wordEtymGroupCount = new Count();
 		Count wordEtymGroupMemberCount = new Count();
 		Count etymWordVariantCount = new Count();
@@ -115,14 +121,79 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		Map<String, String> langCodeMap = collectLangCodeMapSs1(folderPath);
 		Map<String, String> langGroupNameMap = collectLangGroupNameMapSs1(folderPath);
+		List<LanguageGroup> languageGroups = getLanguageGroups();
+		Map<String, Long> langGroupNameIdMap = languageGroups.stream()
+				.collect(Collectors.toMap(LanguageGroup::getName, LanguageGroup::getId));
 
-		List<Element> articleElements = rootElement.elements();
+		List<Node> regularArticleNodes = rootElement.selectNodes("s:A[count(s:etp/s:etg)=0 or s:etp/s:etg[count(s:kr)<2]]");
+		List<Node> irregularArticleNodes = rootElement.selectNodes("s:A[s:etp/s:etg[count(s:kr)>1]]");
 
-		int articleCounter = 0;
-		int articleCount = articleElements.size();
-		int progressIndicator = articleCount / Math.min(articleCount, 100);
+		int articleCount = regularArticleNodes.size() + irregularArticleNodes.size();
+		ProgressCounter progressCounter = new ProgressCounter(articleCount);
 
-		for (Element articleElement : articleElements) {
+		handleArticlesSs1(
+				REGULAR_ARTICLES_SS1,
+				regularArticleNodes,
+				langCodeMap,
+				langGroupNameMap,
+				langGroupNameIdMap,
+				progressCounter,
+				ignoredArticleCount,
+				headwordEtymCount,
+				headwordEtymExistsCount,
+				etymWordEtymCount,
+				etymWordEtymExistsCount,
+				wordEtymGroupCount,
+				wordEtymGroupMemberCount,
+				etymWordVariantCount,
+				reportWriter);
+
+		handleArticlesSs1(
+				IRREGULAR_ARTICLES_SS1,
+				irregularArticleNodes,
+				langCodeMap,
+				langGroupNameMap,
+				langGroupNameIdMap,
+				progressCounter,
+				ignoredArticleCount,
+				headwordEtymCount,
+				headwordEtymExistsCount,
+				etymWordEtymCount,
+				etymWordEtymExistsCount,
+				wordEtymGroupCount,
+				wordEtymGroupMemberCount,
+				etymWordVariantCount,
+				reportWriter);
+
+		logger.info("Article count with unspecified headword id: {}", ignoredArticleCount.getValue());
+		logger.info("Headword etym count: {}", headwordEtymCount.getValue());
+		logger.info("Headword etym exists count: {}", headwordEtymExistsCount.getValue());
+		logger.info("Etym word etym count: {}", etymWordEtymCount.getValue());
+		logger.info("Etym word etym exists count: {}", etymWordEtymExistsCount.getValue());
+		logger.info("Etym group count: {}", wordEtymGroupCount.getValue());
+		logger.info("Etym group member count: {}", wordEtymGroupMemberCount.getValue());
+		logger.info("Etym word variant count: {}", etymWordVariantCount.getValue());
+		logger.info("Done loading \"{}\"", SS1_FILENAME);
+	}
+
+	public void handleArticlesSs1(
+			int regularity,
+			List<Node> articleNodesRegular,
+			Map<String, String> langCodeMap,
+			Map<String, String> langGroupNameMap,
+			Map<String, Long> langGroupNameIdMap,
+			ProgressCounter progressCounter,
+			Count ignoredArticleCount,
+			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
+			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
+			Count wordEtymGroupCount,
+			Count wordEtymGroupMemberCount,
+			Count etymWordVariantCount,
+			OutputStreamWriter reportWriter) throws Exception {
+
+		for (Node articleElement : articleNodesRegular) {
 
 			// headword
 			Node mNode = articleElement.selectSingleNode("s:m");
@@ -153,46 +224,384 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 					}
 					continue;
 				}
-				handleArticleSs1(
-						headwordId, mNode, etpNode, langCodeMap, langGroupNameMap,
-						headwordEtymCount, etymWordEtymCount, wordEtymGroupCount, wordEtymGroupMemberCount, etymWordVariantCount,
-						reportWriter);
+				if (regularity == REGULAR_ARTICLES_SS1) {
+
+					handleRegularArticleSs1(
+							headwordId, mNode, etpNode, langCodeMap, langGroupNameMap, langGroupNameIdMap,
+							headwordEtymCount, headwordEtymExistsCount, etymWordEtymCount, etymWordEtymExistsCount, wordEtymGroupCount,
+							wordEtymGroupMemberCount, etymWordVariantCount,
+							reportWriter);
+
+				} else if (regularity == IRREGULAR_ARTICLES_SS1) {
+
+					handleIrregularArticleSs1(
+							headwordId, mNode, etpNode, langCodeMap, langGroupNameMap, langGroupNameIdMap,
+							headwordEtymCount, headwordEtymExistsCount, etymWordEtymCount, etymWordEtymExistsCount, wordEtymGroupCount,
+							wordEtymGroupMemberCount, etymWordVariantCount,
+							reportWriter);
+				}
 			}
 
-			articleCounter++;
-			if (articleCounter % progressIndicator == 0) {
-				int progressPercent = articleCounter / progressIndicator;
-				logger.info("{}% - {} articles processed", progressPercent, articleCounter);
+			progressCounter.iterate();
+			if (progressCounter.isProgressStep()) {
+				logger.info("{}% - {} articles processed", progressCounter.getProgressPercent(), progressCounter.getIterationCounter());
 			}
 		}
-
-		logger.info("Article count with unspecified headword id: {}", ignoredArticleCount.getValue());
-		logger.info("Headword etym count: {}", headwordEtymCount.getValue());
-		logger.info("Etym word etym count: {}", etymWordEtymCount.getValue());
-		logger.info("Etym group count: {}", wordEtymGroupCount.getValue());
-		logger.info("Etym group member count: {}", wordEtymGroupMemberCount.getValue());
-		logger.info("Etym word variant count: {}", etymWordVariantCount.getValue());
-		logger.info("Done loading \"{}\"", SS1_FILENAME);
 	}
 
-	public void handleArticleSs1(
+	public void handleRegularArticleSs1(
 			Long headwordId,
 			Node mNode,
 			Node etpNode,
 			Map<String, String> langCodeMap,
 			Map<String, String> langGroupNameMap,
+			Map<String, Long> langGroupNameIdMap,
 			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
 			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
 			Count wordEtymGroupCount,
 			Count wordEtymGroupMemberCount,
 			Count etymWordVariantCount,
 			OutputStreamWriter reportWriter) throws Exception {
+
+		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount, headwordEtymExistsCount);
+
+		// -- word etym groups --
+
+		List<Node> etgNodes = etpNode.selectNodes("s:etg");
+
+		if (CollectionUtils.isNotEmpty(etgNodes)) {
+
+			Long parentWordEtymGroupId = headwordEtymGroupId;
+			Long wordEtymGroupId = null;
+
+			for (int etgNodeIndex = 0; etgNodeIndex < etgNodes.size(); etgNodeIndex++) {
+
+				Node etgNode = etgNodes.get(etgNodeIndex);
+				boolean isEtymGroupQuestionable = hasAttributeValue(etgNode, "ky", "ky");
+				boolean isAlternative = hasAttributeValue(etgNode, "alt", "v") && (etgNodeIndex > 0);
+
+				String origLanguageGroupValue = getTextValue(getSingleNodeText(etgNode, "s:kr"));
+				String etymWordLangGroupName = convertValue(origLanguageGroupValue, langGroupNameMap);
+				Long etymWordLanguageGroupId = null;
+				if (StringUtils.isNotBlank(etymWordLangGroupName)) {
+					etymWordLanguageGroupId = classifierDbService.getLanguageGroupId(etymWordLangGroupName);
+				}
+
+				if (isAlternative) {
+					// the parent remains the same
+				} else if (etgNodeIndex > 0) {
+					parentWordEtymGroupId = wordEtymGroupId;
+				}
+
+				// -- word etym group members --
+
+				List<Node> etggNodes = etgNode.selectNodes("s:etgg");
+				int etymGroupMemberCount = 0;
+				boolean isEtymGroupCompound = false;
+
+				if (CollectionUtils.isEmpty(etggNodes) && (etymWordLanguageGroupId == null)) {
+
+					continue;
+				}
+
+				// -- word etym group --
+
+				WordEtymGroup wordEtymGroup = new WordEtymGroup();
+				wordEtymGroup.setGroupType(WordEtymGroupType.ABSTRACT);
+				wordEtymGroup.setLanguageGroupId(etymWordLanguageGroupId);
+				wordEtymGroup.setQuestionable(isEtymGroupQuestionable);
+				wordEtymGroupId = etymDbService.createWordEtymGroup(wordEtymGroup);
+				wordEtymGroupCount.increment();
+				etymDbService.createWordEtymGroupTree(parentWordEtymGroupId, wordEtymGroupId);
+
+				if (CollectionUtils.isNotEmpty(etggNodes)) {
+
+					for (Node etggNode : etggNodes) {
+
+						boolean isEtymGroupMemberQuestionable = hasAttributeValue(etggNode, "ky", "ky");
+						boolean isEtymGroupMemberCompound = hasAttributeValue(etggNode, "etl", "lo");
+						List<String> origLanguages = getTextValues(getNodesTexts(etggNode, "s:k"));
+						List<String> etymWordLangCodes = convertValues(origLanguages, langCodeMap);
+						List<ValueMarkup> etymWordAndVariantValueTuples = getNodesTexts(etggNode, "s:ex");
+						List<String> etymWordRegisterCodes = getTextValues(getNodesTexts(etggNode, "s:s"));// TODO this thing here?
+						List<ValueMarkup> etymWordEtymCommentTuples = getNodesTexts(etggNode, "s:ed");
+						ValueMarkup etymWordAnotherEtymCommentValueTuple = null;
+						List<ValueMarkup> etymWordEtymAuthorNameTuples = null;
+
+						if (isEtymGroupMemberCompound) {
+							isEtymGroupCompound = true;
+						}
+
+						Node dtxNode = etggNode.selectSingleNode("s:dtx");
+						if (dtxNode != null) {
+							String origName = "s:dtx";
+							boolean isSlg = hasAttribute(dtxNode, "slg");
+							if (isSlg) {
+								origName = origName + "@s:slg";
+							}
+							etymWordAnotherEtymCommentValueTuple = getNodeText(dtxNode);
+							etymWordAnotherEtymCommentValueTuple.setAttrName(origName);
+						}
+
+						String etymWordEtymYearStr = null;
+						Node autgNode = etggNode.selectSingleNode("s:autg");
+						if (autgNode != null) {
+							etymWordEtymAuthorNameTuples = getNodesTexts(autgNode, "s:aut");
+							etymWordEtymYearStr = getTextValue(getSingleNodeText(autgNode, "s:a"));
+						}
+
+						ValueMarkup etymWordValueTuple = etymWordAndVariantValueTuples.get(0);
+
+						List<ValueMarkup> etymWordVariantValueTuples = null;
+						if (etymWordAndVariantValueTuples.size() > 1) {
+							etymWordVariantValueTuples = etymWordAndVariantValueTuples.subList(1, etymWordAndVariantValueTuples.size());
+						}
+
+						// -- word etym group word etyms --
+
+						for (String etymWordLangCode : etymWordLangCodes) {
+
+							WordLexemeMeaningIdTuple etymWordLexemeMeaningId = getOrCreateWordLexemeMeaning(etymWordValueTuple, etymWordLangCode);
+							Long etymWordId = etymWordLexemeMeaningId.getWordId();
+							Long etymWordLexemeId = etymWordLexemeMeaningId.getLexemeId();
+							Long etymWordMeaningId = etymWordLexemeMeaningId.getMeaningId();
+
+							WordEtym etymWordEtym = new WordEtym();
+							etymWordEtym.setWordId(etymWordId);
+							etymWordEtym.setEtymologyYear(etymWordEtymYearStr);
+
+							// -- etym word etym --
+
+							WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+							Long etymWordEtymId = null;
+							if (existingEtymWordEtym == null) {
+								etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
+								etymWordEtymCount.increment();
+							} else {
+								etymWordEtymId = existingEtymWordEtym.getId();
+								etymWordEtymExistsCount.increment();
+							}
+
+							etymDbService.createWordEtymGroupMember(etymWordEtymId, wordEtymGroupId, isEtymGroupMemberQuestionable);
+							wordEtymGroupMemberCount.increment();
+							etymGroupMemberCount++;
+
+							if (CollectionUtils.isNotEmpty(etymWordEtymCommentTuples)) {
+								for (ValueMarkup etymWordEtymCommentTuple : etymWordEtymCommentTuples) {
+									etymWordEtymCommentTuple.setAttrName("s:ed");
+									createWordEtymComment(etymWordEtymId, etymWordEtymCommentTuple);
+								}
+							}
+
+							if (etymWordAnotherEtymCommentValueTuple != null) {
+								createWordEtymComment(etymWordEtymId, etymWordAnotherEtymCommentValueTuple);
+							}
+
+							if (CollectionUtils.isNotEmpty(etymWordEtymAuthorNameTuples)) {
+								SourceType sourceType = SourceType.PERSON;
+								for (ValueMarkup etymWordEtymAuthorNameTuple : etymWordEtymAuthorNameTuples) {
+									handleSourceAndSourceLink(etymWordEtymId, etymWordEtymAuthorNameTuple, sourceType);
+								}
+							}
+
+							if (CollectionUtils.isNotEmpty(etymWordVariantValueTuples)) {
+
+								for (ValueMarkup etymWordVariantValueTuple : etymWordVariantValueTuples) {
+
+									// -- etym word variant --
+
+									WordLexemeMeaningIdTuple etymWordVariantLexemeMeaningId = getOrCreateWordLexeme(etymWordVariantValueTuple, etymWordLangCode, etymWordMeaningId);
+									Long etymWordVariantLexemeId = etymWordVariantLexemeMeaningId.getLexemeId();
+									variantDbService.createLexemeVariant(etymWordLexemeId, etymWordVariantLexemeId, null);
+									etymWordVariantCount.increment();
+								}
+							}
+						}
+					}
+				}
+
+				WordEtymGroupType deductedWordEtymGroupType = null;
+				if (etymGroupMemberCount == 1) {
+					deductedWordEtymGroupType = WordEtymGroupType.SINGLE_MEMBER;
+				} else if (isEtymGroupCompound) {
+					deductedWordEtymGroupType = WordEtymGroupType.COMPOUND;
+				} else if ((etymWordLanguageGroupId == null) && (etymGroupMemberCount > 1)) {
+					deductedWordEtymGroupType = WordEtymGroupType.ALTERNATIVE;
+				} else if (etymWordLanguageGroupId != null) {
+					deductedWordEtymGroupType = WordEtymGroupType.LANGUAGE_GROUP;
+				}
+				if (deductedWordEtymGroupType != null) {
+					etymDbService.updateWordEtymGroup(wordEtymGroupId, deductedWordEtymGroupType);
+				}
+			}
+		}
+	}
+
+	public void handleIrregularArticleSs1(
+			Long headwordId,
+			Node mNode,
+			Node etpNode,
+			Map<String, String> langCodeMap,
+			Map<String, String> langGroupNameMap,
+			Map<String, Long> langGroupNameIdMap,
+			Count headwordEtymCount,
+			Count headwordEtymExistsCount,
+			Count etymWordEtymCount,
+			Count etymWordEtymExistsCount,
+			Count wordEtymGroupCount,
+			Count wordEtymGroupMemberCount,
+			Count etymWordVariantCount,
+			OutputStreamWriter reportWriter) throws Exception {
+
+		Long headwordEtymGroupId = createHeadwordEtymGroupSs1(headwordId, mNode, etpNode, headwordEtymCount, headwordEtymExistsCount);
+
+		// -- word etym groups --
+
+		Node etgNode = etpNode.selectSingleNode("s:etg");
+		List<String> origLanguageGroupValues = getTextValues(getNodesTexts(etgNode, "s:kr"));
+		List<String> etymWordLangGroupNames = convertValues(origLanguageGroupValues, langGroupNameMap);
+		Map<Long, Long> langGroupToEtymGroupIdMap = new HashMap<>();
+
+		List<Node> etggNodes = etgNode.selectNodes("s:etgg");
+
+		for (Node etggNode : etggNodes) {
+
+			boolean isEtymGroupMemberQuestionable = hasAttributeValue(etggNode, "ky", "ky");
+			String origLanguage = getTextValue(getSingleNodeText(etggNode, "s:k"));
+			String etymWordLangCode = convertValue(origLanguage, langCodeMap);
+			Long wordEtymGroupId;
+
+			List<Long> candidateEtymWordLanguageGroupIds = migrationDbService.getLanguageGroupIdsByLanguage(etymWordLangCode, etymWordLangGroupNames);
+			if (CollectionUtils.isEmpty(candidateEtymWordLanguageGroupIds)) {
+
+				WordEtymGroup wordEtymGroup = new WordEtymGroup();
+				wordEtymGroup.setGroupType(WordEtymGroupType.SINGLE_MEMBER);
+				wordEtymGroup.setLanguageGroupId(null);
+				wordEtymGroupId = etymDbService.createWordEtymGroup(wordEtymGroup);
+				wordEtymGroupCount.increment();
+				etymDbService.createWordEtymGroupTree(headwordEtymGroupId, wordEtymGroupId);
+
+			} else {
+
+				Long firstAvailableLanguageGroupId = candidateEtymWordLanguageGroupIds.get(0);
+				wordEtymGroupId = langGroupToEtymGroupIdMap.get(firstAvailableLanguageGroupId);
+
+				if (wordEtymGroupId == null) {
+
+					WordEtymGroup wordEtymGroup = new WordEtymGroup();
+					wordEtymGroup.setGroupType(WordEtymGroupType.LANGUAGE_GROUP);
+					wordEtymGroup.setLanguageGroupId(firstAvailableLanguageGroupId);
+					wordEtymGroupId = etymDbService.createWordEtymGroup(wordEtymGroup);
+					wordEtymGroupCount.increment();
+					etymDbService.createWordEtymGroupTree(headwordEtymGroupId, wordEtymGroupId);
+					langGroupToEtymGroupIdMap.put(firstAvailableLanguageGroupId, wordEtymGroupId);
+				}
+			}
+
+			List<ValueMarkup> etymWordAndVariantValueTuples = getNodesTexts(etggNode, "s:ex");
+			List<String> etymWordRegisterCodes = getTextValues(getNodesTexts(etggNode, "s:s"));// TODO this thing here?
+			List<ValueMarkup> etymWordEtymCommentTuples = getNodesTexts(etggNode, "s:ed");
+			ValueMarkup etymWordAnotherEtymCommentValueTuple = null;
+			List<ValueMarkup> etymWordEtymAuthorNameTuples = null;
+
+			Node dtxNode = etggNode.selectSingleNode("s:dtx");
+			if (dtxNode != null) {
+				String origName = "s:dtx";
+				boolean isSlg = hasAttribute(dtxNode, "slg");
+				if (isSlg) {
+					origName = origName + "@s:slg";
+				}
+				etymWordAnotherEtymCommentValueTuple = getNodeText(dtxNode);
+				etymWordAnotherEtymCommentValueTuple.setAttrName(origName);
+			}
+
+			String etymWordEtymYearStr = null;
+			Node autgNode = etggNode.selectSingleNode("s:autg");
+			if (autgNode != null) {
+				etymWordEtymAuthorNameTuples = getNodesTexts(autgNode, "s:aut");
+				etymWordEtymYearStr = getTextValue(getSingleNodeText(autgNode, "s:a"));
+			}
+
+			ValueMarkup etymWordValueTuple = etymWordAndVariantValueTuples.get(0);
+
+			List<ValueMarkup> etymWordVariantValueTuples = null;
+			if (etymWordAndVariantValueTuples.size() > 1) {
+				etymWordVariantValueTuples = etymWordAndVariantValueTuples.subList(1, etymWordAndVariantValueTuples.size());
+			}
+
+			// -- word etym group word etyms --
+
+			WordLexemeMeaningIdTuple etymWordLexemeMeaningId = getOrCreateWordLexemeMeaning(etymWordValueTuple, etymWordLangCode);
+			Long etymWordId = etymWordLexemeMeaningId.getWordId();
+			Long etymWordLexemeId = etymWordLexemeMeaningId.getLexemeId();
+			Long etymWordMeaningId = etymWordLexemeMeaningId.getMeaningId();
+
+			WordEtym etymWordEtym = new WordEtym();
+			etymWordEtym.setWordId(etymWordId);
+			etymWordEtym.setEtymologyYear(etymWordEtymYearStr);
+
+			// -- etym word etym --
+
+			WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+			Long etymWordEtymId = null;
+			if (existingEtymWordEtym == null) {
+				etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
+				etymWordEtymCount.increment();
+			} else {
+				etymWordEtymId = existingEtymWordEtym.getId();
+				etymWordEtymExistsCount.increment();
+			}
+
+			etymDbService.createWordEtymGroupMember(etymWordEtymId, wordEtymGroupId, isEtymGroupMemberQuestionable);
+			wordEtymGroupMemberCount.increment();
+
+			if (CollectionUtils.isNotEmpty(etymWordEtymCommentTuples)) {
+				for (ValueMarkup etymWordEtymCommentTuple : etymWordEtymCommentTuples) {
+					etymWordEtymCommentTuple.setAttrName("s:ed");
+					createWordEtymComment(etymWordEtymId, etymWordEtymCommentTuple);
+				}
+			}
+
+			if (etymWordAnotherEtymCommentValueTuple != null) {
+				createWordEtymComment(etymWordEtymId, etymWordAnotherEtymCommentValueTuple);
+			}
+
+			if (CollectionUtils.isNotEmpty(etymWordEtymAuthorNameTuples)) {
+				SourceType sourceType = SourceType.PERSON;
+				for (ValueMarkup etymWordEtymAuthorNameTuple : etymWordEtymAuthorNameTuples) {
+					handleSourceAndSourceLink(etymWordEtymId, etymWordEtymAuthorNameTuple, sourceType);
+				}
+			}
+
+			if (CollectionUtils.isNotEmpty(etymWordVariantValueTuples)) {
+
+				for (ValueMarkup etymWordVariantValueTuple : etymWordVariantValueTuples) {
+
+					// -- etym word variant --
+
+					WordLexemeMeaningIdTuple etymWordVariantLexemeMeaningId = getOrCreateWordLexeme(etymWordVariantValueTuple, etymWordLangCode, etymWordMeaningId);
+					Long etymWordVariantLexemeId = etymWordVariantLexemeMeaningId.getLexemeId();
+					variantDbService.createLexemeVariant(etymWordLexemeId, etymWordVariantLexemeId, null);
+					etymWordVariantCount.increment();
+				}
+			}
+		}
+
+	}
+
+	public Long createHeadwordEtymGroupSs1(Long headwordId, Node mNode, Node etpNode, Count headwordEtymCount, Count headwordEtymExistsCount) {
 
 		WordEtym headwordEtym = new WordEtym();
 
 		// headword value
 		ValueMarkup headwordValueTuple = getNodeText(mNode);
 		removeSymbol(headwordValueTuple, '+');
+
+		// etym type
+		ValueMarkup etymTypeCodeTuple = getSingleNodeText(etpNode, "s:etg[1]/s:epl");
+		String etymTypeCode = getTextValue(etymTypeCodeTuple);
 
 		// comment
 		ValueMarkup commentValueTuple = getSingleNodeText(etpNode, "s:ek");
@@ -222,10 +631,19 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		// -- headword etym --
 
-		Long headwordEtymId = etymDbService.createWordEtym(headwordId, headwordEtym);
-		headwordEtymCount.increment();
+		WordEtym existingHeadwordEtym = etymDbService.getWordEtymForWord(headwordId);
+		Long headwordEtymId = null;
+		if (existingHeadwordEtym == null) {
+			headwordEtymId = etymDbService.createWordEtym(headwordId, headwordEtym);
+			headwordEtymCount.increment();
+		} else {
+			headwordEtymId = existingHeadwordEtym.getId();
+			headwordEtymExistsCount.increment();
+		}
+
 		WordEtymGroup headwordEtymGroup = new WordEtymGroup();
 		headwordEtymGroup.setGroupType(WordEtymGroupType.ROOT);
+		headwordEtymGroup.setEtymologyTypeCode(etymTypeCode);
 		headwordEtymGroup.setQuestionable(false);
 		Long headwordEtymGroupId = etymDbService.createWordEtymGroup(headwordEtymGroup);
 		etymDbService.createWordEtymGroupMember(headwordEtymId, headwordEtymGroupId, false);
@@ -280,170 +698,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 				handleSourceAndSourceLink(headwordEtymId, authorNameTuple, sourceType);
 			}
 		}
-
-		// -- word etym groups --
-
-		List<Node> etgNodes = etpNode.selectNodes("s:etg");
-
-		if (CollectionUtils.isNotEmpty(etgNodes)) {
-
-			Long parentWordEtymGroupId = headwordEtymGroupId;
-			Long wordEtymGroupId = null;
-
-			for (int etgNodeIndex = 0; etgNodeIndex < etgNodes.size(); etgNodeIndex++) {
-
-				Node etgNode = etgNodes.get(etgNodeIndex);
-				boolean isEtymGroupQuestionable = hasAttributeValue(etgNode, "ky", "ky");
-				boolean isAlternative = hasAttributeValue(etgNode, "alt", "v") && (etgNodeIndex > 0);
-				ValueMarkup etymTypeCodeTuple = getSingleNodeText(etgNode, "s:epl");
-				String etymTypeCode = getTextValue(etymTypeCodeTuple);
-
-				List<String> origLanguageGroupValues = getTextValues(getNodesTexts(etgNode, "s:kr"));
-				List<String> etymWordLangGroupNames = convertValues(origLanguageGroupValues, langGroupNameMap);
-
-				if (isAlternative) {
-					// the parent remains the same
-				} else if (etgNodeIndex > 0) {
-					parentWordEtymGroupId = wordEtymGroupId;
-				}
-
-				// -- word etym group --
-
-				// TODO connect with lang group
-				WordEtymGroup wordEtymGroup = new WordEtymGroup();
-				wordEtymGroup.setGroupType(WordEtymGroupType.ABSTRACT);
-				wordEtymGroup.setEtymologyTypeCode(etymTypeCode);
-				wordEtymGroup.setQuestionable(isEtymGroupQuestionable);
-				wordEtymGroupId = etymDbService.createWordEtymGroup(wordEtymGroup);
-				wordEtymGroupCount.increment();
-				etymDbService.createWordEtymGroupTree(parentWordEtymGroupId, wordEtymGroupId);
-
-				// -- word etym group members --
-
-				List<Node> etggNodes = etgNode.selectNodes("s:etgg");
-				int etymGroupMemberCount = 0;
-				boolean isEtymGroupCompound = false;
-
-				if (CollectionUtils.isEmpty(etggNodes)) {
-
-					// no group members
-
-				} else {
-
-					for (int etggNodeIndex = 0; etggNodeIndex < etggNodes.size(); etggNodeIndex++) {
-
-						Node etggNode = etggNodes.get(etggNodeIndex);
-						boolean isEtymGroupMemberQuestionable = hasAttributeValue(etggNode, "ky", "ky");
-						boolean isEtymGroupMemberCompound = hasAttributeValue(etggNode, "etl", "lo");
-						List<String> origLanguages = getTextValues(getNodesTexts(etggNode, "s:k"));
-						List<String> etymWordLangCodes = convertValues(origLanguages, langCodeMap);
-						List<ValueMarkup> etymWordAndVariantValueTuples = getNodesTexts(etggNode, "s:ex");
-						List<String> etymWordRegisterCodes = getTextValues(getNodesTexts(etggNode, "s:s"));// TODO this thing here?
-						List<ValueMarkup> etymWordEtymCommentTuples = getNodesTexts(etggNode, "s:ed");
-						ValueMarkup etymWordAnotherEtymCommentValueTuple = null;
-						List<ValueMarkup> etymWordEtymAuthorNameTuples = null;
-
-						if (isEtymGroupMemberCompound) {
-							isEtymGroupCompound = true;
-						}
-
-						Node dtxNode = etggNode.selectSingleNode("s:dtx");
-						if (dtxNode != null) {
-							String origName = "s:dtx";
-							boolean isSlg = hasAttribute(dtxNode, "slg");
-							if (isSlg) {
-								origName = origName + "@s:slg";
-							}
-							etymWordAnotherEtymCommentValueTuple = getNodeText(dtxNode);
-							etymWordAnotherEtymCommentValueTuple.setAttrName(origName);
-						}
-
-						String etymWordEtymYearStr = null;
-						Node autgNode = etggNode.selectSingleNode("s:autg");
-						if (autgNode != null) {
-							etymWordEtymAuthorNameTuples = getNodesTexts(autgNode, "s:aut");
-							etymWordEtymYearStr = getTextValue(getSingleNodeText(autgNode, "s:a"));
-						}
-
-						ValueMarkup etymWordValueTuple = etymWordAndVariantValueTuples.get(0);
-
-						List<ValueMarkup> etymWordVariantValueTuples = null;
-						if (etymWordAndVariantValueTuples.size() > 1) {
-							etymWordVariantValueTuples = etymWordAndVariantValueTuples.subList(1, etymWordAndVariantValueTuples.size());
-						}
-
-						// -- word etym group word etyms --
-
-						for (String etymWordLangCode : etymWordLangCodes) {
-
-							WordLexemeMeaningIdTuple etymWordLexemeMeaningId = getOrCreateWordLexemeMeaning(etymWordValueTuple, etymWordLangCode);
-							Long etymWordId = etymWordLexemeMeaningId.getWordId();
-							Long etymWordLexemeId = etymWordLexemeMeaningId.getLexemeId();
-							Long etymWordMeaningId = etymWordLexemeMeaningId.getMeaningId();
-
-							WordEtym etymWordEtym = new WordEtym();
-							etymWordEtym.setWordId(etymWordId);
-							//etymWordEtym.setEtymologyTypeCode(??);
-							etymWordEtym.setEtymologyYear(etymWordEtymYearStr);
-
-							// -- etym word etym --
-
-							Long etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
-							etymWordEtymCount.increment();
-							etymDbService.createWordEtymGroupMember(etymWordEtymId, wordEtymGroupId, isEtymGroupMemberQuestionable);
-							wordEtymGroupMemberCount.increment();
-							etymGroupMemberCount++;
-
-							if (CollectionUtils.isNotEmpty(etymWordEtymCommentTuples)) {
-								for (ValueMarkup etymWordEtymCommentTuple : etymWordEtymCommentTuples) {
-									etymWordEtymCommentTuple.setAttrName("s:ed");
-									createWordEtymComment(etymWordEtymId, etymWordEtymCommentTuple);
-								}
-							}
-
-							if (etymWordAnotherEtymCommentValueTuple != null) {
-								createWordEtymComment(etymWordEtymId, etymWordAnotherEtymCommentValueTuple);
-							}
-
-							if (CollectionUtils.isNotEmpty(etymWordEtymAuthorNameTuples)) {
-								SourceType sourceType = SourceType.PERSON;
-								for (ValueMarkup etymWordEtymAuthorNameTuple : etymWordEtymAuthorNameTuples) {
-									handleSourceAndSourceLink(etymWordEtymId, etymWordEtymAuthorNameTuple, sourceType);
-								}
-							}
-
-							if (CollectionUtils.isNotEmpty(etymWordVariantValueTuples)) {
-
-								for (ValueMarkup etymWordVariantValueTuple : etymWordVariantValueTuples) {
-
-									// -- etym word variant --
-
-									WordLexemeMeaningIdTuple etymWordVariantLexemeMeaningId = getOrCreateWordLexeme(etymWordVariantValueTuple, etymWordLangCode, etymWordMeaningId);
-									Long etymWordVariantLexemeId = etymWordVariantLexemeMeaningId.getLexemeId();
-									variantDbService.createLexemeVariant(etymWordLexemeId, etymWordVariantLexemeId, null);
-									etymWordVariantCount.increment();
-								}
-							}
-						}
-					}
-				}
-
-				WordEtymGroupType deductedWordEtymGroupType = null;
-				if (etymGroupMemberCount == 1) {
-					deductedWordEtymGroupType = WordEtymGroupType.SINGLE_MEMBER;
-				} else if (isEtymGroupCompound) {
-					deductedWordEtymGroupType = WordEtymGroupType.COMPOUND;
-				} else if (CollectionUtils.isEmpty(etymWordLangGroupNames) && (etymGroupMemberCount > 1)) {
-					deductedWordEtymGroupType = WordEtymGroupType.ALTERNATIVE;
-				} else if (CollectionUtils.isNotEmpty(etymWordLangGroupNames)) {
-					// TODO incorrect, needs to be correlated per group
-					deductedWordEtymGroupType = WordEtymGroupType.LANGUAGE_GROUP;
-				}
-				if (deductedWordEtymGroupType != null) {
-					etymDbService.updateWordEtymGroup(wordEtymGroupId, deductedWordEtymGroupType);
-				}
-			}
-		}
+		return headwordEtymGroupId;
 	}
 
 	private void createWordEtymComment(Long wordEtymId, ValueMarkup valueTuple) {
@@ -517,6 +772,15 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 		return wordLexemeMeaningId;
 	}
 
+	private String convertValue(String origValue, Map<String, String> valueMap) {
+
+		if (StringUtils.isBlank(origValue)) {
+			return null;
+		}
+		String mappedValue = valueMap.get(origValue);
+		return mappedValue;
+	}
+
 	private List<String> convertValues(List<String> origValues, Map<String, String> valueMap) {
 
 		if (CollectionUtils.isEmpty(origValues)) {
@@ -528,6 +792,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			String mappedValue = valueMap.get(origValue);
 			if (StringUtils.isBlank(mappedValue)) {
 				String placeholderValue = "(" + origValue + ")?";
+				System.out.println(placeholderValue);
 				mappedValues.add(placeholderValue);
 			} else {
 				mappedValues.add(mappedValue);

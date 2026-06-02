@@ -16,8 +16,6 @@ public class QueryLoggerListener extends DefaultExecuteListener implements Globa
 
 	private static final long PROLONGED_QUERY_TRESHOLD_MS = 2000;
 
-	private static final long XTRA_PROLONGED_QUERY_TRESHOLD_MS = 8000;
-
 	private static final long serialVersionUID = 1L;
 
 	private long start;
@@ -110,19 +108,14 @@ public class QueryLoggerListener extends DefaultExecuteListener implements Globa
 
 		} else if (logger.isInfoEnabled()) {
 
-			if (exec > XTRA_PROLONGED_QUERY_TRESHOLD_MS) {
-
-				logger.info("Extra prolonging query \n{}", queryStr);
-				logger.info("Executed in {} ms", exec);
-
-			} else if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
+			if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
 
 				boolean isIgnoreQueryLog = queryStr.contains(IGNORE_QUERY_LOG);
-				if (!isIgnoreQueryLog) {
-
-					logger.info("Prolonging query \n{}", queryStr);
-					logger.info("Executed in {} ms", exec);
+				if (isIgnoreQueryLog) {
+					queryStr = "<hidden as irrelevant>";
 				}
+				logger.info("Prolonging query \n{}", queryStr);
+				logger.info("Executed in {} ms", exec);
 			}
 		}
 	}

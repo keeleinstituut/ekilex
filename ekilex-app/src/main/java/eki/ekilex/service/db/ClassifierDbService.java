@@ -465,6 +465,19 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.LanguageGroup.class);
 	}
 
+	public Long getLanguageGroupId(String languageGroupName) {
+
+		LanguageGroup lg = LANGUAGE_GROUP.as("lg");
+
+		return mainDb
+				.select(lg.ID)
+				.from(lg)
+				.where(lg.NAME.eq(languageGroupName))
+				.limit(1)
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long createLanguageGroup(String name) {
 
 		return mainDb
@@ -517,4 +530,5 @@ public class ClassifierDbService extends AbstractDataDbService {
 								.and(LANGUAGE_GROUP_MEMBER.LANG.eq(languageCode)))
 				.execute();
 	}
+
 }

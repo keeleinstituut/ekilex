@@ -64,16 +64,16 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
     }
 
     /**
-     * Setter for <code>public.word_etym_group.language_group_member_id</code>.
+     * Setter for <code>public.word_etym_group.language_group_id</code>.
      */
-    public void setLanguageGroupMemberId(Long value) {
+    public void setLanguageGroupId(Long value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.word_etym_group.language_group_member_id</code>.
+     * Getter for <code>public.word_etym_group.language_group_id</code>.
      */
-    public Long getLanguageGroupMemberId() {
+    public Long getLanguageGroupId() {
         return (Long) get(3);
     }
 
@@ -131,7 +131,7 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
 
     @Override
     public Field<Long> field4() {
-        return WordEtymGroup.WORD_ETYM_GROUP.LANGUAGE_GROUP_MEMBER_ID;
+        return WordEtymGroup.WORD_ETYM_GROUP.LANGUAGE_GROUP_ID;
     }
 
     @Override
@@ -156,7 +156,7 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
 
     @Override
     public Long component4() {
-        return getLanguageGroupMemberId();
+        return getLanguageGroupId();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
 
     @Override
     public Long value4() {
-        return getLanguageGroupMemberId();
+        return getLanguageGroupId();
     }
 
     @Override
@@ -209,7 +209,7 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
 
     @Override
     public WordEtymGroupRecord value4(Long value) {
-        setLanguageGroupMemberId(value);
+        setLanguageGroupId(value);
         return this;
     }
 
@@ -243,13 +243,13 @@ public class WordEtymGroupRecord extends UpdatableRecordImpl<WordEtymGroupRecord
     /**
      * Create a detached, initialised WordEtymGroupRecord
      */
-    public WordEtymGroupRecord(Long id, String groupType, String etymologyTypeCode, Long languageGroupMemberId, Boolean isQuestionable) {
+    public WordEtymGroupRecord(Long id, String groupType, String etymologyTypeCode, Long languageGroupId, Boolean isQuestionable) {
         super(WordEtymGroup.WORD_ETYM_GROUP);
 
         setId(id);
         setGroupType(groupType);
         setEtymologyTypeCode(etymologyTypeCode);
-        setLanguageGroupMemberId(languageGroupMemberId);
+        setLanguageGroupId(languageGroupId);
         setIsQuestionable(isQuestionable);
     }
 }

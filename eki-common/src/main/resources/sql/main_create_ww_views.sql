@@ -3794,7 +3794,7 @@ select
 						and l.is_public = true
 						and l.dataset_code != 'eki'
 						and l.dataset_code = ds.code
-						and l.value_state_code = 'eelistermin'
+						and l.value_state_code = 'eelistatud'
 					)
 					union all
 					(
@@ -3919,7 +3919,7 @@ select
 						and l.is_public = true
 						and l.dataset_code != 'eki'
 						and l.dataset_code = ds.code
-						and l.value_state_code = 'eelistermin'
+						and l.value_state_code = 'eelistatud'
 					)
 					union all
 					(

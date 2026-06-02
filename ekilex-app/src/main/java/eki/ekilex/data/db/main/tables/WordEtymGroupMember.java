@@ -123,7 +123,7 @@ public class WordEtymGroupMember extends TableImpl<WordEtymGroupMemberRecord> {
 
     @Override
     public List<UniqueKey<WordEtymGroupMemberRecord>> getKeys() {
-        return Arrays.<UniqueKey<WordEtymGroupMemberRecord>>asList(Keys.WORD_ETYM_GROUP_MEMBER_PKEY, Keys.WORD_ETYM_GROUP_MEMBER_WORD_ETYM_GROUP_ID_WORD_ETYM_ID_KEY);
+        return Arrays.<UniqueKey<WordEtymGroupMemberRecord>>asList(Keys.WORD_ETYM_GROUP_MEMBER_PKEY);
     }
 
     @Override

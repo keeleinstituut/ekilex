@@ -11,7 +11,7 @@ public class WordEtymGroup extends AbstractDataObject {
 
 	private String etymologyTypeCode;
 
-	private Long languageGroupMemberId;
+	private Long languageGroupId;
 
 	private boolean questionable;
 
@@ -31,12 +31,12 @@ public class WordEtymGroup extends AbstractDataObject {
 		this.etymologyTypeCode = etymologyTypeCode;
 	}
 
-	public Long getLanguageGroupMemberId() {
-		return languageGroupMemberId;
+	public Long getLanguageGroupId() {
+		return languageGroupId;
 	}
 
-	public void setLanguageGroupMemberId(Long languageGroupMemberId) {
-		this.languageGroupMemberId = languageGroupMemberId;
+	public void setLanguageGroupId(Long languageGroupId) {
+		this.languageGroupId = languageGroupId;
 	}
 
 	public boolean isQuestionable() {

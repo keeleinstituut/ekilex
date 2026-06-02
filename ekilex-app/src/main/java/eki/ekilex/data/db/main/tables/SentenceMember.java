@@ -61,7 +61,7 @@ public class SentenceMember extends TableImpl<SentenceMemberRecord> {
     /**
      * The column <code>public.sentence_member.construct_member_id</code>.
      */
-    public final TableField<SentenceMemberRecord, Long> CONSTRUCT_MEMBER_ID = createField(DSL.name("construct_member_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SentenceMemberRecord, Long> CONSTRUCT_MEMBER_ID = createField(DSL.name("construct_member_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.sentence_member.value</code>.

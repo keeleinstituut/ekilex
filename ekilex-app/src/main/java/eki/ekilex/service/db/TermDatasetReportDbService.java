@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.time.LocalDateTime;
@@ -14,21 +15,25 @@ import java.util.Map;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.main.tables.ActivityLog;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
+import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.Word;
 
 @Component
-public class TermDatasetReportDbService {
+public class TermDatasetReportDbService implements GlobalConstant {
 
 	@Autowired
 	private DSLContext mainDb;
@@ -65,7 +70,7 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, publicMeaningCount)
+				.select(ds.CODE, publicMeaningCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, publicMeaningCount);
@@ -89,7 +94,7 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, allMeaningCount)
+				.select(ds.CODE, allMeaningCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, allMeaningCount);
@@ -116,7 +121,7 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, publicTermCount)
+				.select(ds.CODE, publicTermCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, publicTermCount);
@@ -140,7 +145,7 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, allTermCount)
+				.select(ds.CODE, allTermCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, allTermCount);
@@ -186,7 +191,7 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, createMeaningCount)
+				.select(ds.CODE, createMeaningCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, createMeaningCount);
@@ -219,10 +224,125 @@ public class TermDatasetReportDbService {
 				.asField();
 
 		return mainDb
-				.select(ds.CODE, updateMeaningCount)
+				.select(ds.CODE, updateMeaningCount, DSL.val(IGNORE_QUERY_LOG))
 				.from(ds)
 				.where(ds.CODE.in(datasetCodes))
 				.fetchMap(ds.CODE, updateMeaningCount);
+	}
+
+	public Map<String, Integer> getWithDomainMeaningCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+
+		Field<Integer> wDomainMeaningCount = DSL.selectCount()
+				.from(m)
+				.where(
+						DSL.exists(
+								DSL.selectOne()
+										.from(l, w)
+										.where(
+												l.MEANING_ID.eq(m.ID)
+														.and(l.WORD_ID.eq(w.ID))
+														.and(l.DATASET_CODE.eq(ds.CODE))
+														.and(l.IS_WORD.isTrue())
+														.and(l.IS_PUBLIC.isTrue())
+														.and(w.IS_PUBLIC.isTrue())))
+								.and(DSL.exists(
+										DSL.selectOne()
+												.from(md)
+												.where(md.MEANING_ID.eq(m.ID)))))
+				.asField();
+
+		return mainDb
+				.select(ds.CODE, wDomainMeaningCount, DSL.val(IGNORE_QUERY_LOG))
+				.from(ds)
+				.where(ds.CODE.in(datasetCodes))
+				.fetchMap(ds.CODE, wDomainMeaningCount);
+	}
+
+	public Map<String, Integer> getWithDomainUpdateMeaningCounts(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+
+		Field<Integer> wDomainUpdateMeaningCount = DSL.selectCount()
+				.from(m)
+				.where(
+						DSL.exists(
+								DSL.selectOne()
+										.from(l, w)
+										.where(
+												l.MEANING_ID.eq(m.ID)
+														.and(l.WORD_ID.eq(w.ID))
+														.and(l.DATASET_CODE.eq(ds.CODE))
+														.and(l.IS_WORD.isTrue())
+														.and(l.IS_PUBLIC.isTrue())
+														.and(w.IS_PUBLIC.isTrue())))
+								.and(DSL.exists(
+										DSL.selectOne()
+												.from(md)
+												.where(md.MEANING_ID.eq(m.ID))))
+								.and(meaningUpdatedCondition))
+				.asField();
+
+		return mainDb
+				.select(ds.CODE, wDomainUpdateMeaningCount, DSL.val(IGNORE_QUERY_LOG))
+				.from(ds)
+				.where(ds.CODE.in(datasetCodes))
+				.fetchMap(ds.CODE, wDomainUpdateMeaningCount);
+	}
+
+	public Map<String, String> getWithoutDomainTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+
+		Table<Record1<String>> rw = DSL
+				.select(DSL.arrayGet(DSL.arrayAgg(w.VALUE).orderBy(w.ID), 1).as("word_values"))
+				.from(m, l, w)
+				.where(
+						l.MEANING_ID.eq(m.ID)
+								.and(l.WORD_ID.eq(w.ID))
+								.and(l.DATASET_CODE.eq(ds.CODE))
+								.and(l.IS_WORD.isTrue())
+								.and(l.IS_PUBLIC.isTrue())
+								.and(w.IS_PUBLIC.isTrue())
+								.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST))
+								.and(DSL.notExists(
+										DSL.selectOne()
+												.from(md)
+												.where(md.MEANING_ID.eq(m.ID)))))
+				.groupBy(m.ID)
+				.orderBy(DSL.rand())
+				.limit(3)
+				.asTable("rw");
+
+		Field<String> wordValues = rw.field("word_values", String.class);
+
+		Field<String> sampleField = DSL
+				.select(DSL.field("array_to_string({0}, ' | ')", String.class, DSL.arrayAggDistinct(wordValues)))
+				.from(rw)
+				.asField();
+
+		return mainDb
+				.select(ds.CODE, sampleField, DSL.val(IGNORE_QUERY_LOG))
+				.from(ds)
+				.where(ds.CODE.in(datasetCodes))
+				.fetchMap(ds.CODE, sampleField);
 	}
 
 	private Condition getMeaningUpdatedInPeriodCondition(
