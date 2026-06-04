@@ -31,5 +31,8 @@
     "sass": "^1.100.0",
     "stylelint": "^10.1.0",
     "stylelint-config-twbs-bootstrap": "^0.4.0"
+  },
+  "overrides": {
+    "axios": ">=0.32.0"
   }
 }
