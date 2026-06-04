@@ -1,8 +1,8 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
 import java.math.BigDecimal;
+
+import eki.common.data.AbstractDataObject;
 
 public class TermDatasetReportRow extends AbstractDataObject {
 
@@ -36,6 +36,20 @@ public class TermDatasetReportRow extends AbstractDataObject {
 	private int withoutSourceLinkTermCount;
 	private int withoutSourceLinkMeaningUpdateTermCount;
 	private String withoutSourceLinkMeaningUpdateTermSample;
+
+	private int withDefinitionMeaningCount;
+	private int withDefinitionUpdateMeaningCount;
+	private String withoutDefinitionMeaningTermSample;
+	private String withoutDefinitionUpdateMeaningTermSample;
+	private int withPunctuationDefinitionCount;
+	private String withPunctuationDefinitionTermSample;
+	private int initialCapDefinitionCount;
+	private String initialCapDefinitionTermSample;
+	private int initialEnumerationDefinitionCount;
+	private String initialEnumerationDefinitionTermSample;
+	private int withSourceLinkDefinitionCount;
+	private int withSourceLinkDefinitionMeaningUpdateDefinitionCount;
+	private int allDefinitionCount;
 
 	public String getDatasetCode() {
 		return datasetCode;
@@ -243,5 +257,109 @@ public class TermDatasetReportRow extends AbstractDataObject {
 
 	public void setWithoutSourceLinkMeaningUpdateTermSample(String withoutSourceLinkMeaningUpdateTermSample) {
 		this.withoutSourceLinkMeaningUpdateTermSample = withoutSourceLinkMeaningUpdateTermSample;
+	}
+
+	public int getWithDefinitionMeaningCount() {
+		return withDefinitionMeaningCount;
+	}
+
+	public void setWithDefinitionMeaningCount(int withDefinitionMeaningCount) {
+		this.withDefinitionMeaningCount = withDefinitionMeaningCount;
+	}
+
+	public int getWithDefinitionUpdateMeaningCount() {
+		return withDefinitionUpdateMeaningCount;
+	}
+
+	public void setWithDefinitionUpdateMeaningCount(int withDefinitionUpdateMeaningCount) {
+		this.withDefinitionUpdateMeaningCount = withDefinitionUpdateMeaningCount;
+	}
+
+	public String getWithoutDefinitionMeaningTermSample() {
+		return withoutDefinitionMeaningTermSample;
+	}
+
+	public void setWithoutDefinitionMeaningTermSample(String withoutDefinitionMeaningTermSample) {
+		this.withoutDefinitionMeaningTermSample = withoutDefinitionMeaningTermSample;
+	}
+
+	public String getWithoutDefinitionUpdateMeaningTermSample() {
+		return withoutDefinitionUpdateMeaningTermSample;
+	}
+
+	public void setWithoutDefinitionUpdateMeaningTermSample(String withoutDefinitionUpdateMeaningTermSample) {
+		this.withoutDefinitionUpdateMeaningTermSample = withoutDefinitionUpdateMeaningTermSample;
+	}
+
+	public int getWithPunctuationDefinitionCount() {
+		return withPunctuationDefinitionCount;
+	}
+
+	public void setWithPunctuationDefinitionCount(int withPunctuationDefinitionCount) {
+		this.withPunctuationDefinitionCount = withPunctuationDefinitionCount;
+	}
+
+	public String getWithPunctuationDefinitionTermSample() {
+		return withPunctuationDefinitionTermSample;
+	}
+
+	public void setWithPunctuationDefinitionTermSample(String withPunctuationDefinitionTermSample) {
+		this.withPunctuationDefinitionTermSample = withPunctuationDefinitionTermSample;
+	}
+
+	public int getInitialCapDefinitionCount() {
+		return initialCapDefinitionCount;
+	}
+
+	public void setInitialCapDefinitionCount(int initialCapDefinitionCount) {
+		this.initialCapDefinitionCount = initialCapDefinitionCount;
+	}
+
+	public String getInitialCapDefinitionTermSample() {
+		return initialCapDefinitionTermSample;
+	}
+
+	public void setInitialCapDefinitionTermSample(String initialCapDefinitionTermSample) {
+		this.initialCapDefinitionTermSample = initialCapDefinitionTermSample;
+	}
+
+	public int getInitialEnumerationDefinitionCount() {
+		return initialEnumerationDefinitionCount;
+	}
+
+	public void setInitialEnumerationDefinitionCount(int initialEnumerationDefinitionCount) {
+		this.initialEnumerationDefinitionCount = initialEnumerationDefinitionCount;
+	}
+
+	public String getInitialEnumerationDefinitionTermSample() {
+		return initialEnumerationDefinitionTermSample;
+	}
+
+	public void setInitialEnumerationDefinitionTermSample(String initialEnumerationDefinitionTermSample) {
+		this.initialEnumerationDefinitionTermSample = initialEnumerationDefinitionTermSample;
+	}
+
+	public int getWithSourceLinkDefinitionCount() {
+		return withSourceLinkDefinitionCount;
+	}
+
+	public void setWithSourceLinkDefinitionCount(int withSourceLinkDefinitionCount) {
+		this.withSourceLinkDefinitionCount = withSourceLinkDefinitionCount;
+	}
+
+	public int getWithSourceLinkDefinitionMeaningUpdateDefinitionCount() {
+		return withSourceLinkDefinitionMeaningUpdateDefinitionCount;
+	}
+
+	public void setWithSourceLinkDefinitionMeaningUpdateDefinitionCount(int withSourceLinkDefinitionMeaningUpdateDefinitionCount) {
+		this.withSourceLinkDefinitionMeaningUpdateDefinitionCount = withSourceLinkDefinitionMeaningUpdateDefinitionCount;
+	}
+
+	public int getAllDefinitionCount() {
+		return allDefinitionCount;
+	}
+
+	public void setAllDefinitionCount(int allDefinitionCount) {
+		this.allDefinitionCount = allDefinitionCount;
 	}
 }

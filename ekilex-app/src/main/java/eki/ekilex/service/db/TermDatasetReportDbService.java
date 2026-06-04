@@ -2,6 +2,9 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING;
@@ -29,6 +32,9 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.main.tables.ActivityLog;
 import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.Meaning;
@@ -40,6 +46,7 @@ import eki.ekilex.data.db.main.tables.Word;
 public class TermDatasetReportDbService implements GlobalConstant {
 
 	private static final String INITIAL_CAP_PATTERN = "[[:upper:]]%";
+	private static final String INITIAL_ENUMERATION_PATTERN = "(1\\.|1\\)|a\\.|a\\))%";
 	private static final String SPECIFIC_CHAR_PATTERN = "%(/|\\*|\\(|\\)|;|,|  )%";
 
 	@Autowired
@@ -148,7 +155,7 @@ public class TermDatasetReportDbService implements GlobalConstant {
 		ActivityLog al = ACTIVITY_LOG.as("al");
 		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 
-		Condition publicTermExistsCondition = getPublicWordExistsCondition(m, l, w, ds);
+		Condition publicWordExistsCondition = getPublicWordExistsCondition(m, l, w, ds);
 
 		Field<LocalDateTime> firstEventOn = DSL
 				.select(al.EVENT_ON)
@@ -164,7 +171,7 @@ public class TermDatasetReportDbService implements GlobalConstant {
 				.selectCount()
 				.from(DSL.select(m.ID, firstEventOn)
 						.from(m)
-						.where(publicTermExistsCondition)
+						.where(publicWordExistsCondition)
 						.asTable("m"))
 				.where(firstEventOn.ge(from))
 				.and(firstEventOn.lt(until))
@@ -260,23 +267,16 @@ public class TermDatasetReportDbService implements GlobalConstant {
 
 		Condition publicWordCondition = getPublicWordCondition(l, w, ds);
 
-		Table<Record1<String>> rw = DSL
-				.select(wordValue)
-				.from(m, l, w)
-				.where(
-						l.MEANING_ID.eq(m.ID)
-								.and(publicWordCondition)
-								.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST))
-								.and(DSL.notExists(
-										DSL.selectOne()
-												.from(md)
-												.where(md.MEANING_ID.eq(m.ID)))))
-				.groupBy(m.ID)
-				.orderBy(DSL.rand())
-				.limit(3)
-				.asTable("rw");
+		Condition sampleCondition = l.MEANING_ID.eq(m.ID)
+				.and(publicWordCondition)
+				.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST))
+				.and(DSL.notExists(
+						DSL.selectOne()
+								.from(md)
+								.where(md.MEANING_ID.eq(m.ID))));
 
-		Field<String> sampleField = getSampleField(rw, wordValue);
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
 
 		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
 	}
@@ -443,19 +443,12 @@ public class TermDatasetReportDbService implements GlobalConstant {
 
 		Condition publicWordCondition = getPublicWordCondition(l, w, ds);
 
-		Table<Record1<String>> rw = DSL
-				.select(wordValue)
-				.from(m, l, w)
-				.where(
-						l.MEANING_ID.eq(m.ID)
-								.and(publicWordCondition)
-								.and(w.VALUE.similarTo(SPECIFIC_CHAR_PATTERN)))
-				.groupBy(m.ID)
-				.orderBy(DSL.rand())
-				.limit(3)
-				.asTable("rw");
+		Condition sampleCondition = l.MEANING_ID.eq(m.ID)
+				.and(publicWordCondition)
+				.and(w.VALUE.similarTo(SPECIFIC_CHAR_PATTERN));
 
-		Field<String> sampleField = getSampleField(rw, wordValue);
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
 
 		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
 	}
@@ -652,31 +645,345 @@ public class TermDatasetReportDbService implements GlobalConstant {
 		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
 		Condition publicWordCondition = getPublicWordCondition(l, w, ds);
 		Condition lexemeSourceLinkNotExistsCondition = getLexemeSourceLinkExistsCondition(l, lsl).not();
 		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
 
-		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+		Condition sampleCondition = l.MEANING_ID.eq(m.ID)
+				.and(publicWordCondition)
+				.and(lexemeSourceLinkNotExistsCondition)
+				.and(meaningUpdatedCondition);
 
-		Table<Record1<String>> rw = DSL
-				.select(wordValue)
-				.from(m, l, w)
-				.where(
-						l.MEANING_ID.eq(m.ID)
-								.and(publicWordCondition)
-								.and(lexemeSourceLinkNotExistsCondition)
-								.and(meaningUpdatedCondition))
-				.groupBy(m.ID)
-				.orderBy(DSL.rand())
-				.limit(3)
-				.asTable("rw");
-
-		Field<String> sampleField = getSampleField(rw, wordValue);
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
 
 		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
 	}
 
-	private Field<String> getSampleField(Table<?> sampleTable, Field<String> valueField) {
+	public Map<String, Integer> getWithDefinitionMeaningCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Meaning m = MEANING.as("m");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(m, d, dd, ds);
+
+		Field<Integer> withDefinitionMeaningCount = DSL
+				.selectCount()
+				.from(m)
+				.where(definitionExistsCondition)
+				.asField();
+
+		return executeCountByDataset(ds, withDefinitionMeaningCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithDefinitionUpdateMeaningCounts(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Meaning m = MEANING.as("m");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(m, d, dd, ds);
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+
+		Field<Integer> withDefinitionUpdateMeaningCount = DSL
+				.selectCount()
+				.from(m)
+				.where(definitionExistsCondition
+						.and(meaningUpdatedCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withDefinitionUpdateMeaningCount, datasetCodes);
+	}
+
+	public Map<String, String> getWithoutDefinitionMeaningTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition estonianWordCondition = getEstonianWordCondition(m, l, w, ds);
+		Condition definitionNotExistsCondition = getDefinitionExistsCondition(m, d, dd, ds).not();
+
+		Condition sampleCondition = estonianWordCondition
+				.and(definitionNotExistsCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, String> getWithoutDefinitionUpdateMeaningTermSamples(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition estonianWordCondition = getEstonianWordCondition(m, l, w, ds);
+		Condition definitionNotExistsCondition = getDefinitionExistsCondition(m, d, dd, ds).not();
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+
+		Condition sampleCondition = estonianWordCondition
+				.and(definitionNotExistsCondition)
+				.and(meaningUpdatedCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithPunctuationDefinitionCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+
+		Field<Integer> withPunctuationDefinitionCount = DSL
+				.selectCount()
+				.from(d)
+				.where(
+						DSL.right(d.VALUE, 1).eq(".")
+								.and(definitionExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withPunctuationDefinitionCount, datasetCodes);
+	}
+
+	public Map<String, String> getWithPunctuationDefinitionTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition estonianWordCondition = getEstonianWordCondition(m, l, w, ds);
+		Condition punctuationDefinitionExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(d, dd)
+						.where(
+								d.MEANING_ID.eq(m.ID)
+										.and(dd.DEFINITION_ID.eq(d.ID))
+										.and(dd.DATASET_CODE.eq(ds.CODE))
+										.and(DSL.right(d.VALUE, 1).eq("."))));
+
+		Condition sampleCondition = estonianWordCondition
+				.and(punctuationDefinitionExistsCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, Integer> getInitialCapDefinitionCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+
+		Field<Integer> initialCapDefinitionCount = DSL
+				.selectCount()
+				.from(d)
+				.where(
+						d.VALUE.similarTo(INITIAL_CAP_PATTERN)
+								.and(definitionExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, initialCapDefinitionCount, datasetCodes);
+	}
+
+	public Map<String, String> getInitialCapDefinitionTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition estonianWordCondition = getEstonianWordCondition(m, l, w, ds);
+		Condition initialCapDefinitionExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(d, dd)
+						.where(
+								d.MEANING_ID.eq(m.ID)
+										.and(dd.DEFINITION_ID.eq(d.ID))
+										.and(dd.DATASET_CODE.eq(ds.CODE))
+										.and(d.VALUE.similarTo(INITIAL_CAP_PATTERN))));
+
+		Condition sampleCondition = estonianWordCondition
+				.and(initialCapDefinitionExistsCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, Integer> getInitialEnumerationDefinitionCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+
+		Field<Integer> init1aDefinitionCount = DSL
+				.selectCount()
+				.from(d)
+				.where(
+						d.VALUE.similarTo(INITIAL_ENUMERATION_PATTERN)
+								.and(definitionExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, init1aDefinitionCount, datasetCodes);
+	}
+
+	public Map<String, String> getInitialEnumerationDefinitionTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition estonianWordCondition = getEstonianWordCondition(m, l, w, ds);
+		Condition initialEnumerationDefinitionExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(d, dd)
+						.where(
+								d.MEANING_ID.eq(m.ID)
+										.and(dd.DEFINITION_ID.eq(d.ID))
+										.and(dd.DATASET_CODE.eq(ds.CODE))
+										.and(d.VALUE.similarTo(INITIAL_ENUMERATION_PATTERN))));
+
+		Condition sampleCondition = estonianWordCondition
+				.and(initialEnumerationDefinitionExistsCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithSourceLinkDefinitionCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+		Condition definitionSourceLinkExistsCondition = getDefinitionSourceLinkExistsCondition(d, dsl);
+
+		Field<Integer> withSourceLinkDefinitionCount = DSL
+				.selectCount()
+				.from(d)
+				.where(
+						definitionExistsCondition
+								.and(definitionSourceLinkExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withSourceLinkDefinitionCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithSourceLinkDefinitionMeaningUpdateDefinitionCounts(
+			List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Meaning m = MEANING.as("m");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+		Condition definitionSourceLinkExistsCondition = getDefinitionSourceLinkExistsCondition(d, dsl);
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+
+		Condition meaningUpdatedExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(m)
+						.where(
+								m.ID.eq(d.MEANING_ID)
+										.and(meaningUpdatedCondition)));
+
+		Field<Integer> withSourceLinkDefinitionMeaningUpdateCount = DSL
+				.selectCount()
+				.from(d)
+				.where(
+						definitionExistsCondition
+								.and(definitionSourceLinkExistsCondition)
+								.and(meaningUpdatedExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withSourceLinkDefinitionMeaningUpdateCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getAllDefinitionCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		Condition definitionExistsCondition = getDefinitionExistsCondition(d, dd, ds);
+
+		Field<Integer> allDefinitionCount = DSL
+				.selectCount()
+				.from(d)
+				.where(definitionExistsCondition)
+				.asField();
+
+		return executeCountByDataset(ds, allDefinitionCount, datasetCodes);
+	}
+
+	private Table<Record1<String>> getWordSampleTable(Meaning m, Lexeme l, Word w, Field<String> wordValue, Condition condition) {
+
+		return DSL
+				.select(wordValue)
+				.from(m, l, w)
+				.where(condition)
+				.groupBy(m.ID)
+				.orderBy(DSL.rand())
+				.limit(3)
+				.asTable("rw");
+	}
+
+	private Field<String> getSampleField(Table<Record1<String>> sampleTable, Field<String> valueField) {
 
 		Field<String> sampleValue = sampleTable.field(valueField);
 
@@ -707,12 +1014,47 @@ public class TermDatasetReportDbService implements GlobalConstant {
 				.and(w.IS_PUBLIC.isTrue());
 	}
 
+	private Condition getEstonianWordCondition(Meaning m, Lexeme l, Word w, Dataset ds) {
+
+		return l.MEANING_ID.eq(m.ID)
+				.and(l.WORD_ID.eq(w.ID))
+				.and(l.DATASET_CODE.eq(ds.CODE))
+				.and(l.IS_WORD.isTrue())
+				.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST));
+	}
+
 	private Condition getLexemeSourceLinkExistsCondition(Lexeme l, LexemeSourceLink lsl) {
 
 		return DSL.exists(
 				DSL.selectOne()
 						.from(lsl)
 						.where(lsl.LEXEME_ID.eq(l.ID)));
+	}
+
+	private Condition getDefinitionSourceLinkExistsCondition(Definition d, DefinitionSourceLink dsl) {
+		return DSL.exists(
+				DSL.selectOne()
+						.from(dsl)
+						.where(dsl.DEFINITION_ID.eq(d.ID)));
+	}
+
+	private Condition getDefinitionExistsCondition(Definition d, DefinitionDataset dd, Dataset ds) {
+		return DSL.exists(
+				DSL.selectOne()
+						.from(dd)
+						.where(
+								dd.DEFINITION_ID.eq(d.ID)
+										.and(dd.DATASET_CODE.eq(ds.CODE))));
+	}
+
+	private Condition getDefinitionExistsCondition(Meaning m, Definition d, DefinitionDataset dd, Dataset ds) {
+		return DSL.exists(
+				DSL.selectOne()
+						.from(d, dd)
+						.where(
+								d.MEANING_ID.eq(m.ID)
+										.and(dd.DEFINITION_ID.eq(d.ID))
+										.and(dd.DATASET_CODE.eq(ds.CODE))));
 	}
 
 	private Condition getMeaningUpdatedInPeriodCondition(
