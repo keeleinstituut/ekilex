@@ -33,6 +33,7 @@
     "stylelint-config-twbs-bootstrap": "^0.4.0"
   },
   "overrides": {
-    "axios": ">=0.32.0"
+    "axios": ">=0.32.0",
+    "lodash": ">=4.18.0"
   }
 }
