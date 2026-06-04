@@ -93,6 +93,22 @@ public class ReportGenerationService {
 		Map<String, Integer> withoutSourceLinkMeaningUpdateTermCounts = termDatasetReportDbService.getWithoutSourceLinkMeaningUpdateTermCounts(datasetCodes, from, until);
 		Map<String, String> withoutSourceLinkMeaningUpdateTermSamples = termDatasetReportDbService.getWithoutSourceLinkMeaningUpdateTermSamples(datasetCodes, from, until);
 
+		Map<String, Integer> withDefinitionMeaningCounts = termDatasetReportDbService.getWithDefinitionMeaningCounts(datasetCodes);
+		Map<String, Integer> withDefinitionUpdateMeaningCounts = termDatasetReportDbService.getWithDefinitionUpdateMeaningCounts(datasetCodes, from, until);
+		Map<String, String> withoutDefinitionMeaningTermSamples = termDatasetReportDbService.getWithoutDefinitionMeaningTermSamples(datasetCodes);
+		Map<String, String> withoutDefinitionUpdateMeaningTermSamples = termDatasetReportDbService
+				.getWithoutDefinitionUpdateMeaningTermSamples(datasetCodes, from, until);
+		Map<String, Integer> withPunctuationDefinitionCounts = termDatasetReportDbService.getWithPunctuationDefinitionCounts(datasetCodes);
+		Map<String, String> withPunctuationDefinitionTermSamples = termDatasetReportDbService.getWithPunctuationDefinitionTermSamples(datasetCodes);
+		Map<String, Integer> initialCapDefinitionCounts = termDatasetReportDbService.getInitialCapDefinitionCounts(datasetCodes);
+		Map<String, String> initialCapDefinitionTermSamples = termDatasetReportDbService.getInitialCapDefinitionTermSamples(datasetCodes);
+		Map<String, Integer> initialEnumerationDefinitionCounts = termDatasetReportDbService.getInitialEnumerationDefinitionCounts(datasetCodes);
+		Map<String, String> initialEnumerationDefinitionTermSamples = termDatasetReportDbService.getInitialEnumerationDefinitionTermSamples(datasetCodes);
+		Map<String, Integer> withSourceLinkDefinitionCounts = termDatasetReportDbService.getWithSourceLinkDefinitionCounts(datasetCodes);
+		Map<String, Integer> withSourceLinkDefinitionMeaningUpdateDefinitionCounts = termDatasetReportDbService
+				.getWithSourceLinkDefinitionMeaningUpdateDefinitionCounts(datasetCodes, from, until);
+		Map<String, Integer> allDefinitionCounts = termDatasetReportDbService.getAllDefinitionCounts(datasetCodes);
+
 		List<TermDatasetReportRow> datasetRows = new ArrayList<>();
 
 		for (Dataset dataset : datasets) {
@@ -134,6 +150,20 @@ public class ReportGenerationService {
 			row.setWithoutSourceLinkTermCount(withoutSourceLinkTermCounts.getOrDefault(datasetCode, 0));
 			row.setWithoutSourceLinkMeaningUpdateTermCount(withoutSourceLinkMeaningUpdateTermCounts.getOrDefault(datasetCode, 0));
 			row.setWithoutSourceLinkMeaningUpdateTermSample(withoutSourceLinkMeaningUpdateTermSamples.get(datasetCode));
+
+			row.setWithDefinitionMeaningCount(withDefinitionMeaningCounts.getOrDefault(datasetCode, 0));
+			row.setWithDefinitionUpdateMeaningCount(withDefinitionUpdateMeaningCounts.getOrDefault(datasetCode, 0));
+			row.setWithoutDefinitionMeaningTermSample(withoutDefinitionMeaningTermSamples.get(datasetCode));
+			row.setWithoutDefinitionUpdateMeaningTermSample(withoutDefinitionUpdateMeaningTermSamples.get(datasetCode));
+			row.setWithPunctuationDefinitionCount(withPunctuationDefinitionCounts.getOrDefault(datasetCode, 0));
+			row.setWithPunctuationDefinitionTermSample(withPunctuationDefinitionTermSamples.get(datasetCode));
+			row.setInitialCapDefinitionCount(initialCapDefinitionCounts.getOrDefault(datasetCode, 0));
+			row.setInitialCapDefinitionTermSample(initialCapDefinitionTermSamples.get(datasetCode));
+			row.setInitialEnumerationDefinitionCount(initialEnumerationDefinitionCounts.getOrDefault(datasetCode, 0));
+			row.setInitialEnumerationDefinitionTermSample(initialEnumerationDefinitionTermSamples.get(datasetCode));
+			row.setWithSourceLinkDefinitionCount(withSourceLinkDefinitionCounts.getOrDefault(datasetCode, 0));
+			row.setWithSourceLinkDefinitionMeaningUpdateDefinitionCount(withSourceLinkDefinitionMeaningUpdateDefinitionCounts.getOrDefault(datasetCode, 0));
+			row.setAllDefinitionCount(allDefinitionCounts.getOrDefault(datasetCode, 0));
 
 			datasetRows.add(row);
 		}

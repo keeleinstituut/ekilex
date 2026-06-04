@@ -166,6 +166,20 @@ public class WorkbookService {
 		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.meaning.update.term.count"), boldCellStyle);
 		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.meaning.update.term.sample"), boldCellStyle);
 
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.definition.meaning.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.definition.update.meaning.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.definition.meaning.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.definition.update.meaning.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.punctuation.definition.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.punctuation.definition.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.initial.cap.definition.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.initial.cap.definition.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.initial.enumeration.definition.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.initial.enumeration.definition.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.source.link.definition.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.source.link.definition.meaning.update.definition.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.all.definition.count"), boldCellStyle);
+
 		for (TermDatasetReportRow reportRow : rows) {
 			row = sheet.createRow(rowIndex++);
 			cellIndex = 0;
@@ -196,6 +210,20 @@ public class WorkbookService {
 			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkTermCount());
 			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkMeaningUpdateTermCount());
 			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkMeaningUpdateTermSample());
+
+			createCell(row, cellIndex++, reportRow.getWithDefinitionMeaningCount());
+			createCell(row, cellIndex++, reportRow.getWithDefinitionUpdateMeaningCount());
+			createCell(row, cellIndex++, reportRow.getWithoutDefinitionMeaningTermSample());
+			createCell(row, cellIndex++, reportRow.getWithoutDefinitionUpdateMeaningTermSample());
+			createCell(row, cellIndex++, reportRow.getWithPunctuationDefinitionCount());
+			createCell(row, cellIndex++, reportRow.getWithPunctuationDefinitionTermSample());
+			createCell(row, cellIndex++, reportRow.getInitialCapDefinitionCount());
+			createCell(row, cellIndex++, reportRow.getInitialCapDefinitionTermSample());
+			createCell(row, cellIndex++, reportRow.getInitialEnumerationDefinitionCount());
+			createCell(row, cellIndex++, reportRow.getInitialEnumerationDefinitionTermSample());
+			createCell(row, cellIndex++, reportRow.getWithSourceLinkDefinitionCount());
+			createCell(row, cellIndex++, reportRow.getWithSourceLinkDefinitionMeaningUpdateDefinitionCount());
+			createCell(row, cellIndex++, reportRow.getAllDefinitionCount());
 		}
 
 		return workbook;
