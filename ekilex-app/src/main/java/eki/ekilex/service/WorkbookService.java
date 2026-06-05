@@ -180,6 +180,15 @@ public class WorkbookService {
 		createCell(row, cellIndex++, getMessage("report.termdataset.with.source.link.definition.meaning.update.definition.count"), boldCellStyle);
 		createCell(row, cellIndex++, getMessage("report.termdataset.all.definition.count"), boldCellStyle);
 
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.usage.meaning.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.source.link.usage.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.with.source.link.usage.meaning.update.usage.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.usage.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.usage.meaning.update.usage.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.usage.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.without.source.link.usage.meaning.update.term.sample"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.termdataset.all.usage.count"), boldCellStyle);
+
 		for (TermDatasetReportRow reportRow : rows) {
 			row = sheet.createRow(rowIndex++);
 			cellIndex = 0;
@@ -224,6 +233,15 @@ public class WorkbookService {
 			createCell(row, cellIndex++, reportRow.getWithSourceLinkDefinitionCount());
 			createCell(row, cellIndex++, reportRow.getWithSourceLinkDefinitionMeaningUpdateDefinitionCount());
 			createCell(row, cellIndex++, reportRow.getAllDefinitionCount());
+
+			createCell(row, cellIndex++, reportRow.getWithUsageMeaningCount());
+			createCell(row, cellIndex++, reportRow.getWithSourceLinkUsageCount());
+			createCell(row, cellIndex++, reportRow.getWithSourceLinkUsageMeaningUpdateUsageCount());
+			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkUsageCount());
+			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkUsageMeaningUpdateUsageCount());
+			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkUsageTermSample());
+			createCell(row, cellIndex++, reportRow.getWithoutSourceLinkUsageMeaningUpdateTermSample());
+			createCell(row, cellIndex++, reportRow.getAllUsageCount());
 		}
 
 		return workbook;

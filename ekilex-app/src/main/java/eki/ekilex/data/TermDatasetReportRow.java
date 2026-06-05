@@ -51,6 +51,15 @@ public class TermDatasetReportRow extends AbstractDataObject {
 	private int withSourceLinkDefinitionMeaningUpdateDefinitionCount;
 	private int allDefinitionCount;
 
+	private int withUsageMeaningCount;
+	private int withSourceLinkUsageCount;
+	private int withSourceLinkUsageMeaningUpdateUsageCount;
+	private int withoutSourceLinkUsageCount;
+	private int withoutSourceLinkUsageMeaningUpdateUsageCount;
+	private String withoutSourceLinkUsageTermSample;
+	private String withoutSourceLinkUsageMeaningUpdateTermSample;
+	private int allUsageCount;
+
 	public String getDatasetCode() {
 		return datasetCode;
 	}
@@ -361,5 +370,69 @@ public class TermDatasetReportRow extends AbstractDataObject {
 
 	public void setAllDefinitionCount(int allDefinitionCount) {
 		this.allDefinitionCount = allDefinitionCount;
+	}
+
+	public int getWithUsageMeaningCount() {
+		return withUsageMeaningCount;
+	}
+
+	public void setWithUsageMeaningCount(int withUsageMeaningCount) {
+		this.withUsageMeaningCount = withUsageMeaningCount;
+	}
+
+	public int getWithSourceLinkUsageCount() {
+		return withSourceLinkUsageCount;
+	}
+
+	public void setWithSourceLinkUsageCount(int withSourceLinkUsageCount) {
+		this.withSourceLinkUsageCount = withSourceLinkUsageCount;
+	}
+
+	public int getWithSourceLinkUsageMeaningUpdateUsageCount() {
+		return withSourceLinkUsageMeaningUpdateUsageCount;
+	}
+
+	public void setWithSourceLinkUsageMeaningUpdateUsageCount(int withSourceLinkUsageMeaningUpdateUsageCount) {
+		this.withSourceLinkUsageMeaningUpdateUsageCount = withSourceLinkUsageMeaningUpdateUsageCount;
+	}
+
+	public int getWithoutSourceLinkUsageCount() {
+		return withoutSourceLinkUsageCount;
+	}
+
+	public void setWithoutSourceLinkUsageCount(int withoutSourceLinkUsageCount) {
+		this.withoutSourceLinkUsageCount = withoutSourceLinkUsageCount;
+	}
+
+	public int getWithoutSourceLinkUsageMeaningUpdateUsageCount() {
+		return withoutSourceLinkUsageMeaningUpdateUsageCount;
+	}
+
+	public void setWithoutSourceLinkUsageMeaningUpdateUsageCount(int withoutSourceLinkUsageMeaningUpdateUsageCount) {
+		this.withoutSourceLinkUsageMeaningUpdateUsageCount = withoutSourceLinkUsageMeaningUpdateUsageCount;
+	}
+
+	public String getWithoutSourceLinkUsageTermSample() {
+		return withoutSourceLinkUsageTermSample;
+	}
+
+	public void setWithoutSourceLinkUsageTermSample(String withoutSourceLinkUsageTermSample) {
+		this.withoutSourceLinkUsageTermSample = withoutSourceLinkUsageTermSample;
+	}
+
+	public String getWithoutSourceLinkUsageMeaningUpdateTermSample() {
+		return withoutSourceLinkUsageMeaningUpdateTermSample;
+	}
+
+	public void setWithoutSourceLinkUsageMeaningUpdateTermSample(String withoutSourceLinkUsageMeaningUpdateTermSample) {
+		this.withoutSourceLinkUsageMeaningUpdateTermSample = withoutSourceLinkUsageMeaningUpdateTermSample;
+	}
+
+	public int getAllUsageCount() {
+		return allUsageCount;
+	}
+
+	public void setAllUsageCount(int allUsageCount) {
+		this.allUsageCount = allUsageCount;
 	}
 }

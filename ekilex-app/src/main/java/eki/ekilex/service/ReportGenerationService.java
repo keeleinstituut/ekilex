@@ -109,6 +109,18 @@ public class ReportGenerationService {
 				.getWithSourceLinkDefinitionMeaningUpdateDefinitionCounts(datasetCodes, from, until);
 		Map<String, Integer> allDefinitionCounts = termDatasetReportDbService.getAllDefinitionCounts(datasetCodes);
 
+		Map<String, Integer> withUsageMeaningCounts = termDatasetReportDbService.getWithUsageMeaningCounts(datasetCodes);
+		Map<String, Integer> withSourceLinkUsageCounts = termDatasetReportDbService.getWithSourceLinkUsageCounts(datasetCodes);
+		Map<String, Integer> withSourceLinkUsageMeaningUpdateUsageCounts = termDatasetReportDbService
+				.getWithSourceLinkUsageMeaningUpdateUsageCounts(datasetCodes, from, until);
+		Map<String, Integer> withoutSourceLinkUsageCounts = termDatasetReportDbService.getWithoutSourceLinkUsageCounts(datasetCodes);
+		Map<String, Integer> withoutSourceLinkUsageMeaningUpdateUsageCounts = termDatasetReportDbService
+				.getWithoutSourceLinkUsageMeaningUpdateUsageCounts(datasetCodes, from, until);
+		Map<String, String> withoutSourceLinkUsageTermSamples = termDatasetReportDbService.getWithoutSourceLinkUsageTermSamples(datasetCodes);
+		Map<String, String> withoutSourceLinkUsageMeaningUpdateTermSamples = termDatasetReportDbService
+				.getWithoutSourceLinkUsageMeaningUpdateTermSamples(datasetCodes, from, until);
+		Map<String, Integer> allUsageCounts = termDatasetReportDbService.getAllUsageCounts(datasetCodes);
+
 		List<TermDatasetReportRow> datasetRows = new ArrayList<>();
 
 		for (Dataset dataset : datasets) {
@@ -164,6 +176,15 @@ public class ReportGenerationService {
 			row.setWithSourceLinkDefinitionCount(withSourceLinkDefinitionCounts.getOrDefault(datasetCode, 0));
 			row.setWithSourceLinkDefinitionMeaningUpdateDefinitionCount(withSourceLinkDefinitionMeaningUpdateDefinitionCounts.getOrDefault(datasetCode, 0));
 			row.setAllDefinitionCount(allDefinitionCounts.getOrDefault(datasetCode, 0));
+
+			row.setWithUsageMeaningCount(withUsageMeaningCounts.getOrDefault(datasetCode, 0));
+			row.setWithSourceLinkUsageCount(withSourceLinkUsageCounts.getOrDefault(datasetCode, 0));
+			row.setWithSourceLinkUsageMeaningUpdateUsageCount(withSourceLinkUsageMeaningUpdateUsageCounts.getOrDefault(datasetCode, 0));
+			row.setWithoutSourceLinkUsageCount(withoutSourceLinkUsageCounts.getOrDefault(datasetCode, 0));
+			row.setWithoutSourceLinkUsageMeaningUpdateUsageCount(withoutSourceLinkUsageMeaningUpdateUsageCounts.getOrDefault(datasetCode, 0));
+			row.setWithoutSourceLinkUsageTermSample(withoutSourceLinkUsageTermSamples.get(datasetCode));
+			row.setWithoutSourceLinkUsageMeaningUpdateTermSample(withoutSourceLinkUsageMeaningUpdateTermSamples.get(datasetCode));
+			row.setAllUsageCount(allUsageCounts.getOrDefault(datasetCode, 0));
 
 			datasetRows.add(row);
 		}
