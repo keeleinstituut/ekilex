@@ -10,6 +10,8 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,8 @@ import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.Word;
 
 @Component
@@ -971,6 +975,255 @@ public class TermDatasetReportDbService implements GlobalConstant {
 		return executeCountByDataset(ds, allDefinitionCount, datasetCodes);
 	}
 
+	public Map<String, Integer> getWithUsageMeaningCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Usage u = USAGE.as("u");
+
+		Field<Integer> withUsageMeaningCount = DSL
+				.selectCount()
+				.from(m)
+				.where(DSL.exists(
+						DSL.selectOne()
+								.from(l, u, w)
+								.where(
+										l.MEANING_ID.eq(m.ID)
+												.and(l.IS_WORD.isTrue())
+												.and(l.IS_PUBLIC.isTrue())
+												.and(l.DATASET_CODE.eq(ds.CODE))
+												.and(u.LEXEME_ID.eq(l.ID))
+												.and(u.IS_PUBLIC.isTrue())
+												.and(l.WORD_ID.eq(w.ID))
+												.and(w.IS_PUBLIC.isTrue()))))
+				.asField();
+
+		return executeCountByDataset(ds, withUsageMeaningCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithSourceLinkUsageCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Condition usageSourceLinkExistsCondition = getUsageSourceLinkExistsCondition(u, usl);
+		Condition publicLexemeExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(l)
+						.where(
+								l.ID.eq(u.LEXEME_ID)
+										.and(l.IS_WORD.isTrue())
+										.and(l.IS_PUBLIC.isTrue())
+										.and(l.DATASET_CODE.eq(ds.CODE))));
+
+		Field<Integer> withSourceLinkUsageCount = DSL
+				.selectCount()
+				.from(u)
+				.where(
+						u.IS_PUBLIC.isTrue()
+								.and(publicLexemeExistsCondition)
+								.and(usageSourceLinkExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withSourceLinkUsageCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithSourceLinkUsageMeaningUpdateUsageCounts(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Usage u = USAGE.as("u");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+		Condition publicLexemeWithMeaningUpdateExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(l, m)
+						.where(
+								l.ID.eq(u.LEXEME_ID)
+										.and(l.MEANING_ID.eq(m.ID))
+										.and(l.IS_WORD.isTrue())
+										.and(l.IS_PUBLIC.isTrue())
+										.and(l.DATASET_CODE.eq(ds.CODE))
+										.and(meaningUpdatedCondition)));
+
+		Condition usageSourceLinkExistsCondition = getUsageSourceLinkExistsCondition(u, usl);
+
+		Field<Integer> withSourceLinkUsageMeaningUpdateUsageCount = DSL
+				.selectCount()
+				.from(u)
+				.where(
+						u.IS_PUBLIC.isTrue()
+								.and(publicLexemeWithMeaningUpdateExistsCondition)
+								.and(usageSourceLinkExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withSourceLinkUsageMeaningUpdateUsageCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithoutSourceLinkUsageCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Condition usageSourceLinkNotExistsCondition = getUsageSourceLinkExistsCondition(u, usl).not();
+		Condition publicLexemeExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(l)
+						.where(
+								l.ID.eq(u.LEXEME_ID)
+										.and(l.IS_WORD.isTrue())
+										.and(l.IS_PUBLIC.isTrue())
+										.and(l.DATASET_CODE.eq(ds.CODE))));
+
+		Field<Integer> withoutSourceLinkUsageCount = DSL
+				.selectCount()
+				.from(u)
+				.where(
+						u.IS_PUBLIC.isTrue()
+								.and(publicLexemeExistsCondition)
+								.and(usageSourceLinkNotExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withoutSourceLinkUsageCount, datasetCodes);
+	}
+
+	public Map<String, Integer> getWithoutSourceLinkUsageMeaningUpdateUsageCounts(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Usage u = USAGE.as("u");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+		Condition publicLexemeWithMeaningUpdateExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(l, m)
+						.where(
+								l.ID.eq(u.LEXEME_ID)
+										.and(l.MEANING_ID.eq(m.ID))
+										.and(l.IS_WORD.isTrue())
+										.and(l.IS_PUBLIC.isTrue())
+										.and(l.DATASET_CODE.eq(ds.CODE))
+										.and(meaningUpdatedCondition)));
+
+		Condition usageSourceLinkNotExistsCondition = getUsageSourceLinkExistsCondition(u, usl).not();
+
+		Field<Integer> withoutSourceLinkUsageMeaningUpdateCount = DSL
+				.selectCount()
+				.from(u)
+				.where(
+						u.IS_PUBLIC.isTrue()
+								.and(publicLexemeWithMeaningUpdateExistsCondition)
+								.and(usageSourceLinkNotExistsCondition))
+				.asField();
+
+		return executeCountByDataset(ds, withoutSourceLinkUsageMeaningUpdateCount, datasetCodes);
+	}
+
+	public Map<String, String> getWithoutSourceLinkUsageTermSamples(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition usageSourceLinkNotExistsCondition = getUsageSourceLinkExistsCondition(u, usl).not();
+		Condition publicWordCondition = getPublicWordCondition(l, w, ds);
+
+		Condition usageWithoutSourceLinkExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(u)
+						.where(
+								u.LEXEME_ID.eq(l.ID)
+										.and(u.IS_PUBLIC.isTrue())
+										.and(usageSourceLinkNotExistsCondition)));
+
+		Condition sampleCondition = l.MEANING_ID.eq(m.ID)
+				.and(publicWordCondition)
+				.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST))
+				.and(usageWithoutSourceLinkExistsCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, String> getWithoutSourceLinkUsageMeaningUpdateTermSamples(List<String> datasetCodes, LocalDateTime from, LocalDateTime until) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+		Word w = WORD.as("w");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+
+		Field<String> wordValue = DSL.arrayGet(DSL.arrayAgg(w.VALUE), 1).as("word_value");
+
+		Condition usageSourceLinkNotExistsCondition = getUsageSourceLinkExistsCondition(u, usl).not();
+		Condition publicWordCondition = getPublicWordCondition(l, w, ds);
+		Condition meaningUpdatedCondition = getMeaningUpdatedInPeriodCondition(m, al, mal, from, until);
+
+		Condition usageWithoutSourceLinkExistsCondition = DSL.exists(
+				DSL.selectOne()
+						.from(u)
+						.where(
+								u.LEXEME_ID.eq(l.ID)
+										.and(u.IS_PUBLIC.isTrue())
+										.and(usageSourceLinkNotExistsCondition)));
+
+		Condition sampleCondition = l.MEANING_ID.eq(m.ID)
+				.and(publicWordCondition)
+				.and(w.LANG.eq(GlobalConstant.LANGUAGE_CODE_EST))
+				.and(usageWithoutSourceLinkExistsCondition)
+				.and(meaningUpdatedCondition);
+
+		Table<Record1<String>> sampleTable = getWordSampleTable(m, l, w, wordValue, sampleCondition);
+		Field<String> sampleField = getSampleField(sampleTable, wordValue);
+
+		return executeFetchSampleByDataset(ds, sampleField, datasetCodes);
+	}
+
+	public Map<String, Integer> getAllUsageCounts(List<String> datasetCodes) {
+
+		Dataset ds = DATASET.as("ds");
+		Lexeme l = LEXEME.as("l");
+		Usage u = USAGE.as("u");
+
+		Field<Integer> allUsageCount = DSL
+				.selectCount()
+				.from(u)
+				.where(DSL.exists(
+						DSL.selectOne()
+								.from(l)
+								.where(
+										l.ID.eq(u.LEXEME_ID)
+												.and(l.IS_WORD.isTrue())
+												.and(l.DATASET_CODE.eq(ds.CODE)))))
+				.asField();
+
+		return executeCountByDataset(ds, allUsageCount, datasetCodes);
+	}
+
 	private Table<Record1<String>> getWordSampleTable(Meaning m, Lexeme l, Word w, Field<String> wordValue, Condition condition) {
 
 		return DSL
@@ -1055,6 +1308,14 @@ public class TermDatasetReportDbService implements GlobalConstant {
 								d.MEANING_ID.eq(m.ID)
 										.and(dd.DEFINITION_ID.eq(d.ID))
 										.and(dd.DATASET_CODE.eq(ds.CODE))));
+	}
+
+	private Condition getUsageSourceLinkExistsCondition(Usage u, UsageSourceLink usl) {
+
+		return DSL.exists(
+				DSL.selectOne()
+						.from(usl)
+						.where(usl.USAGE_ID.eq(u.ID)));
 	}
 
 	private Condition getMeaningUpdatedInPeriodCondition(
