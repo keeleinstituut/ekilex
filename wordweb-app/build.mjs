@@ -79,4 +79,27 @@ const buildOptions = {
   ],
 };
 
-esbuild.build(buildOptions);
+const isWatch = process.argv.includes("--watch");
+
+if (isWatch) {
+  const context = await esbuild.context(buildOptions);
+  await context.watch();
+  console.log("👀 Watching for changes...");
+
+  // esbuild's watcher only tracks files in the build graph (the SCSS entry and
+  // its imports). The HTML and JS assets are copied by the plugin above rather
+  // than bundled, so they fall outside that graph — watch their source
+  // directories directly and trigger a rebuild (which re-runs the copy) on change.
+  let rebuildTimer;
+  const scheduleRebuild = () => {
+    clearTimeout(rebuildTimer);
+    rebuildTimer = setTimeout(() => {
+      context.rebuild().catch((error) => console.error(error));
+    }, 100);
+  };
+  [directories[".html"][0], directories[".js"][0]].forEach((sourceDir) => {
+    fs.watch(sourceDir, { recursive: true }, scheduleRebuild);
+  });
+} else {
+  await esbuild.build(buildOptions);
+}

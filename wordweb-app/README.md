@@ -24,7 +24,7 @@ server.port=5577
 
 ## Scripts
 - **build** - compiles styles, copies over html and js files to java resources, uses Esbuild
-- **watch** – uses nodemon to re-build styles and copy over files on changes
+- **watch** – uses Esbuild's watch mode to re-build styles and copy over files on changes
 
 ## Styles
 Styles are written in .scss files and later compiled into a single .css file, which should not be manually modified.
