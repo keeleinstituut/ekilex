@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
 import eki.ekilex.data.etym1.WordEtym;
+import eki.ekilex.data.etym2.WordEtymTree;
 
 @JsonInclude(Include.NON_EMPTY)
 public class Word extends AbstractGrantEntity implements DecoratedWordType {
@@ -71,7 +72,10 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	private List<WordGroup> groups;
 
+	// TODO obsolete
 	private List<WordEtym> etymology;
+
+	private WordEtymTree etymTree;
 
 	private List<Paradigm> paradigms;
 
@@ -313,6 +317,14 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	public void setEtymology(List<WordEtym> etymology) {
 		this.etymology = etymology;
+	}
+
+	public WordEtymTree getEtymTree() {
+		return etymTree;
+	}
+
+	public void setEtymTree(WordEtymTree etymTree) {
+		this.etymTree = etymTree;
 	}
 
 	public List<Paradigm> getParadigms() {

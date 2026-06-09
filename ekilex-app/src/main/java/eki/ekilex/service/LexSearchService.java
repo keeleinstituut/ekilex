@@ -62,6 +62,7 @@ import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.data.etym1.WordEtym;
 import eki.ekilex.data.etym1.WordEtymTuple;
+import eki.ekilex.data.etym2.WordEtymTree;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -98,8 +99,10 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, allAspects);
 		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
+		// TODO obsolete
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
+		WordEtymTree etymTree = etymDbService.getWordEtymTree(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
@@ -122,6 +125,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		word.setWordTypes(wordTypes);
 		word.setParadigms(paradigms);
 		word.setEtymology(wordEtymology);
+		word.setEtymTree(etymTree);
 		word.setForums(wordForums);
 		word.setFreeforms(wordFreeforms);
 		word.setWordEkiRecommendations(wordEkiRecommendations);

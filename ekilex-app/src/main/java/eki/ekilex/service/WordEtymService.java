@@ -18,6 +18,8 @@ import eki.ekilex.data.etym1.WordEtymRel;
 import eki.ekilex.data.etym1.WordEtymTree;
 import eki.ekilex.service.db.WordEtymDbService;
 
+// TODO obsolete
+@Deprecated
 @Component
 public class WordEtymService {
 

@@ -423,6 +423,7 @@
       <div class="ekiAccordion__title">
         <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.etymology)}">•</span>
         <span th:text="#{lex.word.etymology}">Päritolu</span>
+        <small><i>(Aeguv)</i></small>
       </div>
       <div class="ekiAccordion__content">
         <th:block th:each="wordEtym, itemIter : ${details.word.etymology}">
@@ -457,6 +458,89 @@
             <hr/>
           </div>
         </th:block>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="word_etym2">
+    <div class="ekiAccordion__instance">
+      <div class="ekiAccordion__title">
+        <span class="badge badge-data-exists" th:if="${details.word.etymTree}">•</span>
+        <span th:text="|#{lex.word.etymology} 2|">Päritolu 2</span>
+      </div>
+      <div class="ekiAccordion__content">
+        <!-- TODO ajutine kuva  -->
+        <table th:if="${details.word.etymTree}" class="table table-sm table-borderless">
+          <th:block th:each="wordEtymLevel, wordEtymLevelIter : ${details.word.etymTree.levels}">
+            <tr>
+              <td>
+                <span th:text="${wordEtymLevel.level}"></span>
+              </td>
+              <td>
+                <table th:if="${wordEtymLevel.groups}" class="table table-sm table-bordered">
+                  <tr>
+                    <td th:each="wordEtymGroup : ${wordEtymLevel.groups}">
+                      <div>
+                        <span th:text="${wordEtymGroup.groupType}" class="text-muted"></span>
+                      </div>
+                      <div>
+                        <span th:if="${wordEtymGroup.questionable}">?</span>
+                        <span th:if="${wordEtymGroup.etymologyTypeCode != null}" th:text="${wordEtymGroup.etymologyTypeCode}"></span>
+                        <span th:if="${wordEtymGroup.languageGroupName != null}" th:text="${wordEtymGroup.languageGroupName}"></span>
+                      </div>
+                      <th:block th:if="${wordEtymGroup.groupMembers}">
+                        <th:block th:each="groupMember, groupMemberIter : ${wordEtymGroup.groupMembers}">
+                          <div>
+                            <div th:unless="${wordEtymLevelIter.first}">
+                              <span th:if="${groupMember.questionable}">?</span>
+                              <span th:text="${groupMember.value}"></span>
+                              <span th:text="|(${groupMember.langValue})|"></span>
+                            </div>
+                            <div th:if="${groupMember.etymologyYear}">
+                              <span th:text="${groupMember.etymologyYear}"></span>
+                            </div>
+                            <div th:if="${groupMember.variantWords}">
+                              <strong>Variandid:</strong>
+                              <th:block th:each="variantWord, variantWordIter : ${groupMember.variantWords}">
+                                <span>
+                                  <span th:text="${variantWord.value}"></span>
+                                  <span th:text="|(${variantWord.langValue})|"></span>
+                                  <span th:unless="${variantWordIter.last}" class="ml-n1">;</span>
+                                </span>
+                              </th:block>
+                            </div>
+                            <div th:if="${groupMember.comments}">
+                              <strong>Kommentaarid:</strong>
+                              <th:block th:each="comment, commentIter : ${groupMember.comments}">
+                                <div th:utext="${comment.valuePrese}"></div>
+                              </th:block>
+                            </div>
+                            <div th:if="${groupMember.notes}">
+                              <strong>Märkused:</strong>
+                              <th:block th:each="note, noteIter : ${groupMember.notes}">
+                                <span th:utext="${note.valuePrese}"></span>
+                                <span th:unless="${noteIter.last}" class="ml-n1">;</span>
+                              </th:block>
+                            </div>
+                            <div th:if="${groupMember.sourceLinks}">
+                              <strong>Allikaviited:</strong>
+                              <th:block th:each="sourceLink, sourceLinkIter : ${groupMember.sourceLinks}">
+                                <span th:utext="${sourceLink.name}"></span>
+                                <span th:unless="${sourceLinkIter.last}" class="ml-n1">;</span>
+                              </th:block>
+                            </div>
+                          </div>
+                          <div th:unless="${groupMemberIter.last}">
+                            <hr />
+                          </div>
+                        </th:block>
+                      </th:block>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </th:block>
+        </table>
       </div>
     </div>
   </th:block>

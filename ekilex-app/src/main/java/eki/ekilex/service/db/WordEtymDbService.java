@@ -29,7 +29,7 @@ import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
 import eki.ekilex.data.etym1.WordEtymNodeTuple;
 
-// TODO soon will be obsolete
+// TODO obsolete
 @Component
 public class WordEtymDbService implements GlobalConstant, FreeformConstant {
 
@@ -72,16 +72,16 @@ public class WordEtymDbService implements GlobalConstant, FreeformConstant {
 										we.ID.as("word_etym_id"),
 										wer.RELATED_WORD_ID,
 										PostgresDSL.arrayAppend(DSL.field("werec.related_word_ids", Long[].class), we.WORD_ID).as("related_word_ids"))
-								.from(
-										DSL.table("werec")
+								.from(DSL
+										.table("werec")
 												.innerJoin(we).on(we.WORD_ID.eq(DSL.field("werec.related_word_id", Long.class)))
 												.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID).and(wer.RELATED_WORD_ID.ne(we.WORD_ID))))
 								.where(DSL.field("werec.related_word_id", Long.class).ne(DSL.all(DSL.field("werec.related_word_ids", Long[].class))))
 								.orderBy(we.ORDER_BY, wer.ORDER_BY)));
 
 		Field<JSONB> rsf = DSL
-				.select(
-						DSL.jsonbArrayAgg(DSL
+				.select(DSL
+						.jsonbArrayAgg(DSL
 								.jsonObject(
 										DSL.key("wordEtymRelId").value(wer.ID),
 										DSL.key("commentPrese").value(wer.COMMENT_PRESE),
@@ -96,8 +96,8 @@ public class WordEtymDbService implements GlobalConstant, FreeformConstant {
 				.asField();
 
 		Field<JSONB> slf = DSL
-				.select(
-						DSL.jsonbArrayAgg(DSL
+				.select(DSL
+						.jsonbArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(wesl.ID),
 										DSL.key("wordEtymId").value(wesl.WORD_ETYM_ID),
@@ -109,8 +109,8 @@ public class WordEtymDbService implements GlobalConstant, FreeformConstant {
 				.asField();
 
 		Field<JSONB> mwf = DSL
-				.select(
-						DSL.jsonbArrayAgg(DSL
+				.select(DSL
+						.jsonbArrayAgg(DSL
 								.jsonObject(
 										DSL.key("wordId").value(w2.ID),
 										DSL.key("wordValue").value(w2.VALUE),
