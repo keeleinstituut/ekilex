@@ -156,8 +156,6 @@ public interface WebConstant {
 
 	String REPORTS_PAGE = "reports";
 
-	String REPORTS_COMPONENTS_PAGE = "reportscomp";
-
 	String LEX_JOIN_SEARCH_URI = "/lexjoinsearch";
 
 	String LEX_JOIN_INIT_URI = "/lexjoininit";

@@ -24,21 +24,27 @@
   import { ekiComponentBase } from "../../lib/eki-component-base";
   import type { Toast } from "./toast.model";
   import ToastBody from "./ToastBody.svelte";
-  // Component reference provided by component base
-  export let component;
-  let toasts: Toast[] = [];
-  $: alertToasts = toasts.filter(
-    (toast) => toast.type && ["error", "warning"].includes(toast.type),
+
+  const host = $host() as HTMLElement & { addToast?: (toast: Toast) => void };
+
+  let toasts = $state<Toast[]>([]);
+  const alertToasts = $derived(
+    toasts.filter(
+      (toast) => toast.type && ["error", "warning"].includes(toast.type),
+    ),
   );
-  $: statusToasts = toasts.filter(
-    (toast) => !toast.type || !["error", "warning"].includes(toast.type),
+  const statusToasts = $derived(
+    toasts.filter(
+      (toast) => !toast.type || !["error", "warning"].includes(toast.type),
+    ),
   );
   let id = 0;
   const baseToastClass =
     "border text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] grid grid-cols-[1fr_24px] gap-2 max-w-[335px] left-0";
+
   const closeToast = (toast: Toast) => {
     toasts = toasts.filter((existingToast) => existingToast.id !== toast.id);
-    component.dispatchEvent(
+    host.dispatchEvent(
       new CustomEvent("eki-toast-closed", {
         bubbles: true,
         composed: true,
@@ -47,7 +53,7 @@
     );
   };
 
-  export const addToast = (toast: Toast) => {
+  const addToast = (toast: Toast) => {
     toast.isVisible = true;
     toast.id ??= id++;
     const additionalClasses =
@@ -61,7 +67,7 @@
         .join(" ") || "bg-eki-white border-eki-light-blue pt-3 pb-5";
     toast.class = `${baseToastClass} ${additionalClasses}`;
     toasts = [...toasts, toast];
-    component.dispatchEvent(
+    host.dispatchEvent(
       new CustomEvent("eki-toast-opened", {
         bubbles: true,
         composed: true,
@@ -69,4 +75,9 @@
       }),
     );
   };
+
+  // Svelte 5 dropped `export const` for custom-element method exposure.
+  // Attach addToast directly to the host element so consumers can call
+  // `toastContainer.addToast({...})` exactly like before.
+  host.addToast = addToast;
 </script>

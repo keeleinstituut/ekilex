@@ -1,18 +1,9 @@
 Hello world
 
-<!-- <Toast
-  title="Versioon 1.37"
-  body="Värsked täiendused ootavad sind."
-  closeLabel="Sulge"
-  readMoreText="Loe lähemalt"
-  readMoreUrl="https://google.com"
-  bind:this={toast}
-></Toast> -->
-
 <eki-toast bind:this={toastContainer}></eki-toast>
 
 <button
-  on:click={() =>
+  onclick={() =>
     toastContainer.addToast({
       title: "Version 1.41 Release Notes 19.06.2025",
       body: "- Parandatud viga, mis põhjustas kasutusnäite muutmisel selle märgenduse kadumise",
@@ -23,17 +14,17 @@ Hello world
     })}>addToast</button
 >
 
-<script>
-  // import Toast from "./components/Toast.svelte";
+<script lang="ts">
   import "./dev.css";
-  /**
-   * @type {{ addToast: (arg0: {
-   *  title?: string;
-   *  body?: string;
-   * closeLabel: string;
-   * readMoreText: string;
-   * readMoreUrl: string;
-   * type?: 'error' | 'success'; }) => any; }}
-   */
-  let toastContainer;
+
+  let toastContainer: HTMLElement & {
+    addToast: (arg: {
+      title?: string;
+      body?: string;
+      closeLabel: string;
+      readMoreText?: string;
+      readMoreUrl?: string;
+      type?: "error" | "success" | "warning";
+    }) => void;
+  };
 </script>

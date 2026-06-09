@@ -108,12 +108,4 @@ public class ReportDbService {
 				.where(REPORT.ID.eq(reportId))
 				.execute();
 	}
-
-	public void deleteReport(Long reportId) {
-
-		mainDb
-				.deleteFrom(REPORT)
-				.where(REPORT.ID.eq(reportId))
-				.execute();
-	}
 }

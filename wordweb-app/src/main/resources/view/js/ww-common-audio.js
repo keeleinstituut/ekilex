@@ -70,7 +70,7 @@ function getAndPlayAudio(e) {
 var audio_context;
 var recorder;
 var audio_stream;
-var ws;
+var speechWs;
 var speechRecognitionServiceUrl;
 /**
  * Patch the APIs for every browser that supports them and check if getUserMedia
@@ -139,21 +139,21 @@ function stopRecording(callback) {
 
 function sendToWebSocket(audioBlob) {
 	if ("WebSocket" in window) {
-		if (ws) {
-			ws.close();
-			ws = null;
+		if (speechWs) {
+			speechWs.close();
+			speechWs = null;
 		}
 		// Let us open a web socket
-		// ws = new WebSocket("ws://localhost:9090/client/ws/speech");
-		ws = new WebSocket(speechRecognitionServiceUrl);
-		ws.onopen = function() {
+		// speechWs = new WebSocket("ws://localhost:9090/client/ws/speech");
+		speechWs = new WebSocket(speechRecognitionServiceUrl);
+		speechWs.onopen = function() {
 			// Web Socket is connected, send data using send()
-			ws.send(audioBlob);
-			ws.send("EOS");
+			speechWs.send(audioBlob);
+			speechWs.send("EOS");
 			console.log("Message is sent...");
 		};
 
-		ws.onmessage = function(evt) {
+		speechWs.onmessage = function(evt) {
 			var data = evt.data;
 			console.log("Message is received...", data);
 			var res = JSON.parse(data);
@@ -167,15 +167,15 @@ function sendToWebSocket(audioBlob) {
 			}
 		};
 
-		ws.onclose = function(e) {
+		speechWs.onclose = function(e) {
 			var code = e.code;
 			var reason = e.reason;
 			var wasClean = e.wasClean;
 			console.log(e.code + "/" + e.reason + "/" + e.wasClean);
-			ws = null;
+			speechWs = null;
 		};
 
-		ws.onerror = function(e) {
+		speechWs.onerror = function(e) {
 			var data = e.data;
 			console.log("Error ", data);
 		};

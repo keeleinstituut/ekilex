@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,6 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Report;
-import eki.ekilex.data.ReportContent;
 import eki.ekilex.data.TermDatasetReportParameters;
 import eki.ekilex.service.ReportService;
 
@@ -74,31 +75,16 @@ public class ReportsController extends AbstractPrivatePageController {
 		return REDIRECT_PREF + REPORTS_URI + "/" + reportType.name();
 	}
 
-	@GetMapping(REPORTS_URI + "/content/{reportId}")
-	public String getReportContent(@PathVariable Long reportId, Model model) throws Exception {
+	@GetMapping(REPORTS_URI + DOWNLOAD_URI + "/{reportId}")
+	public ResponseEntity<byte[]> downloadReport(@PathVariable Long reportId) throws Exception {
 
-		Report report = reportService.getReport(reportId);
-		ReportContent reportContent = reportService.deserializeContent(report);
+		byte[] fileBytes = reportService.getReportFileBytes(reportId);
+		String filename = "report-" + reportId + ".xlsx";
 
-		model.addAttribute("reportContent", reportContent);
-
-		String contentFragment = getContentFragment(report.getType());
-		return REPORTS_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + contentFragment;
-	}
-
-	@GetMapping(REPORTS_URI + "/delete/{reportId}")
-	public String deleteReport(@PathVariable Long reportId, Model model) {
-
-		Report report = reportService.getReport(reportId);
-		ReportType reportType = report.getType();
-
-		reportService.deleteReport(reportId);
-
-		List<Report> reports = reportService.getReports(reportType);
-
-		model.addAttribute("reports", reports);
-
-		return REPORTS_PAGE + PAGE_FRAGMENT_ELEM + "reports";
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+				.body(fileBytes);
 	}
 
 	private List<ReportType> getAccessibleReportTypes() {
@@ -121,7 +107,4 @@ public class ReportsController extends AbstractPrivatePageController {
 		}
 	}
 
-	private String getContentFragment(ReportType reportType) {
-		return reportType.name().toLowerCase() + "_content";
-	}
 }

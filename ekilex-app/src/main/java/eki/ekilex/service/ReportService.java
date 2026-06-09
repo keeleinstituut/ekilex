@@ -1,8 +1,10 @@
 package eki.ekilex.service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,9 @@ public class ReportService implements PermConstant {
 	private DatasetDbService datasetDbService;
 
 	@Autowired
+	private WorkbookService workbookService;
+
+	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Transactional
@@ -55,20 +60,12 @@ public class ReportService implements PermConstant {
 			ReportStatus status = report.getStatus();
 			boolean pending = status == ReportStatus.PENDING;
 			boolean completed = status == ReportStatus.COMPLETED;
-			boolean deletable = status == ReportStatus.COMPLETED || status == ReportStatus.FAILED;
 
 			report.setPending(pending);
 			report.setCompleted(completed);
-			report.setDeletable(deletable);
 		});
 
 		return reports;
-	}
-
-	@Transactional
-	public Report getReport(Long id) {
-		Report report = reportDbService.getReport(id);
-		return report;
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -105,9 +102,21 @@ public class ReportService implements PermConstant {
 		return content;
 	}
 
-	@Transactional(rollbackFor = Exception.class)
-	public void deleteReport(Long reportId) {
-		reportDbService.deleteReport(reportId);
+	@Transactional
+	public byte[] getReportFileBytes(Long reportId) throws Exception {
+
+		Report report = reportDbService.getReport(reportId);
+		ReportContent content = deserializeContent(report);
+
+		Workbook workbook = switch (report.getType()) {
+		case TERM_DATASET -> workbookService.toTermDatasetWorkbook((TermDatasetReportContent) content);
+		default -> throw new IllegalArgumentException("File download not implemented for report type: " + report.getType());
+		};
+
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		workbook.write(byteStream);
+		workbook.close();
+		return byteStream.toByteArray();
 	}
 
 	public List<Dataset> getAccessibleTermDatasets(EkiUser user) {

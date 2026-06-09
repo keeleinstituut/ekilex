@@ -16,13 +16,13 @@ public interface SystemConstant {
 
 	long CACHE_EVICT_DELAY_60MIN = 60 * 60 * 1000;
 
-	String JOIN_HOMONYMS_TIME_3_AM = "0 0 3 * * *";
+	String JOIN_HOMONYMS_TIME_1_AM = "0 0 1 * * *";
 
-	String ADJUST_HOMONYM_NRS_TIME_3_30_AM = "0 30 3 * * *";
+	String ADJUST_HOMONYM_NRS_TIME_1_20_AM = "0 20 1 * * *";
 
-	String DELETE_FLOATING_DATA_TIME_4_AM = "0 0 4 * * *";
+	String DELETE_FLOATING_DATA_TIME_1_40_AM = "0 40 1 * * *";
 
-	String DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM = "0 0 5 * * *";
+	String DELETE_OUTDATED_DATA_TIME_2_AM = "0 0 2 * * *";
 
 	int WORD_SUGGESTION_PUBLICATION_DAY = 5;
 
@@ -53,4 +53,6 @@ public interface SystemConstant {
 	int EXECUTE_QUEUE_DELAY_1_SEC = 1000;
 
 	int DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS = 24;
+
+	int DELETE_REPORTS_OLDER_THAN_DAYS = 30;
 }
