@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant, Publi
 	public void workloadreportCacheEvict() {
 	}
 
-	@Scheduled(cron = JOIN_HOMONYMS_TIME_3_AM)
+	@Scheduled(cron = JOIN_HOMONYMS_TIME_1_AM)
 	@Transactional(rollbackFor = Exception.class)
 	public void joinHomonyms() throws Exception {
 
@@ -109,7 +110,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant, Publi
 		logger.info("Joining homonyms finished");
 	}
 
-	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
+	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_1_20_AM)
 	@Transactional(rollbackFor = Exception.class)
 	public void adjustHomonymNrs() {
 
@@ -173,7 +174,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant, Publi
 		return resultCounts;
 	}
 
-	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)
+	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_1_40_AM)
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteFloatingData() {
 
@@ -204,13 +205,25 @@ public class MaintenanceService implements SystemConstant, GlobalConstant, Publi
 		}
 	}
 
-	@Scheduled(cron = DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM)
+	@Scheduled(cron = DELETE_OUTDATED_DATA_TIME_2_AM)
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteOutdatedDataRequests() {
 
 		int deletedDataRequestCount = maintenanceDbService.deleteAccessedDataRequests(DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS);
 		if (deletedDataRequestCount > 0) {
 			logger.debug("Maintenance service deleted {} outdated data requests", deletedDataRequestCount);
+		}
+	}
+
+	@Scheduled(cron = DELETE_OUTDATED_DATA_TIME_2_AM)
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteOutdatedReports() {
+
+		LocalDateTime createdBefore = LocalDateTime.now().minusDays(DELETE_REPORTS_OLDER_THAN_DAYS);
+
+		int deletedReportCount = maintenanceDbService.deleteOutdatedReports(createdBefore);
+		if (deletedReportCount > 0) {
+			logger.debug("Maintenance service deleted {} outdated reports", deletedReportCount);
 		}
 	}
 }

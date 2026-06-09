@@ -18,31 +18,6 @@ $.fn.generateReportPlugin = function() {
   });
 }
 
-$.fn.deleteReportPlugin = function() {
-  const btn = $(this);
-  btn.confirmation({
-    btnOkLabel: messages['common.yes'],
-    btnCancelLabel: messages['common.no'],
-    title: messages['common.confirm.delete'],
-    placement: 'left',
-    onConfirm: function() {
-      const reportId = btn.data('report-id');
-      deleteReport(reportId);
-    }
-  });
-}
-
 function initForm() {
   $('#term-dataset-select').selectpicker({width: '100%'});
-}
-
-function deleteReport(reportId) {
-  $.get(applicationUrl + 'reports/delete/' + reportId)
-  .done(function(data) {
-    $('#report-list').replaceWith(data);
-    $wpm.bindObjects();
-  }).fail(function(data) {
-    console.log(data);
-    openAlertDlg(messages['common.error']);
-  });
 }

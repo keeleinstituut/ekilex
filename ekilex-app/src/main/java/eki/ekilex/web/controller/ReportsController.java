@@ -87,21 +87,6 @@ public class ReportsController extends AbstractPrivatePageController {
 				.body(fileBytes);
 	}
 
-	@GetMapping(REPORTS_URI + "/delete/{reportId}")
-	public String deleteReport(@PathVariable Long reportId, Model model) {
-
-		Report report = reportService.getReport(reportId);
-		ReportType reportType = report.getType();
-
-		reportService.deleteReport(reportId);
-
-		List<Report> reports = reportService.getReports(reportType);
-
-		model.addAttribute("reports", reports);
-
-		return REPORTS_PAGE + PAGE_FRAGMENT_ELEM + "reports";
-	}
-
 	private List<ReportType> getAccessibleReportTypes() {
 
 		EkiUser user = userContext.getUser();

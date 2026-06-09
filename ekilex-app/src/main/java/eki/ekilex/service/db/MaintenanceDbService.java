@@ -12,9 +12,11 @@ import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
+import static eki.ekilex.data.db.main.Tables.REPORT;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -30,6 +32,7 @@ import eki.ekilex.data.db.main.Routines;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Publishing;
+import eki.ekilex.data.db.main.tables.Report;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
 
@@ -235,6 +238,16 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.where(
 						dr.ACCESSED.isNotNull()
 								.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
+				.execute();
+	}
+
+	public int deleteOutdatedReports(LocalDateTime createdBefore) {
+
+		Report r = REPORT.as("r");
+
+		return mainDb
+				.delete(r)
+				.where(r.CREATED_ON.lt(createdBefore))
 				.execute();
 	}
 }
