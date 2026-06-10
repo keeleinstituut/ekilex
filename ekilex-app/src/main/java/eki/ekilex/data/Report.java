@@ -28,8 +28,6 @@ public class Report extends AbstractDataObject {
 
 	private boolean completed;
 
-	private boolean deletable;
-
 	public Long getId() {
 		return id;
 	}
@@ -100,13 +98,5 @@ public class Report extends AbstractDataObject {
 
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
-	}
-
-	public boolean isDeletable() {
-		return deletable;
-	}
-
-	public void setDeletable(boolean deletable) {
-		this.deletable = deletable;
 	}
 }

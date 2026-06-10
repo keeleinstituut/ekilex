@@ -68,9 +68,11 @@ import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.etym1.WordEtym;
 import eki.ekilex.data.etym1.WordEtymTuple;
+import eki.ekilex.data.etym2.WordEtymTree;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CollocationDbService;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.EtymDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -102,6 +104,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	@Autowired
 	private CollocationDbService collocationDbService;
+
+	@Autowired
+	private EtymDbService etymDbService;
 
 	@Autowired
 	private VariantDbService variantDbService;
@@ -633,8 +638,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
+		// TODO obsolete
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
+		WordEtymTree etymTree = etymDbService.getWordEtymTree(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
 		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 		List<Paradigm> paradigms = null;
@@ -648,6 +655,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
+		word.setEtymTree(etymTree);
 		word.setWordEkiRecommendations(wordEkiRecommendations);
 		word.setWordOsUsages(wordOsUsages);
 		word.setWordOsMorph(wordOsMorph);

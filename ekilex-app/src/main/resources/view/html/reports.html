@@ -59,11 +59,6 @@
                   <a th:if="${report.completed}" class="btn btn-sm btn-primary mr-1"
                      th:href="@{|/reports/download/${report.id}|}"
                      th:text="#{common.download}">Laadi alla</a>
-                  <button th:if="${report.deletable}" type="button" class="btn btn-sm btn-warning"
-                          data-plugin="deleteReportPlugin"
-                          th:data-report-id="${report.id}">
-                    <i class="fa fa-remove"></i>
-                  </button>
                 </td>
               </tr>
             </table>

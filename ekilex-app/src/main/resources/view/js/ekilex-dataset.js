@@ -240,7 +240,6 @@ $.fn.editDatasetDlgPlugin = function() {
 
 				form.find('input[name="code"]').val(dataset.code);
 				form.find('input[name="name"]').val(dataset.name);
-				form.find('select[name="type"]').val(dataset.type);
 				form.find('textarea[name="description"]').val(dataset.description);
 				form.find('textarea[name="contact"]').val(dataset.contact);
 				form.find('textarea[name="imageUrl"]').val(dataset.imageUrl);

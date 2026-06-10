@@ -60,20 +60,12 @@ public class ReportService implements PermConstant {
 			ReportStatus status = report.getStatus();
 			boolean pending = status == ReportStatus.PENDING;
 			boolean completed = status == ReportStatus.COMPLETED;
-			boolean deletable = status == ReportStatus.COMPLETED || status == ReportStatus.FAILED;
 
 			report.setPending(pending);
 			report.setCompleted(completed);
-			report.setDeletable(deletable);
 		});
 
 		return reports;
-	}
-
-	@Transactional
-	public Report getReport(Long id) {
-		Report report = reportDbService.getReport(id);
-		return report;
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -108,11 +100,6 @@ public class ReportService implements PermConstant {
 		};
 
 		return content;
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void deleteReport(Long reportId) {
-		reportDbService.deleteReport(reportId);
 	}
 
 	@Transactional

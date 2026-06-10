@@ -75,6 +75,8 @@ insert into language_group (name) values ('turgi keeled');
 
 -- #2 --
 
+delete from publishing where entity_name = 'meaning_relation';
+
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
 	'Laadur',
@@ -116,14 +118,47 @@ from
 	meaning_relation mr
 where
 	mr.meaning_rel_type_code != 'duplikaadikandidaat'
-	and exists (
-		select
-			1
-		from
-			lexeme l
-		where
-			l.meaning_id = mr.meaning1_id
-			and l.dataset_code = 'eki'
+	and (
+			(
+				mr.meaning_rel_type_code = 'sarnane'
+				and exists (
+					select
+						1
+					from
+						lexeme l
+					where
+						l.meaning_id = mr.meaning1_id
+						and l.dataset_code = 'eki'
+				)
+			)
+			or
+			(
+				mr.meaning_rel_type_code != 'sarnane'
+				and exists (
+					select
+						1
+					from
+						lexeme l, publishing p
+					where
+						l.meaning_id = mr.meaning1_id
+						and l.dataset_code = 'eki'
+						and p.entity_name = 'lexeme'
+						and p.entity_id = l.id
+						and p.target_name = 'ww_lite'
+				)
+				and exists (
+					select
+						1
+					from
+						lexeme l, publishing p
+					where
+						l.meaning_id = mr.meaning2_id
+						and l.dataset_code = 'eki'
+						and p.entity_name = 'lexeme'
+						and p.entity_id = l.id
+						and p.target_name = 'ww_lite'
+				)
+			)
 	)
 	and not exists (
 		select

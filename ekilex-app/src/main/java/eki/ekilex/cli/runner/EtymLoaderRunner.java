@@ -32,7 +32,7 @@ import eki.ekilex.data.LanguageGroup;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.etym2.WordEtym;
+import eki.ekilex.data.etym2.WordEtymGroupMember;
 import eki.ekilex.data.etym2.WordEtymGroup;
 import eki.ekilex.data.migra.ValueMarkup;
 import eki.ekilex.service.db.EtymDbService;
@@ -368,13 +368,13 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 							Long etymWordLexemeId = etymWordLexemeMeaningId.getLexemeId();
 							Long etymWordMeaningId = etymWordLexemeMeaningId.getMeaningId();
 
-							WordEtym etymWordEtym = new WordEtym();
+							WordEtymGroupMember etymWordEtym = new WordEtymGroupMember();
 							etymWordEtym.setWordId(etymWordId);
 							etymWordEtym.setEtymologyYear(etymWordEtymYearStr);
 
 							// -- etym word etym --
 
-							WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+							WordEtymGroupMember existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
 							Long etymWordEtymId = null;
 							if (existingEtymWordEtym == null) {
 								etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
@@ -538,13 +538,13 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			Long etymWordLexemeId = etymWordLexemeMeaningId.getLexemeId();
 			Long etymWordMeaningId = etymWordLexemeMeaningId.getMeaningId();
 
-			WordEtym etymWordEtym = new WordEtym();
+			WordEtymGroupMember etymWordEtym = new WordEtymGroupMember();
 			etymWordEtym.setWordId(etymWordId);
 			etymWordEtym.setEtymologyYear(etymWordEtymYearStr);
 
 			// -- etym word etym --
 
-			WordEtym existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
+			WordEtymGroupMember existingEtymWordEtym = etymDbService.getWordEtymForWord(etymWordId);
 			Long etymWordEtymId = null;
 			if (existingEtymWordEtym == null) {
 				etymWordEtymId = etymDbService.createWordEtym(etymWordId, etymWordEtym);
@@ -593,7 +593,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 	public Long createHeadwordEtymGroupSs1(Long headwordId, Node mNode, Node etpNode, Count headwordEtymCount, Count headwordEtymExistsCount) {
 
-		WordEtym headwordEtym = new WordEtym();
+		WordEtymGroupMember headwordEtym = new WordEtymGroupMember();
 
 		// headword value
 		ValueMarkup headwordValueTuple = getNodeText(mNode);
@@ -631,7 +631,7 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 
 		// -- headword etym --
 
-		WordEtym existingHeadwordEtym = etymDbService.getWordEtymForWord(headwordId);
+		WordEtymGroupMember existingHeadwordEtym = etymDbService.getWordEtymForWord(headwordId);
 		Long headwordEtymId = null;
 		if (existingHeadwordEtym == null) {
 			headwordEtymId = etymDbService.createWordEtym(headwordId, headwordEtym);
