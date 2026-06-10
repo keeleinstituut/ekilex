@@ -327,7 +327,7 @@ $.fn.shareSearchLinkPlugin = function() {
 		obj.on('click', function() {
 			const searchParams = new URLSearchParams(window.location.search);
 			const idParam = searchParams.get("id");
-			const searchUri = obj.data('search-uri');
+			const searchUri = obj.data('search-uri') || window.location.pathname;
 			let shareLink;
 			if (idParam) {
 				shareLink = `${applicationBaseUrl}${searchUri}?id=${idParam}`;

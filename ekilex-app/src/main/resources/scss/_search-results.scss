@@ -25,6 +25,14 @@
 #searchColumn, #toolsColumn {
   display: none;
 }
+// Lex and term search have no panel toggle in their redesigned headers
+// (removed it relocates in a later task), so their results list must be visible by
+// default instead of relying on the toggle's paneToggle plugin to show it.
+// Scoped to the lex/term pages only.
+.lex-results__container #searchColumn,
+.term-results__container #searchColumn {
+  display: block;
+}
 .searchResultsToggle{
   display: flex;
   border-radius: 2px;
