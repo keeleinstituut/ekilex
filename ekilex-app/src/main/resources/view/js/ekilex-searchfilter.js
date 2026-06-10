@@ -327,18 +327,23 @@ $.fn.shareSearchLinkPlugin = function() {
 		obj.on('click', function() {
 			const searchParams = new URLSearchParams(window.location.search);
 			const idParam = searchParams.get("id");
-			const searchUri = obj.data('search-uri') || window.location.pathname;
-			let shareLink;
+			let shareLink = `${window.location.origin}${window.location.pathname}`;
 			if (idParam) {
-				shareLink = `${applicationBaseUrl}${searchUri}?id=${idParam}`;
-			} else {
-				shareLink = `${applicationBaseUrl}${searchUri}`;
+				shareLink += `?id=${idParam}`;
 			}
-			const tempCopyField = $("<input>");
-			$("body").append(tempCopyField);
-			tempCopyField.val(shareLink).select();
-			document.execCommand('copy');
-			tempCopyField.remove();
+			navigator.clipboard.writeText(shareLink).then(function() {
+				const toastContainer = document.getElementById('search-toast-container');
+				if (toastContainer) {
+					toastContainer.addToast({
+						body: messages["common.search.share.link.copied"].replace('{0}', shareLink),
+						closeLabel: messages["common.close"],
+						id: 'share-link-toast',
+						type: 'success'
+					});
+				}
+			}).catch(function() {
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 }
