@@ -6,7 +6,10 @@
 </head>
 <body>
   <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
-    <div class="d-flex flex-row flex-nowrap">
+    <eki-toast id="search-toast-container"></eki-toast>
+    <div class="d-flex flex-row flex-nowrap search-header">
+      <!--/* Search-results pane toggle removed from the redesigned lex/term header;
+             it relocates elsewhere in a separate task. Kept here for that move.
       <div th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
            data-plugin="paneToggle"
            data-hideable="searchColumn"
@@ -14,16 +17,19 @@
            class="searchResultsToggle">
         <i class="fa fa-list" aria-hidden="true"></i>
       </div>
+      */-->
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
       <input type="hidden" id="isSearchFilterValid" value="false">
       <div class="flex-shrink-0 flex-grow-0 pr-2" th:if="${!#lists.isEmpty(allDatasets) && showDatasetSelect}" th:insert="~{::dataset_select}"></div>
-      <div class="tab-content w-100">
+      <div class="tab-content">
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
       </div>
       <div class="d-flex flex-row align-items-center">
         <button type="button" id="share-search-link" th:data-search-uri="${searchUri}"
-                class="btn btn-light ml-2" data-plugin="shareSearchLinkPlugin" th:text="#{common.search.share.details.link}">Otselink
+                class="btn btn-link search-header__share-link" data-plugin="shareSearchLinkPlugin">
+          <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+          <span th:text="#{common.search.share.link.copy}">Kopeeri oleku otselink</span>
         </button>
       </div>
     </div>
@@ -47,9 +53,17 @@
   </th:block>
   <th:block th:fragment="simple_search">
     <div class="tab-pane fade " th:classappend="${searchMode =='SIMPLE' ? 'show active' : ''}" id="simple_search_filter">
-      <div class="d-flex flex-row align-items-center">
-        <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" th:placeholder="#{|search.placeholder.${searchPageName}|}" autocomplete="off">
-        <button type="submit" class="btn btn-primary px-5 ml-2" th:text="#{common.search}">Otsi</button>
+      <div class="search-header__simple d-flex flex-row align-items-end">
+        <th:block th:replace="components :: input_text_new(
+          id = 'simpleSearchFilter',
+          label = #{common.search.simple.label},
+          name = 'simpleSearchFilter',
+          value = ${simpleSearchFilter},
+          placeholder = #{|search.placeholder.${searchPageName}|})"></th:block>
+        <button type="submit" class="btn btn-primary search-header__search-btn ml-2">
+          <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          <span th:text="#{common.search}">Otsi</span>
+        </button>
       </div>
     </div>
   </th:block>
@@ -1036,12 +1050,17 @@
     </script>
   </th:block>
   <th:block th:fragment="dataset_select">
-    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
-      <span th:text="#{common.search.selected.datasets}">Valitud sõnakogusid:</span>
-      <span th:if="${#lists.isEmpty(userProfile.preferredDatasets)}">0</span>
-      <span th:if="${not #lists.isEmpty(userProfile.preferredDatasets)}" th:text="${#lists.size(userProfile.preferredDatasets)}"></span>
-      <i class="fa fa-book" aria-hidden="true"></i>
-    </button>
+    <div class="input-text-new__container">
+      <label th:text="#{common.search.datasets.label}">Sõnakogud</label>
+      <button class="search-header__dataset-btn" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
+        <span class="search-header__dataset-text">
+          <span th:text="#{common.search.selected.datasets}">Valitud sõnakogusid:</span>
+          <span th:if="${#lists.isEmpty(userProfile.preferredDatasets)}">0</span>
+          <span th:if="${not #lists.isEmpty(userProfile.preferredDatasets)}" th:text="${#lists.size(userProfile.preferredDatasets)}"></span>
+        </span>
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_drop_down</span>
+      </button>
+    </div>
     <div id="datasetSelectDlg" class="modal" role="dialog" data-plugin="selectDataSetsPlugin, datasetDlgFocusBtnPlugin">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

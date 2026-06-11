@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.FreeformOwner;
 import eki.common.constant.GlobalConstant;
@@ -280,11 +279,6 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("publishingTargetNames")
 	public List<String> getPublishingTargetNames() {
 		return Arrays.asList(PublishingConstant.PUBLISHING_TARGET_NAMES);
-	}
-
-	@ModelAttribute("enabledDatasetTypes")
-	public List<DatasetType> getEnabledDatasetTypes() {
-		return Arrays.asList(DatasetType.LEX, DatasetType.TERM);
 	}
 
 	@ModelAttribute("wordGenders")

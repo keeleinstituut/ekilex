@@ -28,6 +28,8 @@
 	var applicationBaseUrl = /*[[${appData.baseUrl}]]*/'/';
 	const messages = {
 		'common.error' : /*[[#{common.error}]]*/'Viga!',
+		'common.close' : /*[[#{common.close}]]*/'Sulge',
+		'common.search.share.link.copied' : /*[[#{common.search.share.link.copied}]]*/'Otselink {0} kopeeritud!',
 		'common.error.input' : /*[[#{common.error.input}]]*/'Lisamiseks valige väärtus.',
 		'common.data.add.error' : /*[[#{common.data.add.error}]]*/'Andmete muutmine ebaõnnestus.',
 		'common.data.update.error' : /*[[#{common.data.update.error}]]*/'Andmete muutmine ebaõnnestus.',
@@ -88,7 +90,7 @@
     <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
     <link rel="stylesheet" th:href="@{/view/css/quill.snow.css}" />
     <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,apps,arrow_left_alt,arrow_right_alt,cached,check,close,delete,drag_pan,keyboard_arrow_down,lock,lock_open_right,more_horiz,search,upload,visibility" />
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,apps,arrow_drop_down,arrow_left_alt,arrow_right_alt,cached,check,close,content_copy,delete,drag_pan,keyboard_arrow_down,lock,lock_open_right,more_horiz,search,upload,visibility" />
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">

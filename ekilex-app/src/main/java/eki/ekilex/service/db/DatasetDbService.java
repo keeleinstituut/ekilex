@@ -100,7 +100,7 @@ public class DatasetDbService {
 						DATASET.IS_PUBLIC)
 				.values(dataset.getCode(),
 						dataset.getName(),
-						(dataset.getType() != null ? dataset.getType().name() : null),
+						dataset.getType().name(),
 						dataset.getDescription(),
 						dataset.getContact(),
 						dataset.getImageUrl(),
@@ -115,7 +115,6 @@ public class DatasetDbService {
 		mainDb
 				.update(DATASET)
 				.set(DATASET.NAME, dataset.getName())
-				.set(DATASET.TYPE, (dataset.getType() != null ? dataset.getType().name() : null))
 				.set(DATASET.DESCRIPTION, dataset.getDescription())
 				.set(DATASET.CONTACT, dataset.getContact())
 				.set(DATASET.IMAGE_URL, dataset.getImageUrl())

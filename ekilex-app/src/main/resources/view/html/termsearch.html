@@ -49,7 +49,7 @@
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{term.search.invalid}"></div>
     </div>
-    <div class="row no-gutters pt-3 h-100">
+    <div class="row no-gutters pt-3 h-100 term-results__container">
       <div class="col-3 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" style="height: 100%;">
           <div th:replace="termcomp :: term_search_result"></div>
