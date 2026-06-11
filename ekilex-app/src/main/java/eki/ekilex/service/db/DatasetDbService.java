@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -101,7 +100,7 @@ public class DatasetDbService {
 						DATASET.IS_PUBLIC)
 				.values(dataset.getCode(),
 						dataset.getName(),
-						DatasetType.TERM.name(),
+						dataset.getType().name(),
 						dataset.getDescription(),
 						dataset.getContact(),
 						dataset.getImageUrl(),
