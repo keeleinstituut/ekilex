@@ -611,7 +611,7 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.fetchInto(Long.class);
 	}
 
-	public List<Long> getLexemeIds(Long wordId, String datasetCode) {
+	public List<Long> getLexemeIdsByWord(Long wordId, String datasetCode) {
 
 		Lexeme l = LEXEME.as("l");
 
@@ -625,7 +625,35 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 								.and(l.IS_PUBLIC.isTrue()))
 				.orderBy(
 						l.LEVEL1,
-						l.LEVEL2)
+						l.LEVEL2,
+						l.ID)
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getLexemeIdsByForm(Long formId, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+		Paradigm p = PARADIGM.as("p");
+		ParadigmForm pf = PARADIGM_FORM.as("pf");
+
+		return mainDb
+				.select(l.ID)
+				.from(l)
+				.where(
+						l.DATASET_CODE.eq(datasetCode)
+								.and(l.IS_WORD.isTrue())
+								.and(l.IS_PUBLIC.isTrue())
+								.andExists(DSL
+										.selectOne()
+										.from(pf, p)
+										.where(
+												pf.FORM_ID.eq(formId)
+														.and(pf.PARADIGM_ID.eq(p.ID))
+														.and(p.WORD_ID.eq(l.WORD_ID)))))
+				.orderBy(
+						l.LEVEL1,
+						l.LEVEL2,
+						l.ID)
 				.fetchInto(Long.class);
 	}
 

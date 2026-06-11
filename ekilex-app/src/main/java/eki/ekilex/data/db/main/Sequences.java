@@ -46,6 +46,21 @@ public class Sequences {
     public static final Sequence<Long> COLLOCATION_MEMBER_ID_SEQ = Internal.createSequence("collocation_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.construct_group_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_GROUP_ID_SEQ = Internal.createSequence("construct_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_group_member_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_GROUP_MEMBER_ID_SEQ = Internal.createSequence("construct_group_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_group_relation_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_GROUP_RELATION_ID_SEQ = Internal.createSequence("construct_group_relation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.construct_id_seq</code>
      */
     public static final Sequence<Long> CONSTRUCT_ID_SEQ = Internal.createSequence("construct_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -94,6 +109,26 @@ public class Sequences {
      * The sequence <code>public.construct_member_pos_group_order_by_seq</code>
      */
     public static final Sequence<Long> CONSTRUCT_MEMBER_POS_GROUP_ORDER_BY_SEQ = Internal.createSequence("construct_member_pos_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_member_stat_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_MEMBER_STAT_ID_SEQ = Internal.createSequence("construct_member_stat_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_relation_id_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_RELATION_ID_SEQ = Internal.createSequence("construct_relation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_relation_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_RELATION_ORDER_BY_SEQ = Internal.createSequence("construct_relation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.construct_relation_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_RELATION_TYPE_ORDER_BY_SEQ = Internal.createSequence("construct_relation_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.construct_subtype_order_by_seq</code>
@@ -669,6 +704,16 @@ public class Sequences {
      * The sequence <code>public.sentence_member_id_seq</code>
      */
     public static final Sequence<Long> SENTENCE_MEMBER_ID_SEQ = Internal.createSequence("sentence_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.sentence_translation_id_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_TRANSLATION_ID_SEQ = Internal.createSequence("sentence_translation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.sentence_translation_order_by_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_TRANSLATION_ORDER_BY_SEQ = Internal.createSequence("sentence_translation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.source_activity_log_id_seq</code>

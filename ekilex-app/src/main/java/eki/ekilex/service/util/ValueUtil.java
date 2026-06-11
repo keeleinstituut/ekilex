@@ -1,7 +1,10 @@
 package eki.ekilex.service.util;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
@@ -121,6 +124,28 @@ public class ValueUtil implements SystemConstant, GlobalConstant {
 			return null;
 		}
 		return Integer.valueOf(valueStr);
+	}
+
+	public Long toLong(Object objValue) {
+		if (objValue == null) {
+			return null;
+		}
+		String valueStr = objValue.toString();
+		if (!StringUtils.isNumeric(valueStr)) {
+			return null;
+		}
+		return Long.valueOf(valueStr);
+	}
+
+	public BigDecimal toBigDecimal(Object objValue) {
+		if (objValue == null) {
+			return null;
+		}
+		String valueStr = objValue.toString();
+		if (!NumberUtils.isParsable(valueStr)) {
+			return null;
+		}
+		return new BigDecimal(valueStr).stripTrailingZeros();
 	}
 
 	public <T extends Enum<T>> T toEnum(Object objValue, Class<T> enumClass) {

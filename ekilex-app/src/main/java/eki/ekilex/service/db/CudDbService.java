@@ -1310,7 +1310,11 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaning() {
-		MeaningRecord meaning = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+		MeaningRecord meaning = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
+				.fetchOne();
 		return meaning.getId();
 	}
 

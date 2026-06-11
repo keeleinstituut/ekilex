@@ -1,13 +1,19 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP_RELATION;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_DEPREL;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_LEMMA_MORPH;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_MORPH;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_STAT;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_RELATION;
 import static eki.ekilex.data.db.main.Tables.SENTENCE;
 import static eki.ekilex.data.db.main.Tables.SENTENCE_MEMBER;
+import static eki.ekilex.data.db.main.Tables.SENTENCE_TRANSLATION;
 
 import java.util.List;
 
@@ -67,54 +73,64 @@ public class ConstructDbService {
 				.getId();
 	}
 
-	public Long createSentence(eki.ekilex.data.conx.Sentence sentence) {
+	public Long createConstructGroup() {
 
 		return mainDb
-				.insertInto(
-						SENTENCE,
-						SENTENCE.CONSTRUCT_ID,
-						SENTENCE.TYPE,
-						SENTENCE.PROFICIENCY_LEVEL_CODE,
-						SENTENCE.VALUE)
-				.values(
-						sentence.getConstructId(),
-						sentence.getType(),
-						sentence.getProficiencyLevelCode(),
-						sentence.getValue())
-				.returning(SENTENCE.ID)
+				.insertInto(CONSTRUCT_GROUP)
+				.defaultValues()
+				.returning(CONSTRUCT_GROUP.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long createSentenceMember(Long sentenceId, Long constructMemberId, eki.ekilex.data.conx.SentenceMember sentenceMember) {
+	public Long createConstructGroupMember(Long constructGroupId, Long constructId) {
 
 		return mainDb
 				.insertInto(
-						SENTENCE_MEMBER,
-						SENTENCE_MEMBER.SENTENCE_ID,
-						SENTENCE_MEMBER.CONSTRUCT_MEMBER_ID,
-						SENTENCE_MEMBER.VALUE,
-						SENTENCE_MEMBER.MEMBER_SENTENCE_ID,
-						SENTENCE_MEMBER.MEMBER_LEXEME_ID,
-						SENTENCE_MEMBER.MEMBER_FORM_ID,
-						SENTENCE_MEMBER.POS_GROUP_CODE,
-						SENTENCE_MEMBER.DEPREL_CODE,
-						SENTENCE_MEMBER.MEMBER_ROLE,
-						SENTENCE_MEMBER.MEMBER_ORDER)
+						CONSTRUCT_GROUP_MEMBER,
+						CONSTRUCT_GROUP_MEMBER.CONSTRUCT_GROUP_ID,
+						CONSTRUCT_GROUP_MEMBER.CONSTRUCT_ID)
 				.values(
-						sentenceId,
-						constructMemberId,
-						sentenceMember.getValue(),
-						sentenceMember.getMemberSentenceId(),
-						sentenceMember.getMemberLexemeId(),
-						sentenceMember.getMemberFormId(),
-						sentenceMember.getPosGroupCode(),
-						sentenceMember.getDeprelCode(),
-						sentenceMember.getMemberRole(),
-						sentenceMember.getMemberOrder())
-				.returning(SENTENCE_MEMBER.ID)
+						constructGroupId,
+						constructId)
+				.returning(CONSTRUCT_GROUP_MEMBER.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public Long createConstructGroupRelation(Long constructGroup1Id, Long constructGroup2Id, String constructRelationTypeCode) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_GROUP_RELATION,
+						CONSTRUCT_GROUP_RELATION.CONSTRUCT_GROUP1_ID,
+						CONSTRUCT_GROUP_RELATION.CONSTRUCT_GROUP2_ID,
+						CONSTRUCT_GROUP_RELATION.CONSTRUCT_RELATION_TYPE_CODE)
+				.values(
+						constructGroup1Id,
+						constructGroup2Id,
+						constructRelationTypeCode)
+				.returning(CONSTRUCT_GROUP_RELATION.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createConstructRelation(Long construct1Id, Long construct2Id, String constructRelationTypeCode) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_RELATION,
+						CONSTRUCT_RELATION.CONSTRUCT1_ID,
+						CONSTRUCT_RELATION.CONSTRUCT2_ID,
+						CONSTRUCT_RELATION.CONSTRUCT_RELATION_TYPE_CODE)
+				.values(
+						construct1Id,
+						construct2Id,
+						constructRelationTypeCode)
+				.returning(CONSTRUCT_RELATION.ID)
+				.fetchOne()
+				.getId();
+
 	}
 
 	public void createConstructMemberLemmaMorphs(Long constructMemberId, List<String> memberLemmaMorphCodes) {
@@ -179,5 +195,95 @@ public class ConstructDbService {
 							memberDeprelCode)
 					.execute();
 		}
+	}
+
+	public Long createConstructMemberStat(eki.ekilex.data.conx.ConstructMemberStat constructMemberStat) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_MEMBER_STAT,
+						CONSTRUCT_MEMBER_STAT.CONSTRUCT_MEMBER_ID,
+						CONSTRUCT_MEMBER_STAT.LEXEME_ID,
+						CONSTRUCT_MEMBER_STAT.FORM_ID,
+						CONSTRUCT_MEMBER_STAT.FREQUENCY,
+						CONSTRUCT_MEMBER_STAT.SALIENCE,
+						CONSTRUCT_MEMBER_STAT.PROFICIENCY_LEVEL_CODE)
+				.values(
+						constructMemberStat.getConstructMemberId(),
+						constructMemberStat.getLexemeId(),
+						constructMemberStat.getFormId(),
+						constructMemberStat.getFrequency(),
+						constructMemberStat.getSalience(),
+						constructMemberStat.getProficiencyLevelCode())
+				.returning(CONSTRUCT_MEMBER_STAT.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createSentence(eki.ekilex.data.conx.Sentence sentence) {
+
+		return mainDb
+				.insertInto(
+						SENTENCE,
+						SENTENCE.CONSTRUCT_ID,
+						SENTENCE.TYPE,
+						SENTENCE.PROFICIENCY_LEVEL_CODE,
+						SENTENCE.VALUE)
+				.values(
+						sentence.getConstructId(),
+						sentence.getType(),
+						sentence.getProficiencyLevelCode(),
+						sentence.getValue())
+				.returning(SENTENCE.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createSentenceMember(Long sentenceId, Long constructMemberId, eki.ekilex.data.conx.SentenceMember sentenceMember) {
+
+		return mainDb
+				.insertInto(
+						SENTENCE_MEMBER,
+						SENTENCE_MEMBER.SENTENCE_ID,
+						SENTENCE_MEMBER.CONSTRUCT_MEMBER_ID,
+						SENTENCE_MEMBER.VALUE,
+						SENTENCE_MEMBER.MEMBER_SENTENCE_ID,
+						SENTENCE_MEMBER.MEMBER_LEXEME_ID,
+						SENTENCE_MEMBER.MEMBER_FORM_ID,
+						SENTENCE_MEMBER.POS_GROUP_CODE,
+						SENTENCE_MEMBER.DEPREL_CODE,
+						SENTENCE_MEMBER.MEMBER_ROLE,
+						SENTENCE_MEMBER.MEMBER_ORDER)
+				.values(
+						sentenceId,
+						constructMemberId,
+						sentenceMember.getValue(),
+						sentenceMember.getMemberSentenceId(),
+						sentenceMember.getMemberLexemeId(),
+						sentenceMember.getMemberFormId(),
+						sentenceMember.getPosGroupCode(),
+						sentenceMember.getDeprelCode(),
+						sentenceMember.getMemberRole(),
+						sentenceMember.getMemberOrder())
+				.returning(SENTENCE_MEMBER.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createSentenceTranslation(Long sentenceId, String value, String lang) {
+
+		return mainDb
+				.insertInto(
+						SENTENCE_TRANSLATION,
+						SENTENCE_TRANSLATION.SENTENCE_ID,
+						SENTENCE_TRANSLATION.VALUE,
+						SENTENCE_TRANSLATION.LANG)
+				.values(
+						sentenceId,
+						value,
+						lang)
+				.returning(SENTENCE_TRANSLATION.ID)
+				.fetchOne()
+				.getId();
 	}
 }
