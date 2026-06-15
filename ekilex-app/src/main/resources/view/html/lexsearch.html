@@ -21,6 +21,9 @@
     </div>
     <div class="row no-gutters py-3 flex-grow-1 h-100 lex-results__container">
       <div class="col-3 pr-2 h-100" id="searchColumn" th:if="${isSearchResult}">
+        <button type="button" class="lex-results__rail" data-plugin="searchPaneCollapse" data-toggle="tooltip" th:title="#{lex.results.expand}">
+          <span class="material-symbols-outlined" aria-hidden="true">left_panel_open</span>
+        </button>
         <div th:if="${noResults == true}">
           <div th:text="#{lex.not.found}">Not found.</div>
         </div>

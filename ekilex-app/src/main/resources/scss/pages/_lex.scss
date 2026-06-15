@@ -9,41 +9,51 @@
   &:has(.lex-results__paging) {
     --lex-paging-height: 80px;
   }
-  
+
   &__container {
     container: results / size;
   }
-  
+
   &__header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 4px;
-    margin-bottom: 14px;
-    --icon-size: 1rem;
+    margin-bottom: 6px;
+    --icon-size: 1.25rem;
   }
-  
+
   &__count {
-    margin-top: 6px;
-    font-size: .625rem;
-    font-weight: 500;
-    
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: .75rem;
+    font-weight: 400;
+    color: var(--color-gray-400);
+
     & strong {
-      font-weight: 700;
+      font-weight: 400;
+    }
+
+    & form {
+      margin: 0;
+      display: flex;
     }
   }
-  
-  &__refresh {
-    background-color: var(--color-white);
-    border: 1px solid var(--color-gray-010);
-    box-shadow: 0px 2px 2px 0px #0000001A;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
+
+  &__refresh,
+  &__collapse {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: var(--color-blue-400-v2);
   }
-  
+
   &__rows {
     display: flex;
     flex-direction: column;
@@ -58,33 +68,33 @@
 
   &__row {
     width: 100%;
-    border-radius: 8px;
-    border: 1px solid var(--color-gray-010);
-    box-shadow: 0px 2px 8px 0px #0000001A;
+    border-radius: 4px;
+    border: 1px solid var(--color-panel-border);
     background-color: var(--color-white);
     position: relative;
-    font-size: .625rem;
-    font-weight: 500;
-    color: var(--color-dark-blue);
-    
-    & button {
+    font-size: .75rem;
+    font-weight: 400;
+    color: var(--color-gray-600);
+
+    & .lex-results__row-btn {
       background-color: transparent;
       border: none;
       cursor: pointer;
       outline: none;
-      padding: 8px;
+      padding: 6px 30px 6px 10px;
       width: 100%;
       color: inherit;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: 2px;
       font-weight: inherit;
+      text-align: left;
     }
 
     &.active {
-      background-color: var(--color-light-blue);
-      border-color: var(--color-dark-blue);
+      background-color: var(--color-blue-050);
+      border-color: var(--color-blue-400-v2);
     }
 
     &:focus-within {
@@ -96,32 +106,74 @@
     }
   }
 
+  &__toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-blue-400-v2);
+    --icon-size: 1rem;
+  }
+
+  &__row &__toggle-open {
+    display: inline-flex;
+  }
+
+  &__row &__toggle-close {
+    display: none;
+  }
+
+  &__row.active &__toggle-open {
+    display: none;
+  }
+
+  &__row.active &__toggle-close {
+    display: inline-flex;
+  }
+
   &__status {
     position: absolute;
     top: 8px;
-    right: 8px;
+    right: 30px;
     height: 14px;
     width: 14px;
   }
 
   &__badge {
-    font-weight: 700;
-    font-size: .625rem;
+    font-weight: 400;
+    font-size: .75rem;
+    color: var(--color-gray-400);
     border-radius: 4px;
-    border: 1px solid var(--color-gray-010);
-    background-color: var(--color-hall-taust-final-final-final-hall-500);
+    border: 1px solid var(--color-gray-200);
+    background-color: var(--color-white);
     min-width: 16px;
     min-height: 16px;
+    padding: 0 4px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
   &__row-title {
-    font-size: .75rem;
+    font-size: .875rem;
+    color: var(--color-gray-1000);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    text-align: left;
+  }
+
+  &__row.active &__row-title {
+    color: var(--color-blue-400-v2);
   }
 
   &__paging {
@@ -130,18 +182,20 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    --icon-size: 1.5rem;
+    --icon-size: 1.125rem;
 
     & button {
+      display: flex;
+      align-items: center;
       padding: 0;
       border: none;
       background-color: transparent;
       cursor: pointer;
-      font-size: .625rem;
-      color: inherit;
+      color: var(--color-blue-400-v2);
 
-      &[data-active='false'] {
-        color: var(--color-dark-blue-25);
+      &[data-active='false'],
+      &:disabled {
+        opacity: .38;
       }
     }
   }
@@ -150,7 +204,6 @@
     display: flex;
     align-items: center;
     gap: 12px;
-
   }
 
   &__page-input {
@@ -172,5 +225,71 @@
         display: none;
       }
     }
+  }
+
+  &__paging-label {
+    font-size: .875rem;
+    font-weight: 400;
+    color: var(--color-gray-900);
+  }
+
+  &__page-select {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: .875rem;
+    color: var(--color-gray-1000);
+
+    & select {
+      font-size: .875rem;
+      color: inherit;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-gray-350);
+      border-radius: 2px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+  }
+
+  &__rail {
+    display: none;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 6px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-blue-400-v2);
+    --icon-size: 1.25rem;
+  }
+
+  &__container--collapsed {
+    // Bootstrap .row is flex-wrap: wrap; without nowrap the result column's wide
+    // content exceeds the space left by the 44px rail and wraps onto a new line
+    // (rendering below the fold). nowrap + min-width:0 keep it beside the rail.
+    flex-wrap: nowrap;
+
+    #searchColumn {
+      flex: 0 0 44px;
+      max-width: 44px;
+      width: 44px;
+      padding-right: 0;
+      overflow: hidden;
+    }
+
+    #searchColumn > *:not(.lex-results__rail) {
+      display: none;
+    }
+
+    #resultColumn {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
+  &__container--collapsed &__rail {
+    display: flex;
   }
 }

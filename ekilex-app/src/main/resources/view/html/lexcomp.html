@@ -7,18 +7,21 @@
     <input type="hidden" id="pageNum" th:value="${wordsResult.currentPage}">
     <div class="lex-results__header">
       <div class="lex-results__count">
-        <span th:text="#{lex.results.found}">Kokku leiti:</span>
+        <span th:text="#{lex.results.found}">Leitud tulemusi:</span>
         <strong th:text="${wordsResult.totalCount}"></strong>
+        <form th:action="@{/lex_paging}" method="post">
+          <input type="hidden" name="searchUri" th:value="${searchUri}">
+          <input type="hidden" name="pageNum" th:value="${wordsResult.currentPage}">
+          <input type="hidden" name="direction" value="page">
+          <input type="hidden" name="offset" value="0">
+          <button type="button" data-plugin="refreshSearchResults" class="lex-results__refresh" data-toggle="tooltip" th:title="#{common.refresh.search}">
+            <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+          </button>
+        </form>
       </div>
-      <form th:action="@{/lex_paging}" method="post">
-        <input type="hidden" name="searchUri" th:value="${searchUri}">
-        <input type="hidden" name="pageNum" th:value="${wordsResult.currentPage}">
-        <input type="hidden" name="direction" value="page">
-        <input type="hidden" name="offset" value="0">
-        <button type="button" data-plugin="refreshSearchResults" class="lex-results__refresh" data-toggle="tooltip" th:title="#{common.refresh.search}">
-          <span class="material-symbols-outlined" aria-hidden="true">cached</span>
-        </button>
-      </form>
+      <button type="button" class="lex-results__collapse" data-plugin="searchPaneCollapse" data-toggle="tooltip" th:title="#{lex.results.collapse}">
+        <span class="material-symbols-outlined" aria-hidden="true">left_panel_close</span>
+      </button>
     </div>
     <th:block th:replace=" :: search_result_rows"></th:block>
   </div>
@@ -29,16 +32,17 @@
         class="lex-results__row">
         <button
           type="button"
+          class="lex-results__row-btn"
           data-plugin="contextmenu, loadDetailsPlugin"
           data-contextmenu:compare="Ava uues paneelis"
           th:data-id="${word.wordId}"
           name="details-btn">
           <div class="lex-results__row-title">
-            <span class="lex-results__badge" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
             <span>
               <th:block th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</th:block>
               <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
             </span>
+            <span class="lex-results__badge" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
           </div>
           <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
           <span th:if="${!word.wordPublic}">Mitteavalik keelend</span>
@@ -50,14 +54,51 @@
               <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
             </span>
           </span>
-          <span class="lex-results__status">
-            <span th:id="${'select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-          </span>
         </button>
+        <button
+          type="button"
+          class="lex-results__toggle"
+          data-plugin="togglePanelPlugin"
+          th:data-id="${word.wordId}">
+          <span class="material-symbols-outlined lex-results__toggle-open" aria-hidden="true" th:title="#{lex.results.open.column}">add_column_right</span>
+          <span class="material-symbols-outlined lex-results__toggle-close" aria-hidden="true" th:title="#{lex.results.close.panel}">close</span>
+        </button>
+        <span class="lex-results__status">
+          <span th:id="${'select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+        </span>
       </li>
     </ul>
     <th:block th:if="${wordsResult.showPaging}">
-      <div th:replace="components :: paging(${wordsResult})"></div>
+      <form th:action="@{/lex_paging}" method="post" class="lex-results__paging">
+        <input type="hidden" name="searchUri" th:value="${searchUri}">
+        <input type="hidden" name="offset" th:value="${wordsResult.offset}">
+        <input type="hidden" name="totalPages" th:value="${wordsResult.totalPages}" disabled="disabled">
+        <input type="hidden" name="direction">
+        <input type="hidden" name="pageNum">
+        <span class="lex-results__paging-label" th:text="#{common.page}">Lehekülg</span>
+        <div class="lex-results__pages">
+          <button type="button" data-direction="previous" data-plugin="pagingBtnPlugin"
+                  th:data-active="${wordsResult.previousPageExists}"
+                  th:disabled="${wordsResult.previousPageExists ? null : true}"
+                  th:title="#{common.previous.page}">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+          </button>
+          <span class="lex-results__page-select">
+            <select data-page-input data-plugin="pagingSelectPlugin" th:title="#{common.select.page}">
+              <option th:each="i : ${#numbers.sequence(1, wordsResult.totalPages)}"
+                      th:value="${i}" th:text="${i}" th:selected="${i == wordsResult.currentPage}"></option>
+            </select>
+            <span th:text="${' / ' + wordsResult.totalPages}"></span>
+          </span>
+          <button type="button" data-direction="next" data-plugin="pagingBtnPlugin"
+                  th:data-active="${wordsResult.nextPageExists}"
+                  th:disabled="${wordsResult.nextPageExists ? null : true}"
+                  th:title="#{common.next.page}">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </button>
+          <button type="button" hidden data-direction="page" data-page-button data-plugin="pagingBtnPlugin"></button>
+        </div>
+      </form>
     </th:block>
   </th:block>
   <form th:action="@{/update_paging}" method="post" id="pagingForm" th:fragment="lexeme_paging(pagingResult)">

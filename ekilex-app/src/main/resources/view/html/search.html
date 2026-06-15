@@ -8,16 +8,6 @@
   <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
     <eki-toast id="search-toast-container"></eki-toast>
     <div class="d-flex flex-row flex-nowrap search-header">
-      <!--/* Search-results pane toggle removed from the redesigned lex/term header;
-             it relocates elsewhere in a separate task. Kept here for that move.
-      <div th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
-           data-plugin="paneToggle"
-           data-hideable="searchColumn"
-           data-extendable="resultColumn"
-           class="searchResultsToggle">
-        <i class="fa fa-list" aria-hidden="true"></i>
-      </div>
-      */-->
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
       <input type="hidden" id="isSearchFilterValid" value="false">
       <div class="flex-shrink-0 flex-grow-0 pr-2" th:if="${!#lists.isEmpty(allDatasets) && showDatasetSelect}" th:insert="~{::dataset_select}"></div>

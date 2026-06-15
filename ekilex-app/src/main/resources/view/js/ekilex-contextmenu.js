@@ -195,24 +195,7 @@ class ContextMenu {
   }
 
   onClosepanel() {
-    let detailsDiv = this?.element?.closest(`#details-area[data-id="${this.elementId}"]`);
-    const detailsDivParent = detailsDiv?.parent();
-    const detailsDivIndex = detailsDivParent?.children()?.index(detailsDiv);
-    // Remove data for the panel that is about to be removed
-    PanelBreadcrumbs.removeDataByIndex(detailsDivIndex);
-    if (!detailsDiv?.length) {
-      detailsDiv = $(`#details-area[data-id="${this.elementId}"]`);
-    }
-    detailsDiv.animate({
-      opacity: 0,
-    }, 250, function() {
-      $(this).remove();
-      $(window).trigger('update:wordId');
-    });
-    $(`#word-result-${this.elementId}`).removeClass('active');
-    const button = $(`#word-result-${this.elementId}`).find('button');
-    button.removeAttr('data-contextmenu:closePanel');
-    button.attr('data-contextmenu:compare', 'Ava uues paneelis');
+    closeDetailPanel(this.elementId, this.element);
   }
 
   onSharelink() {

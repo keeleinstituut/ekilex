@@ -796,6 +796,60 @@ function refreshDetails() {
 	$('#refresh-details').trigger('click');
 }
 
+// Inline result-row button: opens the word in a new comparison column when the
+// row is closed, or closes its panel when already open. Mirrors the right-click
+// "Ava uues paneelis" / "Sulge paneel" context-menu actions.
+$.fn.togglePanelPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			const wordOrMeaningId = btn.data('id');
+			const row = $(`#word-result-${wordOrMeaningId}`);
+			if (row.hasClass('active')) {
+				closeDetailPanel(wordOrMeaningId);
+			} else {
+				loadDetails(wordOrMeaningId, 'compare');
+			}
+		});
+	});
+}
+
+// Collapses / expands the lex search-results bar to a thin rail. Used by both the
+// header (left_panel_close) and the rail (left_panel_open) buttons; state persists
+// in a cookie like the generic paneToggle.
+$.fn.searchPaneCollapse = function() {
+	const STORAGE_KEY = 'lex-results-collapsed';
+	const COLLAPSED_CLASS = 'lex-results__container--collapsed';
+	return this.each(function() {
+		const btn = $(this);
+		const container = $('.lex-results__container');
+		// Apply the persisted state once, regardless of how many toggle buttons exist
+		if (!container.data('collapseInit')) {
+			container.toggleClass(COLLAPSED_CLASS, Cookies.get(STORAGE_KEY) === 'true');
+			container.data('collapseInit', true);
+		}
+		btn.on('click', function(e) {
+			e.preventDefault();
+			const collapsed = !container.hasClass(COLLAPSED_CLASS);
+			container.toggleClass(COLLAPSED_CLASS, collapsed);
+			Cookies.set(STORAGE_KEY, collapsed, 365);
+		});
+	});
+}
+
+// Page-jump dropdown in the results pagination: changing the select triggers the
+// hidden "page" paging button so the existing pagingBtnPlugin handles the request.
+$.fn.pagingSelectPlugin = function() {
+	return this.each(function() {
+		const select = $(this);
+		select.on('change', function() {
+			select.closest('form').find('[data-page-button]').trigger('click');
+		});
+	});
+}
+
 $.fn.refreshSearchResults = function() {
 	const btn = $(this);
 	btn.on('click', function(e) {
@@ -1203,6 +1257,33 @@ function scrollDetails(div, scrollPosition) {
 	}
 }
 
+// Closes the detail panel opened for the given word/meaning id and restores the
+// matching result row to its "closed" state. Shared by the right-click context
+// menu (ContextMenu.onClosepanel) and the inline row close button
+// (togglePanelPlugin). `element` is optional — when called from the panel's own
+// context menu it scopes the lookup, otherwise the panel is found by data-id.
+function closeDetailPanel(wordOrMeaningId, element) {
+	let detailsDiv = element ? element.closest(`#details-area[data-id="${wordOrMeaningId}"]`) : $();
+	if (!detailsDiv || !detailsDiv.length) {
+		detailsDiv = $(`#details-area[data-id="${wordOrMeaningId}"]`);
+	}
+	const detailsDivParent = detailsDiv.parent();
+	const detailsDivIndex = detailsDivParent.children().index(detailsDiv);
+	// Remove breadcrumb data for the panel that is about to be removed
+	PanelBreadcrumbs.removeDataByIndex(detailsDivIndex);
+	detailsDiv.animate({
+		opacity: 0,
+	}, 250, function() {
+		$(this).remove();
+		$(window).trigger('update:wordId');
+	});
+	const row = $(`#word-result-${wordOrMeaningId}`);
+	row.removeClass('active');
+	const button = row.find('[name="details-btn"]');
+	button.removeAttr('data-contextmenu:closePanel');
+	button.attr('data-contextmenu:compare', 'Ava uues paneelis');
+}
+
 function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 	ScrollStore.saveActiveScroll();
 	// Hide all existing loading spinners and show current one
@@ -1283,7 +1364,7 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 
 		$('#results_div .list-group-item, #results_div .lex-results__row').each(function() {
 			const elem = $(this);
-			const button = elem.find('button');
+			const button = elem.find('[name="details-btn"]');
 			if (elem.is('.active')) {
 				button.removeAttr('data-contextmenu:compare');
 				button.attr('data-contextmenu:closePanel', 'Sulge paneel');
