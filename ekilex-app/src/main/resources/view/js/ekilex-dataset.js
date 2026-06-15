@@ -14,6 +14,12 @@ function initializeDatasets() {
 		$('#codeExistsError').hide();
 	});
 
+	$('#addDatasetForm').find('input[name="code"]').on('input', function() {
+		const cursorPosition = this.selectionStart;
+		this.value = this.value.toLowerCase();
+		this.setSelectionRange(cursorPosition, cursorPosition);
+	});
+
 	initClassifierAutocomplete();
 
 	$('.dataset-domain-select').selectpicker({ width: '100%' });
@@ -113,10 +119,9 @@ function emptyAndDisableSelect(selectCtl) {
 };
 
 function isValidDatasetCodeFormat(code) {
-	//don't allow spaces, tabls ? and %
-	let pattern = /^((?!\?|\%)\S)*$/;
+	const pattern = /^[a-z0-9_-]{1,7}$/;
 	return pattern.test(code);
-};
+}
 
 function deleteDataset(datasetCode) {
 	openWaitDlg(messages["common.please.wait"]);

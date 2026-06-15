@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformOwner;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
@@ -100,6 +101,8 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 
 	@Transactional(rollbackFor = Exception.class)
 	public void createDataset(Dataset dataset) {
+
+		dataset.setType(DatasetType.TERM);
 
 		datasetDbService.createDataset(dataset);
 		addDatasetToSelectedClassifiers(dataset);

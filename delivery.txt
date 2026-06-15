@@ -10,3 +10,5 @@ Märkused ver 1.48.0 tarne kohta:
    classif-lang-group-vsl.tsv
    classif-lang-vsl.tsv
    
+   paarkümmend sekundit
+   

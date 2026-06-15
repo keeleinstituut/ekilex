@@ -1,5 +1,6 @@
 package eki.ekilex.cli.runner;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.data.Count;
 import eki.ekilex.data.conx.Construct;
 import eki.ekilex.data.conx.ConstructMember;
+import eki.ekilex.data.conx.ConstructMemberStat;
 import eki.ekilex.data.conx.Sentence;
 import eki.ekilex.data.conx.SentenceMember;
 import eki.ekilex.service.db.ConstructDbService;
@@ -35,9 +37,15 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private List<Map<String, Object>> origConstructMembers;
 
+	private List<Map<String, Object>> origConstructRelations;
+
+	private List<Map<String, Object>> origConstructMemberStats;
+
 	private List<Map<String, Object>> origRealizations;
 
 	private List<Map<String, Object>> origRealizationMembers;
+
+	private List<Map<String, Object>> origRealizationTranslations;
 
 	private List<Map<String, Object>> origWords;
 
@@ -59,6 +67,10 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, Long> sentenceMemberIdMap;
 
+	private Map<String, Long> formIdMap;
+
+	private Map<Long, Long> formToLexemeIdMap;
+
 	private boolean isCreate = true;
 
 	@Transactional(rollbackFor = Exception.class)
@@ -74,15 +86,10 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		Count sentenceMemberMissingWordCount = new Count();
 
 		createConstructs(constructCreateCount, constructMemberCreateCount);
-
-		List<Map<String, Object>> origConstructRealizations = origRealizations.stream()
-				.filter(record -> record.get("construction_id") != null)
-				.collect(Collectors.toList());
-
-		for (Map<String, Object> origRealization : origConstructRealizations) {
-
-			createSentence(origRealization, sentenceCreateCount, sentenceMemberCreateCount, sentenceMemberFirstHomonymCount, sentenceMemberMissingWordCount);
-		}
+		createConstructRelations();
+		createSentences(sentenceCreateCount, sentenceMemberCreateCount, sentenceMemberFirstHomonymCount, sentenceMemberMissingWordCount);
+		createSentenceTranslations();
+		createConstructMemberStat();
 
 		logger.info("Created constructs: {}", constructCreateCount.getValue());
 		logger.info("Created construct members: {}", constructMemberCreateCount.getValue());
@@ -94,7 +101,7 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadDataFile(String dataFilePath) throws Exception {
+	private void loadDataFile(String dataFilePath) throws Exception {
 
 		//construction, construction_relation?, conx_member, word, realization, realization_member, realization_translation?, form, statistics
 
@@ -103,8 +110,11 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Object> dataMap = objectMapper.readValue(dataJson, Map.class);
 		origConstructs = (List<Map<String, Object>>) dataMap.get("construction");
 		origConstructMembers = (List<Map<String, Object>>) dataMap.get("conx_member");
+		origConstructRelations = (List<Map<String, Object>>) dataMap.get("construction_relation");
+		origConstructMemberStats = (List<Map<String, Object>>) dataMap.get("statistics");
 		origRealizations = (List<Map<String, Object>>) dataMap.get("realization");
 		origRealizationMembers = (List<Map<String, Object>>) dataMap.get("realization_member");
+		origRealizationTranslations = (List<Map<String, Object>>) dataMap.get("realization_translation");
 		origWords = (List<Map<String, Object>>) dataMap.get("word");
 		origForms = (List<Map<String, Object>>) dataMap.get("form");
 
@@ -117,9 +127,11 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		constructMemberIdMap = new HashMap<>();
 		sentenceIdMap = new HashMap<>();
 		sentenceMemberIdMap = new HashMap<>();
+		formIdMap = new HashMap<>();
+		formToLexemeIdMap = new HashMap<>();
 	}
 
-	public void createConstructs(Count constructCreateCount, Count constructMemberCreateCount) {
+	private void createConstructs(Count constructCreateCount, Count constructMemberCreateCount) {
 
 		// -- constructs --
 
@@ -206,7 +218,73 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	public Long createSentence(
+	private void createConstructRelations() {
+
+		// this is BS. client needs educating
+
+		for (Map<String, Object> origConstructRelation : origConstructRelations) {
+
+			String origConstruct1Id = getId(origConstructRelation, "construction1_id");
+			String origConstruct2Id = getId(origConstructRelation, "construction2_id");
+			String constructRelationTypeCode = getStringValue(origConstructRelation, "relation");
+
+			Long construct1Id = constructIdMap.get(origConstruct1Id);
+			Long construct2Id = constructIdMap.get(origConstruct2Id);
+
+			constructDbService.createConstructRelation(construct1Id, construct2Id, constructRelationTypeCode);
+		}
+	}
+
+	private void createConstructMemberStat() {
+
+		for (Map<String, Object> origConstructMemberStat : origConstructMemberStats) {
+
+			String origFormId = getId(origConstructMemberStat, "form_id");
+			String origConstructMemberId = getId(origConstructMemberStat, "conx_member_id");
+			Long frequency = getLongValue(origConstructMemberStat, "frequency");
+			BigDecimal salience = getBigDecimalValue(origConstructMemberStat, "salience");
+			String proficiencyLevelCode = getStringValue(origConstructMemberStat, "language_level");
+
+			Long constructMemberId = constructMemberIdMap.get(origConstructMemberId);
+			Long formId = formIdMap.get(origFormId);
+			Long lexemeId = formToLexemeIdMap.get(formId);
+
+			if (formId == null) {
+				continue;
+			}
+			if (lexemeId == null) {
+				continue;
+			}
+
+			ConstructMemberStat constructMemberStat = new ConstructMemberStat();
+			constructMemberStat.setConstructMemberId(constructMemberId);
+			constructMemberStat.setLexemeId(lexemeId);
+			constructMemberStat.setFormId(formId);
+			constructMemberStat.setFrequency(frequency);
+			constructMemberStat.setSalience(salience);
+			constructMemberStat.setProficiencyLevelCode(proficiencyLevelCode);
+
+			constructDbService.createConstructMemberStat(constructMemberStat);
+		}
+	}
+
+	private void createSentences(
+			Count sentenceCreateCount,
+			Count sentenceMemberCreateCount,
+			Count sentenceMemberFirstHomonymCount,
+			Count sentenceMemberMissingWordCount) {
+
+		List<Map<String, Object>> origConstructRealizations = origRealizations.stream()
+				.filter(record -> record.get("construction_id") != null)
+				.collect(Collectors.toList());
+
+		for (Map<String, Object> origRealization : origConstructRealizations) {
+
+			createSentence(origRealization, sentenceCreateCount, sentenceMemberCreateCount, sentenceMemberFirstHomonymCount, sentenceMemberMissingWordCount);
+		}
+	}
+
+	private Long createSentence(
 			Map<String, Object> origRealization,
 			Count sentenceCreateCount,
 			Count sentenceMemberCreateCount,
@@ -304,12 +382,14 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 				if (wordId != null) {
 
 					// pick first
-					List<Long> lexemeIds = migrationDbService.getLexemeIds(wordId, DATASET_EKI);
-					lexemeId = lexemeIds.get(0);
-
-					// pick first
 					List<Long> formIds = migrationDbService.getFormIds(wordId, sentenceMemberFormValue, sentenceMemberMorphCode);
 					formId = formIds.get(0);
+					formIdMap.put(origMemberFormId, formId);
+
+					// pick first
+					List<Long> lexemeIds = migrationDbService.getLexemeIdsByWord(wordId, DATASET_EKI);
+					lexemeId = lexemeIds.get(0);
+					formToLexemeIdMap.put(formId, lexemeId);
 				}
 
 			} else if (origMemberWordId != null) {
@@ -346,7 +426,23 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		return sentenceId;
 	}
 
-	public boolean idEquals(Map<String, Object> dataMap, String fieldName, String fieldValue) {
+	private void createSentenceTranslations() {
+
+		for (Map<String, Object> origRealizationTranslation : origRealizationTranslations) {
+
+			String origRealizationId = getId(origRealizationTranslation, "realization_id");
+			String value = getStringValue(origRealizationTranslation, "value");
+			String lang = getStringValue(origRealizationTranslation, "lang");
+
+			Long sentenceId = sentenceIdMap.get(origRealizationId);
+			if (sentenceId == null) {
+				continue;
+			}
+			constructDbService.createSentenceTranslation(sentenceId, value, lang);
+		}
+	}
+
+	private boolean idEquals(Map<String, Object> dataMap, String fieldName, String fieldValue) {
 		String id = getId(dataMap, fieldName);
 		return StringUtils.equals(id, fieldValue);
 	}
@@ -377,6 +473,14 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private Integer getIntegerValue(Map<String, Object> dataMap, String fieldName) {
 		return valueUtil.toInteger(dataMap.get(fieldName));
+	}
+
+	private Long getLongValue(Map<String, Object> dataMap, String fieldName) {
+		return valueUtil.toLong(dataMap.get(fieldName));
+	}
+
+	private BigDecimal getBigDecimalValue(Map<String, Object> dataMap, String fieldName) {
+		return valueUtil.toBigDecimal(dataMap.get(fieldName));
 	}
 
 	private List<String> getStringValues(Map<String, Object> dataMap, String fieldName) {
