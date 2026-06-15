@@ -765,6 +765,17 @@
   }
 }
 
+.ekiAccordion table.etym-tree-table {
+  width: 100%;
+
+  td,
+  td:first-child {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
 .w-30 {
   width: 30%;
 }

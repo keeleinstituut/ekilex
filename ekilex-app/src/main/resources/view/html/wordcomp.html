@@ -469,7 +469,7 @@
       </div>
       <div class="ekiAccordion__content">
         <!-- TODO ajutine kuva  -->
-        <table th:if="${details.word.etymTree}" class="table table-sm table-borderless">
+        <table th:if="${details.word.etymTree}" class="table table-sm table-borderless etym-tree-table">
           <th:block th:each="wordEtymLevel, wordEtymLevelIter : ${details.word.etymTree.levels}">
             <tr>
               <td>
