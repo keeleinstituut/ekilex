@@ -42,7 +42,7 @@
               <th:block th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</th:block>
               <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
             </span>
-            <span class="lex-results__badge" th:text="${word.homonymNr}" th:if="${word.homonymNr > 1}"></span>
+            <span class="lex-results__badge" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
           </div>
           <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
           <span th:if="${!word.wordPublic}">Mitteavalik keelend</span>
