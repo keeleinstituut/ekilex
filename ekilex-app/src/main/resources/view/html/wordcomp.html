@@ -472,13 +472,13 @@
         <table th:if="${details.word.etymTree}" class="table table-sm table-borderless etym-tree-table">
           <th:block th:each="wordEtymLevel, wordEtymLevelIter : ${details.word.etymTree.levels}">
             <tr>
-              <td>
-                <span th:text="${wordEtymLevel.level}"></span>
+              <td class="px-1">
+                <strong th:text="${wordEtymLevel.level}"></strong>
               </td>
               <td>
                 <table th:if="${wordEtymLevel.groups}" class="table table-sm table-bordered">
                   <tr>
-                    <td th:each="wordEtymGroup : ${wordEtymLevel.groups}">
+                    <td th:each="wordEtymGroup : ${wordEtymLevel.groups}" class="px-2">
                       <div>
                         <span th:text="${wordEtymGroup.groupType}" class="text-muted"></span>
                       </div>
