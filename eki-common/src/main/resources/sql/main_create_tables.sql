@@ -632,6 +632,7 @@ create table word_group_member (
 );
 alter sequence word_group_member_id_seq restart with 10000;
 
+-- TODO obsolete, remove later
 create table word_etymology (
   id bigserial primary key, 
   word_id bigint references word(id) on delete cascade not null, 
@@ -644,6 +645,7 @@ create table word_etymology (
 );
 alter sequence word_etymology_id_seq restart with 10000;
 
+-- TODO obsolete, remove later
 create table word_etymology_source_link (
   id bigserial primary key, 
   word_etym_id bigint references word_etymology(id) on delete cascade not null, 
@@ -654,6 +656,7 @@ create table word_etymology_source_link (
 );
 alter sequence word_etymology_source_link_id_seq restart with 10000;
 
+-- TODO obsolete, remove later
 create table word_etymology_relation (
   id bigserial primary key, 
   word_etym_id bigint references word_etymology(id) on delete cascade not null, 
@@ -666,6 +669,77 @@ create table word_etymology_relation (
   unique(word_etym_id, related_word_id)
 );
 alter sequence word_etymology_relation_id_seq restart with 10000;
+
+create table word_etym (
+	id bigserial primary key, 
+	word_id bigint references word(id) on delete cascade not null, 
+	etymology_year text null,
+	unique(word_id)
+);
+alter sequence word_etym_id_seq restart with 10000;
+
+create table word_etym_comment (
+	id bigserial primary key, 
+	word_etym_id bigint references word_etym(id) on delete cascade not null,
+	value text not null,
+	value_prese text not null,
+	orig_name text not null,
+	order_by bigserial
+);
+alter sequence word_etym_comment_id_seq restart with 10000;
+
+create table word_etym_note (
+	id bigserial primary key, 
+	word_etym_id bigint references word_etym(id) on delete cascade not null,
+	value text not null,
+	value_prese text not null,
+	lang char(3) references language(code) not null,
+	is_public boolean default true not null,
+	created_by text null,
+	created_on timestamp null, 
+	modified_by text null, 
+	modified_on timestamp null, 
+	order_by bigserial
+);
+alter sequence word_etym_note_id_seq restart with 10000;
+
+create table word_etym_source_link (
+	id bigserial primary key, 
+	word_etym_id bigint references word_etym(id) on delete cascade not null,
+	source_id bigint references source(id) on delete cascade not null, 
+	name text null, 
+	value text null, 
+	order_by bigserial
+);
+alter sequence word_etym_source_link_id_seq restart with 10000;
+
+create table word_etym_group (
+	id bigserial primary key, 
+	group_type varchar(100) not null,
+	etymology_type_code varchar(100) references etymology_type(code), 
+	language_group_id bigint references language_group(id) on delete cascade,
+	lang char(3) references language(code) on delete cascade,
+	is_questionable boolean not null default false
+);
+alter sequence word_etym_group_id_seq restart with 10000;
+
+create table word_etym_group_tree (
+	id bigserial primary key,
+	parent_word_etym_group_id bigint references word_etym_group(id) on delete cascade not null,
+	child_word_etym_group_id bigint references word_etym_group(id) on delete cascade not null,
+	order_by bigserial not null,
+	unique(parent_word_etym_group_id, child_word_etym_group_id)
+);
+alter sequence word_etym_group_tree_id_seq restart with 10000;
+
+create table word_etym_group_member (
+	id bigserial primary key, 
+	word_etym_group_id bigint references word_etym_group(id) on delete cascade not null,
+	word_etym_id bigint references word_etym(id) on delete cascade not null,
+	is_questionable boolean not null default false, 
+	order_by bigserial not null
+);
+alter sequence word_etym_group_member_id_seq restart with 10000;
 
 create table word_os_homonym_nr (
   id bigserial primary key,
