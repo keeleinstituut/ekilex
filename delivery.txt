@@ -1,14 +1,95 @@
 Märkused ver 1.48.0 tarne kohta:
 
-1. migration
+Tarne sisaldab andmemudeli täiendusi, andmelaadimisi ja andmeparandusi ekilex andmebaasis.
 
-2. keelegruppide ja mäpingute laadur ja validaator
-   
-   mvn spring-boot:run -P langr -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/apps/data/etym/""
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
 
-   classif-lang-group-ss1.tsv
-   classif-lang-group-vsl.tsv
-   classif-lang-vsl.tsv
+2) Ehita tarkvara tarkvaraprojekti juurikast.
+
+   ../ekilex>mvn clean install -D skipTests
+
+   Ekilex rakenduse pake asub
+
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+
+   Sõnaveebi rakenduse pake asub
+
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+3) Käivita ekilex andmebaasis muudatuste skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
    
-   paarkümmend sekundit
+   Skript jookseb mõne sekundi
+   
+4) Seadista keelegruppide ja etümoloogia laadimise utiliidid.
+
+   1. loo rakenduse "dev"-profiili määrangute fail:
+
+      ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+
+   2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+      spring.datasource.main.jdbcUrl=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.main.username=<username>
+      spring.datasource.main.password=<password>
+      
+      logging.level.root=warn
+      logging.level.eki.ekilex=debug
+      logging.level.eki.common=info
+      logging.level.org.jooq=warn
+      
+      Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+      Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+      Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+	  
+   3. kopeeri tarnega kaasatud järgnevad failid kohalikku failisüsteemi samasse kataloogi utiliitrakendusele juurdepääsetavasse kohta:
+   
+      classif-lang-group-ss1.tsv
+	  classif-lang-group-vsl.tsv
+	  classif-lang-ss1.tsv
+	  classif-lang-vsl.tsv
+	  etymoloogia_ss1.xml
+	  
+   4. kehtib korraga mõlema rakenduse kohta:
+   
+      "impfolder" on viide kataloogile kus asuvad korraga kõik eelmises punktis mainitud failid. Ükski fail ei tohi puududa!
+      Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+      See on antud juhul kasulik kiireks tagasisideks rakenduselt.
+      Logi lõppeb infoga "BUILD SUCCESS".
+      Kui logi lõpetab kirjaga "BUILD FAIL", informeeri arendajat.
+	  Utiliitide käivitamise järjekord on kriitiliselt oluline!
+
+   5. käivita keelegruppide laadimise rakendus ekilex/ekilex-app rajalt:
+
+      mvn spring-boot:run -P langr -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/path/to/files/""
+	  
+	  Rakendus jookseb läbi sekunditega
+	  
+   6. käivita etümoloogia laadimise rakendus ekilex/ekilex-app rajalt:
+   
+      mvn spring-boot:run -P etyl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfolder="/path/to/files/""
+	  
+	  Rakendus jookseb läbi kahe minutiga
+	  Rakendus annab logisse tagasisidet laadimise progressi kohta %-des.
+
+5) Sõnaveebi andmebaasi agregeerimine.
+
+   1. Kustuta ja taasloo Ekilex andmebaasis senised põhi-Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_ww_views.sql
+
+   2. Kustuta ja taasloo Sõnaveebi andmebaasis põhi-Sõnaveebi materjaliseeritud vaated ja andmetüübid ja lae andmed skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_ww_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+6) Seo rakenduste *.jar failid teenustega nagu seni ja käivita. Kontrolli peale käivitamist rakenduste logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
    
