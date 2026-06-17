@@ -480,7 +480,7 @@
                   <tr>
                     <td th:each="wordEtymGroup : ${wordEtymLevel.groups}" class="px-2">
                       <div>
-                        <span th:text="${wordEtymGroup.groupType}" class="text-muted"></span>
+                        <strong th:text="${wordEtymGroup.groupType}" class="text-muted"></strong>
                       </div>
                       <div>
                         <span th:if="${wordEtymGroup.questionable}">?</span>

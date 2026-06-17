@@ -102,7 +102,7 @@ public class WordEtymDbService implements GlobalConstant, FreeformConstant {
 										DSL.key("id").value(wesl.ID),
 										DSL.key("wordEtymId").value(wesl.WORD_ETYM_ID),
 										DSL.key("sourceId").value(wesl.SOURCE_ID),
-										DSL.key("value").value(wesl.VALUE))))
+										DSL.key("name").value(wesl.NAME))))
 				.from(wesl)
 				.where(wesl.WORD_ETYM_ID.eq(werec.field("word_etym_id", Long.class)))
 				.groupBy(wesl.WORD_ETYM_ID)
