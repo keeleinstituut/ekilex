@@ -164,7 +164,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		} else {
 			searchWordUnaccent = asWordResult.getValue();
 		}
-		List<Word> allWords = searchDbService.getWords(searchWordUnaccent, searchContext, false);
+		List<Word> allWords = searchDbService.getWords(searchWordUnaccent, searchContext, true);
 		wordConversionUtil.setWordTypeFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonymWithLang(allWords, searchWordValue, homonymNr, lang);
