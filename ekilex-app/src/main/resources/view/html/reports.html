@@ -26,6 +26,9 @@
           <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
             <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
           </th:block>
+          <th:block th:case="${T(eki.ekilex.constant.ReportType).SYN_WORK}">
+            <th:block th:replace="reportscomp :: syn_work_form"></th:block>
+          </th:block>
         </th:block>
         <hr class="my-3">
         <div th:fragment="reports" id="report-list" class="mt-4">

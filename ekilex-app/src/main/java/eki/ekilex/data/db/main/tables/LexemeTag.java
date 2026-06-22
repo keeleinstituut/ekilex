@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
      * The column <code>public.lexeme_tag.created_on</code>.
      */
     public final TableField<LexemeTagRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.lexeme_tag.created_by</code>.
+     */
+    public final TableField<LexemeTagRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.CLOB, this, "");
 
     private LexemeTag(Name alias, Table<LexemeTagRecord> aliased) {
         this(alias, aliased, null);
@@ -171,11 +176,11 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, String, LocalDateTime> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, String, LocalDateTime, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

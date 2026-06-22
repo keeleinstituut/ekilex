@@ -569,13 +569,16 @@ public class CompositionService extends AbstractCudService implements PermConsta
 
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = lookupDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
+
 		if (meaningsShareCommonWord) {
+			String userName = userContext.getUserName();
+
 			for (IdPair lexemeIdPair : meaningsCommonWordsLexemeIdPairs) {
 				Long targetLexemeId = lexemeIdPair.getId1();
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				updateLexemeLevels(sourceLexemeId, "delete");
 				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
-				tagDbService.createLexemeAutomaticTags(targetLexemeId);
+				tagDbService.createLexemeAutomaticTags(targetLexemeId, userName);
 			}
 		}
 	}

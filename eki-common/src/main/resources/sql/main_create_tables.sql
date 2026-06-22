@@ -1200,11 +1200,12 @@ create table lexeme_note_source_link (
 alter sequence lexeme_note_source_link_id_seq restart with 10000;
 
 create table lexeme_tag (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  tag_name varchar(100) references tag(name) on delete cascade not null, 
-  created_on timestamp not null default statement_timestamp(), 
-  unique(lexeme_id, tag_name)
+	id bigserial primary key,
+	lexeme_id bigint references lexeme(id) on delete cascade not null,
+	tag_name varchar(100) references tag(name) on delete cascade not null,
+	created_by text null,
+	created_on timestamp not null default statement_timestamp(),
+	unique(lexeme_id, tag_name)
 );
 alter sequence lexeme_tag_id_seq restart with 10000;
 

@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.DatasetType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.ekilex.constant.QueueAction;
 import eki.ekilex.constant.ReportStatus;
@@ -24,12 +26,13 @@ import eki.ekilex.data.Report;
 import eki.ekilex.data.ReportContent;
 import eki.ekilex.data.ReportParameters;
 import eki.ekilex.data.ReportQueueContent;
+import eki.ekilex.data.SynWorkReportContent;
 import eki.ekilex.data.TermDatasetReportContent;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.ReportDbService;
 
 @Component
-public class ReportService implements PermConstant {
+public class ReportService implements GlobalConstant, PermConstant {
 
 	private static final List<String> TERM_DATASET_REPORT_EXCLUDED_DATASETS = Arrays.asList(
 			"kce", "eki", "ety", "gal", "iht_200915", "ing", "konstr", "üliõpsõnad", "linguae", "les", "neen", "p3m_vana",
@@ -93,10 +96,12 @@ public class ReportService implements PermConstant {
 	public ReportContent deserializeContent(Report report) throws Exception {
 
 		ReportType reportType = report.getType();
+		String contentJson = report.getContent();
 
 		ReportContent content = switch (reportType) {
-		case TERM_DATASET -> objectMapper.readValue(report.getContent(), TermDatasetReportContent.class);
-		default -> throw new IllegalArgumentException("Content not implemented for report type: " + report.getType());
+		case TERM_DATASET -> objectMapper.readValue(contentJson, TermDatasetReportContent.class);
+		case SYN_WORK -> objectMapper.readValue(contentJson, SynWorkReportContent.class);
+		default -> throw new IllegalArgumentException("Content not implemented for report type: " + reportType);
 		};
 
 		return content;
@@ -110,6 +115,7 @@ public class ReportService implements PermConstant {
 
 		Workbook workbook = switch (report.getType()) {
 		case TERM_DATASET -> workbookService.toTermDatasetWorkbook((TermDatasetReportContent) content);
+		case SYN_WORK -> workbookService.toSynWorkWorkbook((SynWorkReportContent) content);
 		default -> throw new IllegalArgumentException("File download not implemented for report type: " + report.getType());
 		};
 
@@ -117,6 +123,26 @@ public class ReportService implements PermConstant {
 		workbook.write(byteStream);
 		workbook.close();
 		return byteStream.toByteArray();
+	}
+
+	public List<ReportType> getAccessibleReportTypes(EkiUser user) {
+
+		boolean isAdmin = user.isAdmin();
+		boolean hasEkiDatasetCrudPermission = user.getDatasetPermissions().stream()
+				.anyMatch(permission -> DATASET_EKI.equals(permission.getDatasetCode())
+						&& AUTH_OPS_CRUD.contains(permission.getAuthOperation().name()));
+
+		List<ReportType> accessibleReportTypes = new ArrayList<>();
+
+		if (isAdmin || hasEkiDatasetCrudPermission) {
+			accessibleReportTypes.add(ReportType.SYN_WORK);
+		}
+
+		if (isAdmin || user.isDatasetCrudPermissionsExist()) {
+			accessibleReportTypes.add(ReportType.TERM_DATASET);
+		}
+
+		return accessibleReportTypes;
 	}
 
 	public List<Dataset> getAccessibleTermDatasets(EkiUser user) {

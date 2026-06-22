@@ -1187,15 +1187,15 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public List<Long> createWordLexemesTag(Long wordId, String datasetCode, String tagName) {
+	public List<Long> createWordLexemesTag(Long wordId, String datasetCode, String tagName, String createdBy) {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
 		List<Long> lexemeIds = mainDb
-				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
+				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.CREATED_BY)
 				.select(DSL
-						.select(DSL.val(tagName), l.ID)
+						.select(DSL.val(tagName), l.ID, DSL.val(createdBy))
 						.from(l)
 						.where(
 								l.WORD_ID.eq(wordId)
@@ -1211,15 +1211,15 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeIds;
 	}
 
-	public List<Long> createMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
+	public List<Long> createMeaningLexemesTag(Long meaningId, String datasetCode, String tagName, String createdBy) {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
 		List<Long> lexemeIds = mainDb
-				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
+				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.CREATED_BY)
 				.select(DSL
-						.select(DSL.val(tagName), l.ID)
+						.select(DSL.val(tagName), l.ID, DSL.val(createdBy))
 						.from(l)
 						.where(
 								l.MEANING_ID.eq(meaningId)
@@ -1644,7 +1644,7 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemePosId;
 	}
 
-	public Long createLexemeTag(Long lexemeId, String tagName) {
+	public Long createLexemeTag(Long lexemeId, String tagName, String createdBy) {
 		Long lexemeTagId = mainDb
 				.select(LEXEME_TAG.ID)
 				.from(LEXEME_TAG)
@@ -1654,8 +1654,8 @@ public class CudDbService extends AbstractDataDbService {
 				.fetchOneInto(Long.class);
 		if (lexemeTagId == null) {
 			lexemeTagId = mainDb
-					.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
-					.values(lexemeId, tagName)
+					.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME, LEXEME_TAG.CREATED_BY)
+					.values(lexemeId, tagName, createdBy)
 					.returning(LEXEME_TAG.ID)
 					.fetchOne()
 					.getId();

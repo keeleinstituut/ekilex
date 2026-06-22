@@ -67,6 +67,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		String dataset = wordDetails.getDataset();
 		Long meaningId = wordDetails.getMeaningId();
 		boolean isMeaningCreate = meaningId == null;
+		String userName = user.getName();
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.getValueAsWord(value);
@@ -75,7 +76,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		meaningId = wordLexemeMeaningId.getMeaningId();
-		tagDbService.createLexemeAutomaticTags(lexemeId);
+		tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, lexemeId);
 		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -157,8 +158,9 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void createLexemeTag(Long lexemeId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName, userName);
 		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 	}
 
@@ -629,13 +631,14 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLexemesTagComplete", wordId, ActivityOwner.WORD, userRoleDatasetCode, isManualEventOnUpdateEnabled);
 
+		String userName = userContext.getUserName();
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
 
 		if (removeToComplete) {
 			cudDbService.deleteWordLexemesTag(wordId, userRoleDatasetCode, tagName);
 		} else {
-			cudDbService.createWordLexemesTag(wordId, userRoleDatasetCode, tagName);
+			cudDbService.createWordLexemesTag(wordId, userRoleDatasetCode, tagName, userName);
 		}
 
 		activityLogService.createActivityLogUnknownEntity(activityLog, ActivityEntity.TAG);
@@ -691,13 +694,14 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLexemesTagComplete", meaningId, ActivityOwner.MEANING, userRoleDatasetCode, isManualEventOnUpdateEnabled);
 
+		String userName = userContext.getUserName();
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
 
 		if (removeToComplete) {
 			cudDbService.deleteMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
 		} else {
-			cudDbService.createMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
+			cudDbService.createMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName, userName);
 		}
 
 		activityLogService.createActivityLogUnknownEntity(activityLog, ActivityEntity.TAG);

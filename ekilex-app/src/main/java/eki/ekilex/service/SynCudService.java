@@ -186,7 +186,8 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, valuePrese, valueAsWord, value, language, roleDatasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
-		tagDbService.createLexemeAutomaticTags(createdLexemeId);
+		String userName = userContext.getUserName();
+		tagDbService.createLexemeAutomaticTags(createdLexemeId, userName);
 
 		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -77,7 +77,9 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		if (lexemeId == null) {
 			return wordLexemeMeaningId;
 		}
-		tagDbService.createLexemeAutomaticTags(lexemeId);
+
+		String userName = user.getName();
+		tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 
