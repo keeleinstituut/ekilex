@@ -54,9 +54,10 @@ public class ReportService implements GlobalConstant, PermConstant {
 	private ObjectMapper objectMapper;
 
 	@Transactional
-	public List<Report> getReports(ReportType reportType) {
+	public List<Report> getReports(ReportType reportType, EkiUser user) {
 
-		List<Report> reports = reportDbService.getReports(reportType);
+		Long userId = user.getId();
+		List<Report> reports = reportDbService.getReports(reportType, userId);
 
 		reports.forEach(report -> {
 

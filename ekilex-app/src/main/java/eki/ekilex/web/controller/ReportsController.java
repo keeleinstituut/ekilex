@@ -56,7 +56,7 @@ public class ReportsController extends AbstractPrivatePageController {
 			return REDIRECT_PREF + HOME_URI;
 		}
 
-		List<Report> reports = reportService.getReports(reportType);
+		List<Report> reports = reportService.getReports(reportType, user);
 
 		model.addAttribute("selectedReportType", reportType);
 		model.addAttribute("accessibleReportTypes", accessibleReportTypes);
