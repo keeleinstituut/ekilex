@@ -30,7 +30,7 @@ public class SynWorkReportDbService implements GlobalConstant {
 		return mainDb
 				.select(
 						lt.CREATED_BY.as("user_name"),
-						DSL.count(lt.ID).as("completed_lexeme_count"))
+						DSL.countDistinct(l.WORD_ID).as("completed_word_count"))
 				.from(lt, l)
 				.where(
 						lt.LEXEME_ID.eq(l.ID)
@@ -39,7 +39,7 @@ public class SynWorkReportDbService implements GlobalConstant {
 								.and(lt.CREATED_ON.lt(until))
 								.and(l.DATASET_CODE.eq(DATASET_EKI)))
 				.groupBy(lt.CREATED_BY)
-				.orderBy(DSL.field("completed_lexeme_count").desc())
+				.orderBy(DSL.field("completed_word_count").desc())
 				.fetchInto(SynWorkReportUserContribution.class);
 	}
 }

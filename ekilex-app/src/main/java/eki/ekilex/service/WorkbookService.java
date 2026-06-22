@@ -137,13 +137,13 @@ public class WorkbookService {
 		row = sheet.createRow(rowIndex++);
 		cellIndex = 0;
 		createCell(row, cellIndex++, getMessage("report.synwork.user"), boldCellStyle);
-		createCell(row, cellIndex++, getMessage("report.synwork.completed.lexeme.count"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.synwork.completed.word.count"), boldCellStyle);
 
 		for (SynWorkReportUserContribution userContribution : userContributions) {
 			row = sheet.createRow(rowIndex++);
 			cellIndex = 0;
 			createCell(row, cellIndex++, userContribution.getUserName());
-			createCell(row, cellIndex++, userContribution.getCompletedLexemeCount());
+			createCell(row, cellIndex++, userContribution.getCompletedWordCount());
 		}
 
 		return workbook;

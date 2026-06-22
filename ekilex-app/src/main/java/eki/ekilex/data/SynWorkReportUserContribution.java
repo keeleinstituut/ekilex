@@ -8,7 +8,7 @@ public class SynWorkReportUserContribution extends AbstractDataObject {
 
 	private String userName;
 
-	private int completedLexemeCount;
+	private int completedWordCount;
 
 	public String getUserName() {
 		return userName;
@@ -18,11 +18,11 @@ public class SynWorkReportUserContribution extends AbstractDataObject {
 		this.userName = userName;
 	}
 
-	public int getCompletedLexemeCount() {
-		return completedLexemeCount;
+	public int getCompletedWordCount() {
+		return completedWordCount;
 	}
 
-	public void setCompletedLexemeCount(int completedLexemeCount) {
-		this.completedLexemeCount = completedLexemeCount;
+	public void setCompletedWordCount(int completedWordCount) {
+		this.completedWordCount = completedWordCount;
 	}
 }
