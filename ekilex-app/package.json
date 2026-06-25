@@ -26,8 +26,8 @@
     "grunt-sass": "^4.1.0",
     "load-grunt-tasks": "^5.1.0",
     "sass": "^1.100.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-twbs-bootstrap": "^0.4.0"
+    "stylelint": "^17.13.0",
+    "stylelint-config-twbs-bootstrap": "^16.1.0"
   },
   "overrides": {
     "axios": ">=0.32.0",
