@@ -17,21 +17,37 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eki.common.constant.SourceType;
 import eki.common.data.Count;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.conx.Construct;
+import eki.ekilex.data.conx.ConstructCommentType;
+import eki.ekilex.data.conx.ConstructDescriptionType;
 import eki.ekilex.data.conx.ConstructMember;
 import eki.ekilex.data.conx.ConstructMemberStat;
 import eki.ekilex.data.conx.Sentence;
 import eki.ekilex.data.conx.SentenceMember;
+import eki.ekilex.data.conx.SentenceRelationType;
+import eki.ekilex.data.migra.Word;
 import eki.ekilex.service.db.ConstructDbService;
+import eki.ekilex.service.db.SourceDbService;
 
 @Component
 public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(ConstructLoaderRunner.class);
 
+	private static final char VALUE_SEPARATOR_1 = ',';
+
+	private static final char VALUE_SEPARATOR_2 = ';';
+
+	private static final String[] SUPPORTED_LANGUAGES = {"est", "rus"};
+
 	@Autowired
 	private ConstructDbService constructDbService;
+
+	@Autowired
+	private SourceDbService sourceDbService;
 
 	private List<Map<String, Object>> origConstructs;
 
@@ -103,8 +119,6 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 	@SuppressWarnings("unchecked")
 	private void loadDataFile(String dataFilePath) throws Exception {
 
-		//construction, construction_relation?, conx_member, word, realization, realization_member, realization_translation?, form, statistics
-
 		String dataJson = readFileContent(dataFilePath);
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> dataMap = objectMapper.readValue(dataJson, Map.class);
@@ -138,17 +152,23 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		for (Map<String, Object> origConstruct : origConstructs) {
 
 			String origConstructId = getId(origConstruct);
-			String constructName = getStringValue(origConstruct, "name_expert");
-			String constructDescription = getStringValue(origConstruct, "definition");
+			String constructNameSimple = getStringValue(origConstruct, "name");
+			String constructNameDetail = getStringValue(origConstruct, "name_expert");
+			String constructDescriptionSimple = getStringValue(origConstruct, "definition");
+			String constructDescriptionDetail = getStringValue(origConstruct, "definition_expert");
 			String constructTypeCode = getStringValue(origConstruct, "type");
 			String constructSubtypeCode = getStringValue(origConstruct, "subtype");
 			String schematicityCode = getStringValue(origConstruct, "schematicity");
 			String proficiencyLevelCode = getStringValue(origConstruct, "language_level");
 			String lang = getStringValue(origConstruct, "language");
+			String constructCommentPublic = getStringValue(origConstruct, "study_comment");
+			List<String> constructCommentsPrivate = getStringValues(origConstruct, "inside_comment", VALUE_SEPARATOR_2);
+			String attrMoccaId = getStringValue(origConstruct, "MOCCA_ID");
+			String sourceName = getStringValue(origConstruct, "reference");
 
 			Construct construct = new Construct();
-			construct.setName(constructName);
-			construct.setDescription(constructDescription);
+			construct.setNameSimple(constructNameSimple);
+			construct.setNameDetail(constructNameDetail);
 			construct.setConstructTypeCode(constructTypeCode);
 			construct.setConstructSubtypeCode(constructSubtypeCode);
 			construct.setSchematicityCode(schematicityCode);
@@ -160,6 +180,37 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 				Long constructId = constructDbService.createConstruct(construct);
 				constructIdMap.put(origConstructId, constructId);
 				constructCreateCount.increment();
+
+				if (StringUtils.isNotBlank(constructDescriptionSimple)) {
+					constructDbService.createConstructDescription(constructId, ConstructDescriptionType.SIMPLE, constructDescriptionSimple);
+				}
+				if (StringUtils.isNotBlank(constructDescriptionDetail)) {
+					constructDbService.createConstructDescription(constructId, ConstructDescriptionType.DETAIL, constructDescriptionDetail);
+				}
+				if (StringUtils.isNotBlank(constructCommentPublic)) {
+					constructDbService.createConstructComment(constructId, ConstructCommentType.PUBLIC, constructCommentPublic);
+				}
+				if (CollectionUtils.isNotEmpty(constructCommentsPrivate)) {
+					for (String constructCommentPrivate : constructCommentsPrivate) {
+						constructDbService.createConstructComment(constructId, ConstructCommentType.PRIVATE, constructCommentPrivate);
+					}
+				}
+				if (StringUtils.isNotBlank(attrMoccaId)) {
+					constructDbService.createConstructAttr(constructId, "mocca_id", attrMoccaId);
+				}
+				if (StringUtils.isNotBlank(sourceName)) {
+					Long sourceId = migrationDbService.getSourceId(sourceName, DATASET_EKI);
+					if (sourceId == null) {
+						Source source = new Source();
+						source.setDatasetCode(DATASET_EKI);
+						source.setType(SourceType.DOCUMENT);
+						source.setName(sourceName);
+						source.setValue(sourceName);
+						source.setValuePrese(sourceName);
+						sourceId = sourceDbService.createSource(source);
+					}
+					constructDbService.createConstructSourceLink(constructId, sourceId, sourceName);
+				}
 			}
 		}
 
@@ -172,20 +223,21 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			String cgovernmentCode = StringUtils.lowerCase(getStringValue(origConstructMember, "member"));
 			boolean isHead = getBooleanValue(origConstructMember, "head");
 			String memberRole = getStringValue(origConstructMember, "role");
+			String semanticRoleCode = StringUtils.lowerCase(getStringValue(origConstructMember, "semantic_role"));
+			List<String> semanticTypeCodes = getStringValues(origConstructMember, "semantic_type", VALUE_SEPARATOR_1);
 			Integer memberOrder = getIntegerValue(origConstructMember, "member_order");
-			// TODO semantic_role
 
 			Map<String, Object> origConstruct = origConstructMap.get(origConstructId);
 			String lang = getStringValue(origConstruct, "language");
-			char classifValueSeparator = ',';
+			char classifValueSeparator = VALUE_SEPARATOR_1;
 			if (StringUtils.equals(lang, "rus")) {
-				classifValueSeparator = ';';
+				classifValueSeparator = VALUE_SEPARATOR_2;
 			}
 
 			List<String> memberLemmaMorphCodes = getStringValues(origConstructMember, "morph_lemma", classifValueSeparator);
 			List<String> memberMorphCodes = getStringValues(origConstructMember, "morph_possible", classifValueSeparator);
-			List<String> memberPosGroupCodes = getStringValues(origConstructMember, "pos");
-			List<String> memberDeprelCodes = getStringValues(origConstructMember, "deprel");
+			List<String> memberPosCodes = getStringValues(origConstructMember, "pos", VALUE_SEPARATOR_1);
+			List<String> memberDeprelCodes = getStringValues(origConstructMember, "deprel", VALUE_SEPARATOR_1);
 
 			Long constructId = constructIdMap.get(origConstructId);
 
@@ -193,6 +245,7 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			constructMember.setConstructId(constructId);
 			constructMember.setCgovernmentCode(cgovernmentCode);
 			constructMember.setMemberRole(memberRole);
+			constructMember.setSemanticRoleCode(semanticRoleCode);
 			constructMember.setHead(isHead);
 			constructMember.setMemberOrder(memberOrder);
 
@@ -208,11 +261,14 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 				if (CollectionUtils.isNotEmpty(memberMorphCodes)) {
 					constructDbService.createConstructMemberMorphs(constructMemberId, memberMorphCodes);
 				}
-				if (CollectionUtils.isNotEmpty(memberPosGroupCodes)) {
-					constructDbService.createConstructMemberPosGroups(constructMemberId, memberPosGroupCodes);
+				if (CollectionUtils.isNotEmpty(memberPosCodes)) {
+					constructDbService.createConstructMemberPosCodes(constructMemberId, memberPosCodes);
 				}
 				if (CollectionUtils.isNotEmpty(memberDeprelCodes)) {
 					constructDbService.createConstructMemberDeprelCodes(constructMemberId, memberDeprelCodes);
+				}
+				if (CollectionUtils.isNotEmpty(semanticTypeCodes)) {
+					constructDbService.createConstructMemberSemanticTypeCodes(constructMemberId, semanticTypeCodes);
 				}
 			}
 		}
@@ -220,7 +276,7 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private void createConstructRelations() {
 
-		// this is BS. client needs educating
+		// TODO temporary. will be restructured
 
 		for (Map<String, Object> origConstructRelation : origConstructRelations) {
 
@@ -274,8 +330,19 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			Count sentenceMemberFirstHomonymCount,
 			Count sentenceMemberMissingWordCount) {
 
-		List<Map<String, Object>> origConstructRealizations = origRealizations.stream()
+		List<Map<String, Object>> origConstructRealizations;
+
+		origConstructRealizations = origRealizations.stream()
 				.filter(record -> record.get("construction_id") != null)
+				.collect(Collectors.toList());
+
+		for (Map<String, Object> origRealization : origConstructRealizations) {
+
+			createSentence(origRealization, sentenceCreateCount, sentenceMemberCreateCount, sentenceMemberFirstHomonymCount, sentenceMemberMissingWordCount);
+		}
+
+		origConstructRealizations = origRealizations.stream()
+				.filter(record -> record.get("construction_id") == null)
 				.collect(Collectors.toList());
 
 		for (Map<String, Object> origRealization : origConstructRealizations) {
@@ -298,11 +365,12 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 		String sentenceType = getStringValue(origRealization, "state");
 		String proficiencyLevelCode = getStringValue(origRealization, "proficiency_level_code");
 		String sentenceValue = getStringValue(origRealization, "value");
+		String origParentConstructId = getId(origRealization, "example_of_realization_id");
+		Long constructId = null;
 
-		Map<String, Object> origConstruct = origConstructMap.get(origConstructId);
-		String constructLang = getStringValue(origConstruct, "language");
-
-		Long constructId = constructIdMap.get(origConstructId);
+		if (StringUtils.isNotBlank(origConstructId)) {
+			constructId = constructIdMap.get(origConstructId);
+		}
 
 		Sentence sentence = new Sentence();
 		sentence.setConstructId(constructId);
@@ -316,13 +384,23 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			sentenceId = constructDbService.createSentence(sentence);
 			sentenceIdMap.put(origRealizationId, sentenceId);
 			sentenceCreateCount.increment();
+
+			if (StringUtils.isNotEmpty(origParentConstructId)) {
+
+				Long parentSentenceId = sentenceIdMap.get(origParentConstructId);
+				constructDbService.createSentenceRelation(parentSentenceId, sentenceId, SentenceRelationType.USAGE);
+			}
 		}
+
+		// -- sentence members --
 
 		List<Map<String, Object>> thisOrigRealizationMembers = origRealizationMembers.stream()
 				.filter(record -> idEquals(record, "realization_id", origRealizationId))
 				.collect(Collectors.toList());
 
-		// -- sentence members --
+		if (CollectionUtils.isEmpty(thisOrigRealizationMembers)) {
+			return sentenceId;
+		}
 
 		int memberOrder = 0;
 
@@ -342,7 +420,7 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			Long memberSentenceId = null;
 			Long lexemeId = null;
 			Long formId = null;
-			String posGroupCode = null;
+			String posCode = null;
 			String sentenceMemberValue = null;
 
 			if (origMemberRealizationId != null) {
@@ -359,24 +437,27 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 				Map<String, Object> origRealizationMemberFormWord = origWordMap.get(origRealizationMemberFormWordId);
 				String sentenceMemberWordValue = getStringValue(origRealizationMemberFormWord, "value");
-				posGroupCode = getStringValue(origRealizationMemberFormWord, "pos");
+				posCode = getStringValue(origRealizationMemberFormWord, "pos");
 
-				List<Long> wordIds = migrationDbService.getWordIds(sentenceMemberWordValue, constructLang, sentenceMemberFormValue, sentenceMemberMorphCode, DATASET_EKI);
+				List<Word> words = getWordCandidates(sentenceMemberWordValue, sentenceMemberFormValue, sentenceMemberMorphCode);
 
+				Word word = null;
 				Long wordId = null;
 
-				if (CollectionUtils.isEmpty(wordIds)) {
+				if (CollectionUtils.isEmpty(words)) {
 					// missing matching word records
 					sentenceMemberMissingWordCount.increment();
 					logger.warn("Word not found: \"{} - {} - {}\"", sentenceMemberWordValue, sentenceMemberFormValue, sentenceMemberMorphCode);
 					// fallback to sentence member value instead
 					sentenceMemberValue = sentenceMemberFormValue;
-				} else if (wordIds.size() == 1) {
-					wordId = wordIds.get(0);
+				} else if (words.size() == 1) {
+					word = words.get(0);
+					wordId = word.getId();
 				} else {
 					// pick first
 					sentenceMemberFirstHomonymCount.increment();
-					wordId = wordIds.get(0);
+					word = words.get(0);
+					wordId = word.getId();
 				}
 
 				if (wordId != null) {
@@ -410,7 +491,7 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			sentenceMember.setMemberSentenceId(memberSentenceId);
 			sentenceMember.setMemberLexemeId(lexemeId);
 			sentenceMember.setMemberFormId(formId);
-			sentenceMember.setPosGroupCode(posGroupCode);
+			sentenceMember.setPosCode(posCode);
 			sentenceMember.setDeprelCode(deprelCode);
 			sentenceMember.setMemberRole(memberRole);
 			sentenceMember.setMemberOrder(memberOrder);
@@ -440,6 +521,23 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 			}
 			constructDbService.createSentenceTranslation(sentenceId, value, lang);
 		}
+	}
+
+	private List<Word> getWordCandidates(String wordValue, String formValue, String morphCode) {
+
+		for (String lang : SUPPORTED_LANGUAGES) {
+
+			List<Long> wordIds = migrationDbService.getWordIds(wordValue, lang, formValue, morphCode, DATASET_EKI);
+
+			if (CollectionUtils.isNotEmpty(wordIds)) {
+
+				List<Word> words = wordIds.stream()
+						.map(wordId -> new Word(wordId, wordValue, lang))
+						.collect(Collectors.toList());
+				return words;
+			}
+		}
+		return null;
 	}
 
 	private boolean idEquals(Map<String, Object> dataMap, String fieldName, String fieldValue) {
@@ -481,10 +579,6 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private BigDecimal getBigDecimalValue(Map<String, Object> dataMap, String fieldName) {
 		return valueUtil.toBigDecimal(dataMap.get(fieldName));
-	}
-
-	private List<String> getStringValues(Map<String, Object> dataMap, String fieldName) {
-		return getStringValues(dataMap, fieldName, ',');
 	}
 
 	private List<String> getStringValues(Map<String, Object> dataMap, String fieldName, char separator) {

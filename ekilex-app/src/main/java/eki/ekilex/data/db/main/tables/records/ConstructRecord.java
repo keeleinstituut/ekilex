@@ -36,30 +36,30 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
     }
 
     /**
-     * Setter for <code>public.construct.name</code>.
+     * Setter for <code>public.construct.name_simple</code>.
      */
-    public void setName(String value) {
+    public void setNameSimple(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.construct.name</code>.
+     * Getter for <code>public.construct.name_simple</code>.
      */
-    public String getName() {
+    public String getNameSimple() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.construct.description</code>.
+     * Setter for <code>public.construct.name_detail</code>.
      */
-    public void setDescription(String value) {
+    public void setNameDetail(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.construct.description</code>.
+     * Getter for <code>public.construct.name_detail</code>.
      */
-    public String getDescription() {
+    public String getNameDetail() {
         return (String) get(2);
     }
 
@@ -163,12 +163,12 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
 
     @Override
     public Field<String> field2() {
-        return Construct.CONSTRUCT.NAME;
+        return Construct.CONSTRUCT.NAME_SIMPLE;
     }
 
     @Override
     public Field<String> field3() {
-        return Construct.CONSTRUCT.DESCRIPTION;
+        return Construct.CONSTRUCT.NAME_DETAIL;
     }
 
     @Override
@@ -203,12 +203,12 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
 
     @Override
     public String component2() {
-        return getName();
+        return getNameSimple();
     }
 
     @Override
     public String component3() {
-        return getDescription();
+        return getNameDetail();
     }
 
     @Override
@@ -243,12 +243,12 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
 
     @Override
     public String value2() {
-        return getName();
+        return getNameSimple();
     }
 
     @Override
     public String value3() {
-        return getDescription();
+        return getNameDetail();
     }
 
     @Override
@@ -284,13 +284,13 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
 
     @Override
     public ConstructRecord value2(String value) {
-        setName(value);
+        setNameSimple(value);
         return this;
     }
 
     @Override
     public ConstructRecord value3(String value) {
-        setDescription(value);
+        setNameDetail(value);
         return this;
     }
 
@@ -351,12 +351,12 @@ public class ConstructRecord extends UpdatableRecordImpl<ConstructRecord> implem
     /**
      * Create a detached, initialised ConstructRecord
      */
-    public ConstructRecord(Long id, String name, String description, String constructTypeCode, String constructSubtypeCode, String schematicityCode, String proficiencyLevelCode, String lang) {
+    public ConstructRecord(Long id, String nameSimple, String nameDetail, String constructTypeCode, String constructSubtypeCode, String schematicityCode, String proficiencyLevelCode, String lang) {
         super(Construct.CONSTRUCT);
 
         setId(id);
-        setName(name);
-        setDescription(description);
+        setNameSimple(nameSimple);
+        setNameDetail(nameDetail);
         setConstructTypeCode(constructTypeCode);
         setConstructSubtypeCode(constructSubtypeCode);
         setSchematicityCode(schematicityCode);

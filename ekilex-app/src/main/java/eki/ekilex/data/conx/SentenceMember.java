@@ -20,7 +20,7 @@ public class SentenceMember extends AbstractDataObject {
 
 	private Long memberFormId;
 
-	private String posGroupCode;
+	private String posCode;
 
 	private String deprelCode;
 
@@ -84,12 +84,12 @@ public class SentenceMember extends AbstractDataObject {
 		this.memberFormId = memberFormId;
 	}
 
-	public String getPosGroupCode() {
-		return posGroupCode;
+	public String getPosCode() {
+		return posCode;
 	}
 
-	public void setPosGroupCode(String posGroupCode) {
-		this.posGroupCode = posGroupCode;
+	public void setPosCode(String posCode) {
+		this.posCode = posCode;
 	}
 
 	public String getDeprelCode() {

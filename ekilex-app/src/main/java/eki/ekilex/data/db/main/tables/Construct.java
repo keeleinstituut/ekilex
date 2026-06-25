@@ -54,14 +54,14 @@ public class Construct extends TableImpl<ConstructRecord> {
     public final TableField<ConstructRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.construct.name</code>.
+     * The column <code>public.construct.name_simple</code>.
      */
-    public final TableField<ConstructRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ConstructRecord, String> NAME_SIMPLE = createField(DSL.name("name_simple"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.construct.description</code>.
+     * The column <code>public.construct.name_detail</code>.
      */
-    public final TableField<ConstructRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
+    public final TableField<ConstructRecord, String> NAME_DETAIL = createField(DSL.name("name_detail"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.construct.construct_type_code</code>.
@@ -138,7 +138,7 @@ public class Construct extends TableImpl<ConstructRecord> {
 
     @Override
     public List<UniqueKey<ConstructRecord>> getKeys() {
-        return Arrays.<UniqueKey<ConstructRecord>>asList(Keys.CONSTRUCT_PKEY, Keys.CONSTRUCT_NAME_KEY);
+        return Arrays.<UniqueKey<ConstructRecord>>asList(Keys.CONSTRUCT_PKEY, Keys.CONSTRUCT_NAME_DETAIL_LANG_KEY);
     }
 
     @Override

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.cli.runner.ConstructLoaderRunner;
-import eki.ekilex.cli.runner.OsCompWordLoaderRunner;
 
 @SpringBootApplication(scanBasePackages = {
 		"eki.common",
@@ -42,7 +41,7 @@ public class ConstructLoader implements CommandLineRunner {
 	private ConstructLoaderRunner runner;
 
 	//mvn spring-boot:run -P conl -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="impfile="<import file path>"" 
-	//mvn spring-boot:run -P conl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/projects/ekilex/conx/construction3.json"" 
+	//mvn spring-boot:run -P conl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/projects/ekilex/conx/construction4.json"" 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");

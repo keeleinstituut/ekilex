@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -67,6 +67,11 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
      * The column <code>public.word_etym_group.language_group_id</code>.
      */
     public final TableField<WordEtymGroupRecord, Long> LANGUAGE_GROUP_ID = createField(DSL.name("language_group_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.word_etym_group.lang</code>.
+     */
+    public final TableField<WordEtymGroupRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.word_etym_group.is_questionable</code>.
@@ -128,11 +133,12 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
 
     @Override
     public List<ForeignKey<WordEtymGroupRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_ID_FKEY);
+        return Arrays.<ForeignKey<WordEtymGroupRecord, ?>>asList(Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_ETYMOLOGY_TYPE_CODE_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_ID_FKEY, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANG_FKEY);
     }
 
     private transient EtymologyType _etymologyType;
     private transient LanguageGroup _languageGroup;
+    private transient Language _language;
 
     public EtymologyType etymologyType() {
         if (_etymologyType == null)
@@ -146,6 +152,13 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
             _languageGroup = new LanguageGroup(this, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANGUAGE_GROUP_ID_FKEY);
 
         return _languageGroup;
+    }
+
+    public Language language() {
+        if (_language == null)
+            _language = new Language(this, Keys.WORD_ETYM_GROUP__WORD_ETYM_GROUP_LANG_FKEY);
+
+        return _language;
     }
 
     @Override
@@ -175,11 +188,11 @@ public class WordEtymGroup extends TableImpl<WordEtymGroupRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, Long, Boolean> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, String, String, Long, String, Boolean> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

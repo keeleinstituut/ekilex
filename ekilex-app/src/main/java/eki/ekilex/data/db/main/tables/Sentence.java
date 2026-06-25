@@ -61,7 +61,7 @@ public class Sentence extends TableImpl<SentenceRecord> {
     /**
      * The column <code>public.sentence.construct_id</code>.
      */
-    public final TableField<SentenceRecord, Long> CONSTRUCT_ID = createField(DSL.name("construct_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SentenceRecord, Long> CONSTRUCT_ID = createField(DSL.name("construct_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.sentence.proficiency_level_code</code>.

@@ -12,9 +12,11 @@ public class ConstructMember extends AbstractDataObject {
 
 	private String cgovernmentCode;
 
-	private boolean isHead;
-
 	private String memberRole;
+
+	private String semanticRoleCode;
+
+	private boolean isHead;
 
 	private Integer memberOrder;
 
@@ -42,20 +44,28 @@ public class ConstructMember extends AbstractDataObject {
 		this.cgovernmentCode = cgovernmentCode;
 	}
 
-	public boolean isHead() {
-		return isHead;
-	}
-
-	public void setHead(boolean isHead) {
-		this.isHead = isHead;
-	}
-
 	public String getMemberRole() {
 		return memberRole;
 	}
 
 	public void setMemberRole(String memberRole) {
 		this.memberRole = memberRole;
+	}
+
+	public String getSemanticRoleCode() {
+		return semanticRoleCode;
+	}
+
+	public void setSemanticRoleCode(String semanticRoleCode) {
+		this.semanticRoleCode = semanticRoleCode;
+	}
+
+	public boolean isHead() {
+		return isHead;
+	}
+
+	public void setHead(boolean isHead) {
+		this.isHead = isHead;
 	}
 
 	public Integer getMemberOrder() {

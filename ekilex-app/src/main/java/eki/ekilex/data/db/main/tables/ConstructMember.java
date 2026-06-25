@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -64,14 +64,19 @@ public class ConstructMember extends TableImpl<ConstructMemberRecord> {
     public final TableField<ConstructMemberRecord, String> CGOVERNMENT_CODE = createField(DSL.name("cgovernment_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.construct_member.is_head</code>.
-     */
-    public final TableField<ConstructMemberRecord, Boolean> IS_HEAD = createField(DSL.name("is_head"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
-
-    /**
      * The column <code>public.construct_member.member_role</code>.
      */
     public final TableField<ConstructMemberRecord, String> MEMBER_ROLE = createField(DSL.name("member_role"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.construct_member.semantic_role_code</code>.
+     */
+    public final TableField<ConstructMemberRecord, String> SEMANTIC_ROLE_CODE = createField(DSL.name("semantic_role_code"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.construct_member.is_head</code>.
+     */
+    public final TableField<ConstructMemberRecord, Boolean> IS_HEAD = createField(DSL.name("is_head"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.construct_member.member_order</code>.
@@ -133,11 +138,12 @@ public class ConstructMember extends TableImpl<ConstructMemberRecord> {
 
     @Override
     public List<ForeignKey<ConstructMemberRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ConstructMemberRecord, ?>>asList(Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_CONSTRUCT_ID_FKEY, Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_CGOVERNMENT_CODE_FKEY);
+        return Arrays.<ForeignKey<ConstructMemberRecord, ?>>asList(Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_CONSTRUCT_ID_FKEY, Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_CGOVERNMENT_CODE_FKEY, Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_SEMANTIC_ROLE_CODE_FKEY);
     }
 
     private transient Construct _construct;
     private transient Cgovernment _cgovernment;
+    private transient SemanticRole _semanticRole;
 
     public Construct construct() {
         if (_construct == null)
@@ -151,6 +157,13 @@ public class ConstructMember extends TableImpl<ConstructMemberRecord> {
             _cgovernment = new Cgovernment(this, Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_CGOVERNMENT_CODE_FKEY);
 
         return _cgovernment;
+    }
+
+    public SemanticRole semanticRole() {
+        if (_semanticRole == null)
+            _semanticRole = new SemanticRole(this, Keys.CONSTRUCT_MEMBER__CONSTRUCT_MEMBER_SEMANTIC_ROLE_CODE_FKEY);
+
+        return _semanticRole;
     }
 
     @Override
@@ -180,11 +193,11 @@ public class ConstructMember extends TableImpl<ConstructMemberRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, Boolean, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, String, String, String, Boolean, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
