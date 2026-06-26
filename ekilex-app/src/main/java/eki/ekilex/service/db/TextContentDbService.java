@@ -1,5 +1,7 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.TEXT_CONTENT;
+
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -16,7 +18,7 @@ public class TextContentDbService {
 
 	public eki.ekilex.data.TextContent getTextContent(String textName, String lang) {
 
-		TextContent tc = TextContent.TEXT_CONTENT;
+		TextContent tc = TEXT_CONTENT.as("tc");
 
 		Field<String> textNameLower = DSL.lower(textName);
 
