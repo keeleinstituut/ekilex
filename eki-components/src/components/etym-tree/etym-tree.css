@@ -1,0 +1,339 @@
+:host {
+  --color-dark-blue: #173148;
+  --color-gray-1000: #0e1013;
+  --color-gray-400: #5d606e;
+  --color-gray-200: #ccd9e0;
+  --color-blue-300: #2c6fb6;
+  --color-white: #fff;
+  --color-hall-500: #f9f9f9;
+  --color-olive-brown: #94690d;
+
+  display: block;
+  font-family: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.etym-tree {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 8px;
+  color: var(--color-dark-blue);
+}
+
+.etym-tree__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.etym-tree__header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.etym-tree__type {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-gray-1000);
+}
+
+.etym-tree__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-blue-300);
+  font-size: 12px;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.etym-tree__icon {
+  flex: none;
+}
+
+.etym-tree__hint {
+  font-size: 12px;
+  line-height: 21px;
+  color: var(--color-gray-400);
+}
+
+.etym-tree__canvas {
+  position: relative;
+  width: 100%;
+}
+
+.etym-tree__links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.etym-tree__line {
+  fill: none;
+  stroke: var(--color-gray-200);
+  stroke-width: 2;
+}
+
+.etym-tree__junction circle {
+  fill: var(--color-white);
+  stroke: var(--color-gray-200);
+  stroke-width: 1;
+}
+
+/* Re-enable pointer events on the clickable connectors (the overlay SVG itself
+   is pointer-events: none so the curves stay click-through). */
+.etym-tree__junction--interactive {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.etym-tree__junction--interactive:focus {
+  outline: none;
+}
+
+.etym-tree__junction-icon {
+  fill: var(--color-dark-blue);
+}
+
+.etym-tree__levels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.etym-tree__level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.etym-tree__level > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.etym-tree--comments-hidden .etym-node__comments {
+  display: none;
+}
+
+.etym-tree--comments-hidden .etym-node__head {
+  border-bottom: 1px solid var(--color-gray-200);
+  border-radius: 4px;
+}
+
+.etym-tree__error {
+  padding: 8px;
+  color: var(--color-gray-400);
+}
+
+/* ---------- nodes ---------- */
+
+.etym-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.etym-node--wide-comment .etym-node__comment:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.etym-node__head {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+}
+
+.etym-node--no-comment .etym-node__head {
+  border-bottom: 1px solid var(--color-gray-200);
+  border-radius: 4px;
+}
+
+.etym-node__lang {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px 3px 6px;
+  background: var(--color-hall-500);
+  border-right: 1px solid var(--color-gray-200);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.etym-node__value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px 3px 4px;
+  background: var(--color-white);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.etym-node__variant {
+  color: var(--color-gray-400);
+}
+
+.etym-node__comments {
+  width: 100%;
+}
+
+.etym-node__comment {
+  padding: 2px 6px 3px;
+  border: 1px solid var(--color-gray-200);
+  font-size: 12px;
+  line-height: 21px;
+  text-align: center;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.etym-node__comment:not(:last-child) {
+  border-bottom: 0;
+}
+
+.etym-node__comment:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* ---------- compound label + language group ---------- */
+
+.etym-label {
+  padding: 2px 8px 3px;
+  background: var(--color-hall-500);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-dark-blue);
+  text-align: center;
+}
+
+.etym-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.etym-group__name {
+  align-self: stretch;
+  padding: 2px 8px 3px;
+  background: var(--color-hall-500);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 4px 4px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}
+
+.etym-group__nodes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 20px;
+  border: 1px solid var(--color-gray-200);
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+}
+
+/* ---------- questionable marker ---------- */
+
+.etym-questionable-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.etym-questionable-connector__line {
+  width: 0;
+  height: 14px;
+  border-left: 2px solid var(--color-olive-brown);
+}
+
+.etym-questionable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-olive-brown);
+  color: var(--color-white);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.etym-questionable:focus {
+  outline: none;
+}
+
+.etym-questionable__note {
+  color: var(--color-olive-brown);
+  font-style: italic;
+}
+
+.etym-tip {
+  position: absolute;
+  z-index: 20;
+  display: none;
+  max-width: 320px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--color-white);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-dark-blue);
+}
+
+.etym-tip--visible {
+  display: block;
+}
+
+.etym-tip .etym-tooltip__row + .etym-tooltip__row {
+  margin-top: 16px;
+}
+
+.etym-tip .etym-tooltip__label {
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: var(--color-gray-400);
+}
+
+.etym-tip .etym-tooltip__value {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-dark-blue);
+}

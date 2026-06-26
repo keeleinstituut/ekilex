@@ -61,7 +61,18 @@
 		'term.meaning.table.max.meanings.exceeded' : /*[[#{term.meaning.table.max.meanings.exceeded}]]*/'Tabelivaade käivitub ainult kuni 50 mõiste korral',
 		'term.add.term' : /*[[#{term.add.term}]]*/'Lisa termin',
 		'editor.error.add.note' : /*[[#{editor.error.add.note}]]*/'Lisage tähenduse sisemärkus!',
-		'etym.related.records' : /*[[#{etym.related.records}]]*/'Seotud kirjed'
+		'etym.related.records' : /*[[#{etym.related.records}]]*/'Seotud kirjed',
+		'lex.wordetym.load.fail' : /*[[#{lex.wordetym.load.fail}]]*/'Päritolu puu laadimine ebaõnnestus',
+		'lex.wordetym.comments.hide' : /*[[#{lex.wordetym.comments.hide}]]*/'Peida kommentaarid',
+		'lex.wordetym.comments.show' : /*[[#{lex.wordetym.comments.show}]]*/'Kuva kommentaarid',
+		'lex.wordetym.detail.hint' : /*[[#{lex.wordetym.detail.hint}]]*/'Klikkides sõnadele või nendevahelistele seostele, saad vaadata ka nende detailinfot!',
+		'lex.wordetym.lang' : /*[[#{lex.wordetym.lang}]]*/'Keel',
+		'lex.wordetym.year' : /*[[#{lex.wordetym.year}]]*/'Etümoloogia kirje aasta',
+		'lex.wordetym.notes' : /*[[#{lex.wordetym.notes}]]*/'Sisemärkused',
+		'lex.wordetym.questionable.tooltip' : /*[[#{lex.wordetym.questionable.tooltip}]]*/'Päritolu info kahtlane',
+		'lex.wordetym.questionable.languagegroup' : /*[[#{lex.wordetym.questionable.languagegroup}]]*/'keelegrupp {0} võib olla kahtlane - {1}',
+		'lex.wordetym.origin.sentence' : /*[[#{lex.wordetym.origin.sentence}]]*/'sõna {0} pärineb sõnast {1}',
+		'lex.source.link' : /*[[#{lex.source.link}]]*/'Allikaviide'
 	};
 </script>
 <!-- Google tag (gtag.js) -->
@@ -90,7 +101,7 @@
     <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
     <link rel="stylesheet" th:href="@{/view/css/quill.snow.css}" />
     <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,add_column_right,apps,arrow_drop_down,arrow_left_alt,arrow_right_alt,check,chevron_left,chevron_right,close,content_copy,delete,drag_pan,keyboard_arrow_down,left_panel_close,left_panel_open,lock,lock_open_right,more_horiz,refresh,search,upload,visibility" />
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add,add_column_right,apps,arrow_drop_down,arrow_left_alt,arrow_right_alt,check,chevron_left,chevron_right,close,content_copy,delete,drag_pan,keyboard_arrow_down,left_panel_close,left_panel_open,lock,lock_open_right,more_horiz,refresh,search,upload,visibility,visibility_off" />
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">
