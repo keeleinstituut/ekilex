@@ -1524,3 +1524,12 @@ create table report (
 	completed_on timestamp null
 );
 alter sequence report_id_seq restart with 10000;
+
+create table text_content (
+	id bigserial primary key,
+	name text not null,
+	lang char(3) references language(code) not null,
+	value text not null,
+	unique (name, lang)
+);
+alter sequence text_content_id_seq restart with 10000;

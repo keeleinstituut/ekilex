@@ -136,3 +136,21 @@ where
 update lexeme_tag
 set created_by = 'n/a'
 where created_by is null;
+
+-- #2 --
+
+create table text_content (
+	id bigserial primary key,
+	name text not null,
+	lang char(3) references language(code) not null,
+	value text not null,
+	unique (name, lang)
+);
+alter sequence text_content_id_seq restart with 10000;
+
+create index text_content_lang_idx on text_content(lang);
+
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'est', 'Terminikogude raport annab ülevaate terminikogude mahust ja kvaliteedist. Näidatakse mõistete, definitsioonide, terminite jne muudatusi määratud ajavahemikul ja hetkeseisu raporti koostamise hetkel. Raporti saab alla laadida Exceli formaadis.');
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'eng', 'Gives an overview of the size and quality of datasets. Shows changes during the specified period, as well as the current state at the time of generation.');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'est', 'Raport annab ülevaate sellest, kui mitmele keelendile on valitud kasutaja määratud ajavahemikus lisanud ilmiku sildi "süno valmis".');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'eng', 'Gives an overview of how many word entries users have marked with "syno ready" lexeme tag during the specified period.');

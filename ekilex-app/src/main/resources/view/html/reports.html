@@ -22,6 +22,10 @@
     </div>
     <div class="card-body">
       <th:block th:if="${selectedReportType != null}">
+        <div class="alert alert-info mb-4" th:with="description=${@textContentUtil.getText('report.description.' + selectedReportType.name())}">
+          <p th:if="${description != null}" th:text="${description}"></p>
+          <p class="mb-0" th:text="#{report.retention(${reportRetentionDays})}"></p>
+        </div>
         <th:block th:switch="${selectedReportType}">
           <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
             <th:block th:replace="reportscomp :: term_dataset_form"></th:block>

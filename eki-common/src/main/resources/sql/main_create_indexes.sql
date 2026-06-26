@@ -310,6 +310,7 @@ create index language_group_member_language_group_id_idx on language_group_membe
 create index language_group_member_lang_idx on language_group_member(lang);
 create index report_type_idx on report(type);
 create index report_user_id_idx on report(user_id);
+create index text_content_lang_idx on text_content(lang);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value));

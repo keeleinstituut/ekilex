@@ -144,6 +144,7 @@ import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
 import eki.ekilex.data.db.main.tables.TermsOfUse;
+import eki.ekilex.data.db.main.tables.TextContent;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
@@ -949,6 +950,11 @@ public class Public extends SchemaImpl {
     public final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
 
     /**
+     * The table <code>public.text_content</code>.
+     */
+    public final TextContent TEXT_CONTENT = TextContent.TEXT_CONTENT;
+
+    /**
      * The table <code>public.usage</code>.
      */
     public final Usage USAGE = Usage.USAGE;
@@ -1462,6 +1468,7 @@ public class Public extends SchemaImpl {
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
             Sequences.TERMS_OF_USE_ID_SEQ,
+            Sequences.TEXT_CONTENT_ID_SEQ,
             Sequences.USAGE_ID_SEQ,
             Sequences.USAGE_ORDER_BY_SEQ,
             Sequences.USAGE_SOURCE_LINK_ID_SEQ,
@@ -1660,6 +1667,7 @@ public class Public extends SchemaImpl {
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
             TermsOfUse.TERMS_OF_USE,
+            TextContent.TEXT_CONTENT,
             Usage.USAGE,
             UsageSourceLink.USAGE_SOURCE_LINK,
             UsageTranslation.USAGE_TRANSLATION,

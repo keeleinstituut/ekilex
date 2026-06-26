@@ -144,6 +144,7 @@ import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
 import eki.ekilex.data.db.main.tables.TermsOfUse;
+import eki.ekilex.data.db.main.tables.TextContent;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
@@ -919,6 +920,11 @@ public class Tables {
      * The table <code>public.terms_of_use</code>.
      */
     public static final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
+
+    /**
+     * The table <code>public.text_content</code>.
+     */
+    public static final TextContent TEXT_CONTENT = TextContent.TEXT_CONTENT;
 
     /**
      * The table <code>public.usage</code>.
