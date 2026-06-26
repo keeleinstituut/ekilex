@@ -61,6 +61,7 @@ public class ReportsController extends AbstractPrivatePageController {
 		model.addAttribute("selectedReportType", reportType);
 		model.addAttribute("accessibleReportTypes", accessibleReportTypes);
 		model.addAttribute("reports", reports);
+		model.addAttribute("reportRetentionDays", DELETE_REPORTS_OLDER_THAN_DAYS);
 
 		addReportTypeSpecificAttributes(reportType, model);
 
