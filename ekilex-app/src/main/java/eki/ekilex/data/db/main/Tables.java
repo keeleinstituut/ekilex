@@ -17,6 +17,7 @@ import eki.ekilex.data.db.main.tables.ConstructComment;
 import eki.ekilex.data.db.main.tables.ConstructDescription;
 import eki.ekilex.data.db.main.tables.ConstructGroup;
 import eki.ekilex.data.db.main.tables.ConstructGroupMember;
+import eki.ekilex.data.db.main.tables.ConstructGroupType;
 import eki.ekilex.data.db.main.tables.ConstructMember;
 import eki.ekilex.data.db.main.tables.ConstructMemberDeprel;
 import eki.ekilex.data.db.main.tables.ConstructMemberLemmaMorph;
@@ -24,8 +25,6 @@ import eki.ekilex.data.db.main.tables.ConstructMemberMorph;
 import eki.ekilex.data.db.main.tables.ConstructMemberPos;
 import eki.ekilex.data.db.main.tables.ConstructMemberSemanticType;
 import eki.ekilex.data.db.main.tables.ConstructMemberStat;
-import eki.ekilex.data.db.main.tables.ConstructRelation;
-import eki.ekilex.data.db.main.tables.ConstructRelationType;
 import eki.ekilex.data.db.main.tables.ConstructSourceLink;
 import eki.ekilex.data.db.main.tables.ConstructSubtype;
 import eki.ekilex.data.db.main.tables.ConstructType;
@@ -287,6 +286,11 @@ public class Tables {
     public static final ConstructGroupMember CONSTRUCT_GROUP_MEMBER = ConstructGroupMember.CONSTRUCT_GROUP_MEMBER;
 
     /**
+     * The table <code>public.construct_group_type</code>.
+     */
+    public static final ConstructGroupType CONSTRUCT_GROUP_TYPE = ConstructGroupType.CONSTRUCT_GROUP_TYPE;
+
+    /**
      * The table <code>public.construct_member</code>.
      */
     public static final ConstructMember CONSTRUCT_MEMBER = ConstructMember.CONSTRUCT_MEMBER;
@@ -320,16 +324,6 @@ public class Tables {
      * The table <code>public.construct_member_stat</code>.
      */
     public static final ConstructMemberStat CONSTRUCT_MEMBER_STAT = ConstructMemberStat.CONSTRUCT_MEMBER_STAT;
-
-    /**
-     * The table <code>public.construct_relation</code>.
-     */
-    public static final ConstructRelation CONSTRUCT_RELATION = ConstructRelation.CONSTRUCT_RELATION;
-
-    /**
-     * The table <code>public.construct_relation_type</code>.
-     */
-    public static final ConstructRelationType CONSTRUCT_RELATION_TYPE = ConstructRelationType.CONSTRUCT_RELATION_TYPE;
 
     /**
      * The table <code>public.construct_source_link</code>.

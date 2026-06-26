@@ -86,6 +86,11 @@ public class Sequences {
     public static final Sequence<Long> CONSTRUCT_GROUP_MEMBER_ID_SEQ = Internal.createSequence("construct_group_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.construct_group_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> CONSTRUCT_GROUP_TYPE_ORDER_BY_SEQ = Internal.createSequence("construct_group_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.construct_id_seq</code>
      */
     public static final Sequence<Long> CONSTRUCT_ID_SEQ = Internal.createSequence("construct_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -149,21 +154,6 @@ public class Sequences {
      * The sequence <code>public.construct_member_stat_id_seq</code>
      */
     public static final Sequence<Long> CONSTRUCT_MEMBER_STAT_ID_SEQ = Internal.createSequence("construct_member_stat_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.construct_relation_id_seq</code>
-     */
-    public static final Sequence<Long> CONSTRUCT_RELATION_ID_SEQ = Internal.createSequence("construct_relation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.construct_relation_order_by_seq</code>
-     */
-    public static final Sequence<Long> CONSTRUCT_RELATION_ORDER_BY_SEQ = Internal.createSequence("construct_relation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.construct_relation_type_order_by_seq</code>
-     */
-    public static final Sequence<Long> CONSTRUCT_RELATION_TYPE_ORDER_BY_SEQ = Internal.createSequence("construct_relation_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.construct_source_link_id_seq</code>
@@ -751,6 +741,11 @@ public class Sequences {
     public static final Sequence<Long> SENTENCE_FORM_ID_SEQ = Internal.createSequence("sentence_form_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.sentence_form_order_by_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_FORM_ORDER_BY_SEQ = Internal.createSequence("sentence_form_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.sentence_id_seq</code>
      */
     public static final Sequence<Long> SENTENCE_ID_SEQ = Internal.createSequence("sentence_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -764,6 +759,11 @@ public class Sequences {
      * The sequence <code>public.sentence_relation_id_seq</code>
      */
     public static final Sequence<Long> SENTENCE_RELATION_ID_SEQ = Internal.createSequence("sentence_relation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.sentence_relation_order_by_seq</code>
+     */
+    public static final Sequence<Long> SENTENCE_RELATION_ORDER_BY_SEQ = Internal.createSequence("sentence_relation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.sentence_translation_id_seq</code>
