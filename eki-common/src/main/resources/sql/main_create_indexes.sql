@@ -37,6 +37,17 @@ create index word_etymology_word_id_idx on word_etymology(word_id);
 create index word_etymology_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);
 create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_word_id);
+create index word_etym_word_id_idx on word_etym(word_id);
+create index word_etym_comment_word_etym_id_idx on word_etym_comment(word_etym_id);
+create index word_etym_note_word_etym_id_idx on word_etym_note(word_etym_id);
+create index word_etym_source_link_word_etym_id_idx on word_etym_source_link(word_etym_id);
+create index word_etym_source_link_source_id_idx on word_etym_source_link(source_id);
+create index word_etym_group_group_type_idx on word_etym_group(group_type);
+create index word_etym_group_language_group_id_idx on word_etym_group(language_group_id);
+create index word_etym_group_tree_parent_word_etym_group_id_idx on word_etym_group_tree(parent_word_etym_group_id);
+create index word_etym_group_tree_child_word_etym_group_id_idx on word_etym_group_tree(child_word_etym_group_id);
+create index word_etym_group_member_word_etym_group_id_idx on word_etym_group_member(word_etym_group_id);
+create index word_etym_group_member_word_etym_id_idx on word_etym_group_member(word_etym_id);
 create index word_os_homonym_nr_word_id_idx on word_os_homonym_nr(word_id);
 create index word_eki_recommendation_word_id_idx on word_eki_recommendation(word_id);
 create index word_eki_recommendation_value_idx on word_eki_recommendation(value);
@@ -299,6 +310,7 @@ create index language_group_member_language_group_id_idx on language_group_membe
 create index language_group_member_lang_idx on language_group_member(lang);
 create index report_type_idx on report(type);
 create index report_user_id_idx on report(user_id);
+create index text_content_lang_idx on text_content(lang);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value));
@@ -310,5 +322,4 @@ create index lexeme_note_fts_idx on lexeme_note using gin(to_tsvector('simple', 
 create index meaning_note_fts_idx on meaning_note using gin(to_tsvector('simple', value));
 create index learner_comment_fts_idx on learner_comment using gin(to_tsvector('simple', value));
 create index definition_note_fts_idx on definition_note using gin(to_tsvector('simple', value));
-
 

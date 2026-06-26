@@ -12,17 +12,21 @@ import eki.ekilex.data.db.main.tables.AspectLabel;
 import eki.ekilex.data.db.main.tables.Cgovernment;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Construct;
+import eki.ekilex.data.db.main.tables.ConstructAttr;
+import eki.ekilex.data.db.main.tables.ConstructComment;
+import eki.ekilex.data.db.main.tables.ConstructDescription;
 import eki.ekilex.data.db.main.tables.ConstructGroup;
 import eki.ekilex.data.db.main.tables.ConstructGroupMember;
-import eki.ekilex.data.db.main.tables.ConstructGroupRelation;
 import eki.ekilex.data.db.main.tables.ConstructMember;
 import eki.ekilex.data.db.main.tables.ConstructMemberDeprel;
 import eki.ekilex.data.db.main.tables.ConstructMemberLemmaMorph;
 import eki.ekilex.data.db.main.tables.ConstructMemberMorph;
-import eki.ekilex.data.db.main.tables.ConstructMemberPosGroup;
+import eki.ekilex.data.db.main.tables.ConstructMemberPos;
+import eki.ekilex.data.db.main.tables.ConstructMemberSemanticType;
 import eki.ekilex.data.db.main.tables.ConstructMemberStat;
 import eki.ekilex.data.db.main.tables.ConstructRelation;
 import eki.ekilex.data.db.main.tables.ConstructRelationType;
+import eki.ekilex.data.db.main.tables.ConstructSourceLink;
 import eki.ekilex.data.db.main.tables.ConstructSubtype;
 import eki.ekilex.data.db.main.tables.ConstructType;
 import eki.ekilex.data.db.main.tables.DataRequest;
@@ -126,10 +130,13 @@ import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Report;
 import eki.ekilex.data.db.main.tables.Schematicity;
+import eki.ekilex.data.db.main.tables.SemanticRole;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.main.tables.Sentence;
+import eki.ekilex.data.db.main.tables.SentenceForm;
 import eki.ekilex.data.db.main.tables.SentenceMember;
+import eki.ekilex.data.db.main.tables.SentenceRelation;
 import eki.ekilex.data.db.main.tables.SentenceTranslation;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
@@ -137,6 +144,7 @@ import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
 import eki.ekilex.data.db.main.tables.TermsOfUse;
+import eki.ekilex.data.db.main.tables.TextContent;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
@@ -254,6 +262,21 @@ public class Tables {
     public static final Construct CONSTRUCT = Construct.CONSTRUCT;
 
     /**
+     * The table <code>public.construct_attr</code>.
+     */
+    public static final ConstructAttr CONSTRUCT_ATTR = ConstructAttr.CONSTRUCT_ATTR;
+
+    /**
+     * The table <code>public.construct_comment</code>.
+     */
+    public static final ConstructComment CONSTRUCT_COMMENT = ConstructComment.CONSTRUCT_COMMENT;
+
+    /**
+     * The table <code>public.construct_description</code>.
+     */
+    public static final ConstructDescription CONSTRUCT_DESCRIPTION = ConstructDescription.CONSTRUCT_DESCRIPTION;
+
+    /**
      * The table <code>public.construct_group</code>.
      */
     public static final ConstructGroup CONSTRUCT_GROUP = ConstructGroup.CONSTRUCT_GROUP;
@@ -262,11 +285,6 @@ public class Tables {
      * The table <code>public.construct_group_member</code>.
      */
     public static final ConstructGroupMember CONSTRUCT_GROUP_MEMBER = ConstructGroupMember.CONSTRUCT_GROUP_MEMBER;
-
-    /**
-     * The table <code>public.construct_group_relation</code>.
-     */
-    public static final ConstructGroupRelation CONSTRUCT_GROUP_RELATION = ConstructGroupRelation.CONSTRUCT_GROUP_RELATION;
 
     /**
      * The table <code>public.construct_member</code>.
@@ -289,9 +307,14 @@ public class Tables {
     public static final ConstructMemberMorph CONSTRUCT_MEMBER_MORPH = ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH;
 
     /**
-     * The table <code>public.construct_member_pos_group</code>.
+     * The table <code>public.construct_member_pos</code>.
      */
-    public static final ConstructMemberPosGroup CONSTRUCT_MEMBER_POS_GROUP = ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP;
+    public static final ConstructMemberPos CONSTRUCT_MEMBER_POS = ConstructMemberPos.CONSTRUCT_MEMBER_POS;
+
+    /**
+     * The table <code>public.construct_member_semantic_type</code>.
+     */
+    public static final ConstructMemberSemanticType CONSTRUCT_MEMBER_SEMANTIC_TYPE = ConstructMemberSemanticType.CONSTRUCT_MEMBER_SEMANTIC_TYPE;
 
     /**
      * The table <code>public.construct_member_stat</code>.
@@ -307,6 +330,11 @@ public class Tables {
      * The table <code>public.construct_relation_type</code>.
      */
     public static final ConstructRelationType CONSTRUCT_RELATION_TYPE = ConstructRelationType.CONSTRUCT_RELATION_TYPE;
+
+    /**
+     * The table <code>public.construct_source_link</code>.
+     */
+    public static final ConstructSourceLink CONSTRUCT_SOURCE_LINK = ConstructSourceLink.CONSTRUCT_SOURCE_LINK;
 
     /**
      * The table <code>public.construct_subtype</code>.
@@ -824,6 +852,11 @@ public class Tables {
     public static final Schematicity SCHEMATICITY = Schematicity.SCHEMATICITY;
 
     /**
+     * The table <code>public.semantic_role</code>.
+     */
+    public static final SemanticRole SEMANTIC_ROLE = SemanticRole.SEMANTIC_ROLE;
+
+    /**
      * The table <code>public.semantic_type</code>.
      */
     public static final SemanticType SEMANTIC_TYPE = SemanticType.SEMANTIC_TYPE;
@@ -839,9 +872,19 @@ public class Tables {
     public static final Sentence SENTENCE = Sentence.SENTENCE;
 
     /**
+     * The table <code>public.sentence_form</code>.
+     */
+    public static final SentenceForm SENTENCE_FORM = SentenceForm.SENTENCE_FORM;
+
+    /**
      * The table <code>public.sentence_member</code>.
      */
     public static final SentenceMember SENTENCE_MEMBER = SentenceMember.SENTENCE_MEMBER;
+
+    /**
+     * The table <code>public.sentence_relation</code>.
+     */
+    public static final SentenceRelation SENTENCE_RELATION = SentenceRelation.SENTENCE_RELATION;
 
     /**
      * The table <code>public.sentence_translation</code>.
@@ -877,6 +920,11 @@ public class Tables {
      * The table <code>public.terms_of_use</code>.
      */
     public static final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
+
+    /**
+     * The table <code>public.text_content</code>.
+     */
+    public static final TextContent TEXT_CONTENT = TextContent.TEXT_CONTENT;
 
     /**
      * The table <code>public.usage</code>.

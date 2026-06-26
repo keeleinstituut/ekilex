@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.main.Tables.EKI_USER;
 import static eki.ekilex.data.db.main.Tables.REPORT;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.constant.ReportStatus;
 import eki.ekilex.constant.ReportType;
-import eki.ekilex.data.db.main.tables.EkiUser;
 import eki.ekilex.data.db.main.tables.Report;
 
 @Component
@@ -43,10 +41,9 @@ public class ReportDbService {
 				.getId();
 	}
 
-	public List<eki.ekilex.data.Report> getReports(ReportType reportType) {
+	public List<eki.ekilex.data.Report> getReports(ReportType reportType, Long userId) {
 
 		Report r = REPORT.as("r");
-		EkiUser eu = EKI_USER.as("eu");
 
 		return mainDb
 				.select(
@@ -54,12 +51,11 @@ public class ReportDbService {
 						r.TYPE,
 						r.STATUS,
 						r.CREATED_ON,
-						r.COMPLETED_ON,
-						eu.NAME.as("user_name"))
-				.from(r, eu)
+						r.COMPLETED_ON)
+				.from(r)
 				.where(
 						r.TYPE.eq(reportType.name())
-								.and(r.USER_ID.eq(eu.ID)))
+								.and(r.USER_ID.eq(userId)))
 				.orderBy(r.ID.desc())
 				.fetchInto(eki.ekilex.data.Report.class);
 	}
@@ -67,7 +63,6 @@ public class ReportDbService {
 	public eki.ekilex.data.Report getReport(Long id) {
 
 		Report r = REPORT.as("r");
-		EkiUser eu = EKI_USER.as("eu");
 
 		return mainDb.select(
 				r.ID,
@@ -75,12 +70,9 @@ public class ReportDbService {
 				r.STATUS,
 				r.CREATED_ON,
 				r.COMPLETED_ON,
-				r.CONTENT,
-				eu.NAME.as("user_name"))
-				.from(r, eu)
-				.where(
-						r.ID.eq(id)
-								.and(r.USER_ID.eq(eu.ID)))
+				r.CONTENT)
+				.from(r)
+				.where(r.ID.eq(id))
 				.fetchOneInto(eki.ekilex.data.Report.class);
 	}
 

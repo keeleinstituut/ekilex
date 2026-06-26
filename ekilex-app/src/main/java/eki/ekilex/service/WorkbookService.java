@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import eki.ekilex.data.SynWorkReportContent;
+import eki.ekilex.data.SynWorkReportParameters;
+import eki.ekilex.data.SynWorkReportUserContribution;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -105,6 +108,42 @@ public class WorkbookService {
 					createCell(row, cellIndex++, functionReportUserCount);
 				}
 			}
+		}
+
+		return workbook;
+	}
+
+	public Workbook toSynWorkWorkbook(SynWorkReportContent content) {
+
+		SynWorkReportParameters parameters = content.getParameters();
+		List<SynWorkReportUserContribution> userContributions = content.getUserContributions();
+
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet(getMessage("report.synwork.sheet.title"));
+		CellStyle boldCellStyle = createBoldCellStyle(workbook);
+
+		int rowIndex = 0;
+		int cellIndex;
+		Row row;
+
+		String reportPeriod = parameters.getDateFrom().format(DATE_FORMATTER) + " - " + parameters.getDateUntil().format(DATE_FORMATTER);
+		row = sheet.createRow(rowIndex++);
+		cellIndex = 0;
+		createCell(row, cellIndex++, getMessage("report.period"));
+		createCell(row, cellIndex++, reportPeriod);
+
+		sheet.createRow(rowIndex++);
+
+		row = sheet.createRow(rowIndex++);
+		cellIndex = 0;
+		createCell(row, cellIndex++, getMessage("report.synwork.user"), boldCellStyle);
+		createCell(row, cellIndex++, getMessage("report.synwork.completed.word.count"), boldCellStyle);
+
+		for (SynWorkReportUserContribution userContribution : userContributions) {
+			row = sheet.createRow(rowIndex++);
+			cellIndex = 0;
+			createCell(row, cellIndex++, userContribution.getUserName());
+			createCell(row, cellIndex++, userContribution.getCompletedWordCount());
 		}
 
 		return workbook;

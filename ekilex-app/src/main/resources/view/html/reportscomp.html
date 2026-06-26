@@ -2,14 +2,15 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<th:block th:fragment="term_dataset_form">
-  <form id="term-dataset-form" th:action="@{/reports/generate/term-dataset}" method="post" data-plugin="generateReportPlugin">
+<th:block th:fragment="syn_work_form">
+  <form id="syn-work-form" th:action="@{/reports/generate/syn-work}" method="post" data-plugin="generateReportPlugin">
     <div class="form-group row">
       <label class="col-md-2 col-form-label" th:text="#{report.period}">Periood</label>
       <div class="col-md-2 input-group date"
            data-provide="datepicker"
            data-date-language="et"
            data-date-autoclose="true"
+           data-date-orientation="bottom"
            th:title="#{report.period.from}">
         <input type="text" class="form-control bg-white required-field" name="dateFrom" readonly>
         <div class="input-group-addon input-group-append">
@@ -22,6 +23,45 @@
            data-provide="datepicker"
            data-date-language="et"
            data-date-autoclose="true"
+           data-date-orientation="bottom"
+           th:title="#{report.period.until}">
+        <input type="text" class="form-control bg-white required-field" name="dateUntil" readonly>
+        <div class="input-group-addon input-group-append">
+          <div class="input-group-text">
+            <i class="fa fa-calendar fa-lg"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-md-2 col-md-4">
+        <button type="submit" class="btn btn-primary" th:text="#{report.generate}">Genereeri</button>
+      </div>
+    </div>
+  </form>
+</th:block>
+<th:block th:fragment="term_dataset_form">
+  <form id="term-dataset-form" th:action="@{/reports/generate/term-dataset}" method="post" data-plugin="generateReportPlugin">
+    <div class="form-group row">
+      <label class="col-md-2 col-form-label" th:text="#{report.period}">Periood</label>
+      <div class="col-md-2 input-group date"
+           data-provide="datepicker"
+           data-date-language="et"
+           data-date-autoclose="true"
+           data-date-orientation="bottom"
+           th:title="#{report.period.from}">
+        <input type="text" class="form-control bg-white required-field" name="dateFrom" readonly>
+        <div class="input-group-addon input-group-append">
+          <div class="input-group-text">
+            <i class="fa fa-calendar fa-lg"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 input-group date"
+           data-provide="datepicker"
+           data-date-language="et"
+           data-date-autoclose="true"
+           data-date-orientation="bottom"
            th:title="#{report.period.until}">
         <input type="text" class="form-control bg-white required-field" name="dateUntil" readonly>
         <div class="input-group-addon input-group-append">

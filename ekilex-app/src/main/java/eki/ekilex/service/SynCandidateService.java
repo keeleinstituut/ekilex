@@ -146,7 +146,9 @@ public class SynCandidateService extends AbstractSynCudService {
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
-		tagDbService.createLexemeAutomaticTags(lexemeId);
+		String userName = userContext.getUserName();
+
+		tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);

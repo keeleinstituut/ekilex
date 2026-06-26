@@ -1,18 +1,23 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_ATTR;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_COMMENT;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_DESCRIPTION;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP_MEMBER;
-import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP_RELATION;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_DEPREL;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_LEMMA_MORPH;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_MORPH;
-import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_POS;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_STAT;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_RELATION;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.SENTENCE;
 import static eki.ekilex.data.db.main.Tables.SENTENCE_MEMBER;
+import static eki.ekilex.data.db.main.Tables.SENTENCE_RELATION;
 import static eki.ekilex.data.db.main.Tables.SENTENCE_TRANSLATION;
 
 import java.util.List;
@@ -20,6 +25,10 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import eki.ekilex.data.conx.ConstructCommentType;
+import eki.ekilex.data.conx.ConstructDescriptionType;
+import eki.ekilex.data.conx.SentenceRelationType;
 
 @Component
 public class ConstructDbService {
@@ -32,22 +41,90 @@ public class ConstructDbService {
 		return mainDb
 				.insertInto(
 						CONSTRUCT,
-						CONSTRUCT.NAME,
-						CONSTRUCT.DESCRIPTION,
+						CONSTRUCT.NAME_SIMPLE,
+						CONSTRUCT.NAME_DETAIL,
 						CONSTRUCT.CONSTRUCT_TYPE_CODE,
 						CONSTRUCT.CONSTRUCT_SUBTYPE_CODE,
 						CONSTRUCT.SCHEMATICITY_CODE,
 						CONSTRUCT.PROFICIENCY_LEVEL_CODE,
 						CONSTRUCT.LANG)
 				.values(
-						construct.getName(),
-						construct.getDescription(),
+						construct.getNameSimple(),
+						construct.getNameDetail(),
 						construct.getConstructTypeCode(),
 						construct.getConstructSubtypeCode(),
 						construct.getSchematicityCode(),
 						construct.getProficiencyLevelCode(),
 						construct.getLang())
 				.returning(CONSTRUCT.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createConstructDescription(Long constructId, ConstructDescriptionType constructDescriptionType, String value) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_DESCRIPTION,
+						CONSTRUCT_DESCRIPTION.CONSTRUCT_ID,
+						CONSTRUCT_DESCRIPTION.TYPE,
+						CONSTRUCT_DESCRIPTION.VALUE)
+				.values(
+						constructId,
+						constructDescriptionType.name(),
+						value)
+				.returning(CONSTRUCT_DESCRIPTION.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createConstructComment(Long constructId, ConstructCommentType constructCommentType, String value) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_COMMENT,
+						CONSTRUCT_COMMENT.CONSTRUCT_ID,
+						CONSTRUCT_COMMENT.TYPE,
+						CONSTRUCT_COMMENT.VALUE)
+				.values(
+						constructId,
+						constructCommentType.name(),
+						value)
+				.returning(CONSTRUCT_COMMENT.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createConstructAttr(Long constructId, String attrName, String attrValue) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_ATTR,
+						CONSTRUCT_ATTR.CONSTRUCT_ID,
+						CONSTRUCT_ATTR.NAME,
+						CONSTRUCT_ATTR.VALUE)
+				.values(
+						constructId,
+						attrName,
+						attrValue)
+				.returning(CONSTRUCT_ATTR.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createConstructSourceLink(Long constructId, Long sourceId, String sourceLinkName) {
+
+		return mainDb
+				.insertInto(
+						CONSTRUCT_SOURCE_LINK,
+						CONSTRUCT_SOURCE_LINK.CONSTRUCT_ID,
+						CONSTRUCT_SOURCE_LINK.SOURCE_ID,
+						CONSTRUCT_SOURCE_LINK.NAME)
+				.values(
+						constructId,
+						sourceId,
+						sourceLinkName)
+				.returning(CONSTRUCT_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -61,12 +138,14 @@ public class ConstructDbService {
 						CONSTRUCT_MEMBER.CGOVERNMENT_CODE,
 						CONSTRUCT_MEMBER.IS_HEAD,
 						CONSTRUCT_MEMBER.MEMBER_ROLE,
+						CONSTRUCT_MEMBER.SEMANTIC_ROLE_CODE,
 						CONSTRUCT_MEMBER.MEMBER_ORDER)
 				.values(
 						constructId,
 						constructMember.getCgovernmentCode(),
 						constructMember.isHead(),
 						constructMember.getMemberRole(),
+						constructMember.getSemanticRoleCode(),
 						constructMember.getMemberOrder())
 				.returning(CONSTRUCT_MEMBER.ID)
 				.fetchOne()
@@ -94,23 +173,6 @@ public class ConstructDbService {
 						constructGroupId,
 						constructId)
 				.returning(CONSTRUCT_GROUP_MEMBER.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public Long createConstructGroupRelation(Long constructGroup1Id, Long constructGroup2Id, String constructRelationTypeCode) {
-
-		return mainDb
-				.insertInto(
-						CONSTRUCT_GROUP_RELATION,
-						CONSTRUCT_GROUP_RELATION.CONSTRUCT_GROUP1_ID,
-						CONSTRUCT_GROUP_RELATION.CONSTRUCT_GROUP2_ID,
-						CONSTRUCT_GROUP_RELATION.CONSTRUCT_RELATION_TYPE_CODE)
-				.values(
-						constructGroup1Id,
-						constructGroup2Id,
-						constructRelationTypeCode)
-				.returning(CONSTRUCT_GROUP_RELATION.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -165,15 +227,15 @@ public class ConstructDbService {
 		}
 	}
 
-	public void createConstructMemberPosGroups(Long constructMemberId, List<String> memberPosGroupCodes) {
+	public void createConstructMemberPosCodes(Long constructMemberId, List<String> memberPosCodes) {
 
-		for (String memberPosGroupCode : memberPosGroupCodes) {
+		for (String memberPosGroupCode : memberPosCodes) {
 
 			mainDb
 					.insertInto(
-							CONSTRUCT_MEMBER_POS_GROUP,
-							CONSTRUCT_MEMBER_POS_GROUP.CONSTRUCT_MEMBER_ID,
-							CONSTRUCT_MEMBER_POS_GROUP.POS_GROUP_CODE)
+							CONSTRUCT_MEMBER_POS,
+							CONSTRUCT_MEMBER_POS.CONSTRUCT_MEMBER_ID,
+							CONSTRUCT_MEMBER_POS.POS_CODE)
 					.values(
 							constructMemberId,
 							memberPosGroupCode)
@@ -193,6 +255,22 @@ public class ConstructDbService {
 					.values(
 							constructMemberId,
 							memberDeprelCode)
+					.execute();
+		}
+	}
+
+	public void createConstructMemberSemanticTypeCodes(Long constructMemberId, List<String> semanticTypeCodes) {
+
+		for (String semanticTypeCode : semanticTypeCodes) {
+
+			mainDb
+					.insertInto(
+							CONSTRUCT_MEMBER_SEMANTIC_TYPE,
+							CONSTRUCT_MEMBER_SEMANTIC_TYPE.CONSTRUCT_MEMBER_ID,
+							CONSTRUCT_MEMBER_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE)
+					.values(
+							constructMemberId,
+							semanticTypeCode)
 					.execute();
 		}
 	}
@@ -250,7 +328,7 @@ public class ConstructDbService {
 						SENTENCE_MEMBER.MEMBER_SENTENCE_ID,
 						SENTENCE_MEMBER.MEMBER_LEXEME_ID,
 						SENTENCE_MEMBER.MEMBER_FORM_ID,
-						SENTENCE_MEMBER.POS_GROUP_CODE,
+						SENTENCE_MEMBER.POS_CODE,
 						SENTENCE_MEMBER.DEPREL_CODE,
 						SENTENCE_MEMBER.MEMBER_ROLE,
 						SENTENCE_MEMBER.MEMBER_ORDER)
@@ -261,7 +339,7 @@ public class ConstructDbService {
 						sentenceMember.getMemberSentenceId(),
 						sentenceMember.getMemberLexemeId(),
 						sentenceMember.getMemberFormId(),
-						sentenceMember.getPosGroupCode(),
+						sentenceMember.getPosCode(),
 						sentenceMember.getDeprelCode(),
 						sentenceMember.getMemberRole(),
 						sentenceMember.getMemberOrder())
@@ -283,6 +361,23 @@ public class ConstructDbService {
 						value,
 						lang)
 				.returning(SENTENCE_TRANSLATION.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createSentenceRelation(Long sentence1Id, Long sentence2Id, SentenceRelationType sentenceRelationType) {
+
+		return mainDb
+				.insertInto(
+						SENTENCE_RELATION,
+						SENTENCE_RELATION.SENTENCE1_ID,
+						SENTENCE_RELATION.SENTENCE2_ID,
+						SENTENCE_RELATION.TYPE)
+				.values(
+						sentence1Id,
+						sentence2Id,
+						sentenceRelationType.name())
+				.returning(SENTENCE_RELATION.ID)
 				.fetchOne()
 				.getId();
 	}

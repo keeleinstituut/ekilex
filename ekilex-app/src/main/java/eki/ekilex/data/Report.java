@@ -22,8 +22,6 @@ public class Report extends AbstractDataObject {
 
 	private String content;
 
-	private String userName;
-
 	private boolean pending;
 
 	private boolean completed;
@@ -74,14 +72,6 @@ public class Report extends AbstractDataObject {
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public boolean isPending() {

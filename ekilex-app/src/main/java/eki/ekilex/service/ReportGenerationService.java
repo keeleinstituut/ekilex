@@ -18,10 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.ReportType;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.ReportParameters;
+import eki.ekilex.data.SynWorkReportContent;
+import eki.ekilex.data.SynWorkReportParameters;
+import eki.ekilex.data.SynWorkReportUserContribution;
 import eki.ekilex.data.TermDatasetReportContent;
 import eki.ekilex.data.TermDatasetReportParameters;
 import eki.ekilex.data.TermDatasetReportRow;
 import eki.ekilex.service.db.ReportDbService;
+import eki.ekilex.service.db.SynWorkReportDbService;
 import eki.ekilex.service.db.TermDatasetReportDbService;
 
 @Component
@@ -31,6 +35,9 @@ public class ReportGenerationService {
 
 	@Autowired
 	private ReportDbService reportDbService;
+
+	@Autowired
+	private SynWorkReportDbService synWorkReportDbService;
 
 	@Autowired
 	private TermDatasetReportDbService termDatasetReportDbService;
@@ -54,10 +61,28 @@ public class ReportGenerationService {
 
 		String content = switch (reportType) {
 		case TERM_DATASET -> buildTermDatasetContent(parameters);
+		case SYN_WORK -> buildSynWorkContent(parameters);
 		default -> throw new IllegalArgumentException("Report generation not implemented for type: " + reportType);
 		};
 
 		return content;
+	}
+
+	private String buildSynWorkContent(ReportParameters parameters) throws Exception {
+
+		SynWorkReportParameters reportParameters = (SynWorkReportParameters) parameters;
+
+		LocalDateTime from = reportParameters.getDateFrom().atStartOfDay();
+		LocalDateTime until = reportParameters.getDateUntil().plusDays(1).atStartOfDay();
+
+		List<SynWorkReportUserContribution> userContributions = synWorkReportDbService.getUserContributions(from, until);
+
+		SynWorkReportContent content = new SynWorkReportContent();
+		content.setParameters(reportParameters);
+		content.setUserContributions(userContributions);
+
+		String contentJson = objectMapper.writeValueAsString(content);
+		return contentJson;
 	}
 
 	private String buildTermDatasetContent(ReportParameters parameters) throws Exception {

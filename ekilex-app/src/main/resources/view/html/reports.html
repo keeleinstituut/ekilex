@@ -22,9 +22,16 @@
     </div>
     <div class="card-body">
       <th:block th:if="${selectedReportType != null}">
+        <div class="alert alert-info mb-4" th:with="description=${@textContentUtil.getText('report.description.' + selectedReportType.name())}">
+          <p th:if="${description != null}" th:text="${description}"></p>
+          <p class="mb-0" th:text="#{report.retention(${reportRetentionDays})}"></p>
+        </div>
         <th:block th:switch="${selectedReportType}">
           <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
             <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
+          </th:block>
+          <th:block th:case="${T(eki.ekilex.constant.ReportType).SYN_WORK}">
+            <th:block th:replace="reportscomp :: syn_work_form"></th:block>
           </th:block>
         </th:block>
         <hr class="my-3">
@@ -36,14 +43,12 @@
           <th:block th:if="${!reports.isEmpty()}">
             <table class="table table-striped table-sm m-0 p-0">
               <tr>
-                <th class="p-1" th:text="#{report.created.by}">Koostaja</th>
                 <th class="p-1" th:text="#{report.created.on}">Loodud</th>
                 <th class="p-1" th:text="#{report.status}">Staatus</th>
                 <th class="p-1" th:text="#{report.completed.on}">Valminud</th>
                 <th class="p-1"></th>
               </tr>
               <tr th:each="report : ${reports}">
-                <td class="p-1" th:text="${report.userName}"></td>
                 <td class="p-1" th:text="${#temporals.format(report.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
                 <td class="p-1">
                   <span class="badge"

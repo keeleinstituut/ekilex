@@ -1,189 +1,156 @@
 
 -- #1 --
 
-delete from language_group;
+alter table lexeme_tag add column created_by text null;
 
-delete from language where code in ('aka', 'qbq', 'qbr', 'phn', 'cel', 'gml', 'ito', 'pro', 'und');
+-- Olemasolevate andmete täiendamine - suurusjärgud on indikatiivsed ja ajas muutuvad
 
-insert into language (code, datasets) values ('aka', '{eki, ety}');
-insert into language (code, datasets) values ('qbq', '{eki, ety}');
-insert into language (code, datasets) values ('qbr', '{eki, ety}');
-insert into language (code, datasets) values ('phn', '{eki, ety}');
-insert into language (code, datasets) values ('cel', '{eki, ety}');
-insert into language (code, datasets) values ('gml', '{eki, ety}');
-insert into language (code, datasets) values ('ito', '{eki, ety}');
-insert into language (code, datasets) values ('pro', '{eki, ety}');
-insert into language (code, datasets) values ('und', '{eki, ety}');
+-- ca 68000
+update lexeme_tag lt
+set created_by = al.event_by
+from activity_log al
+where
+	al.entity_id = lt.id
+    and al.entity_name = 'TAG'
+    and al.funct_name = 'createLexemeTag'
+    and lt.created_by is null;
 
-insert into language_label (code, value, lang, type) values ('aka', 'akani keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('qbq', 'Ameerika hispaania keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('qbr', 'Ameerika inglise keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('phn', 'foiniikia keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('cel', 'keldi keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('gml', 'keskalamsaksa keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('ito', 'vanaitaalia keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('pro', 'vanaprovansi keel', 'est', 'descrip');
-insert into language_label (code, value, lang, type) values ('und', 'määramata', 'est', 'descrip');
+-- ca 17000
+with activity_word_lex_tag_complete_matches as (
+	select distinct on (lt.id)
+		lt.id as lexeme_tag_id,
+		al.event_by
+	from
+		lexeme_tag lt,
+		lexeme_activity_log lal,
+		activity_log al
+	where
+		lt.lexeme_id = lal.lexeme_id
+		and lal.activity_log_id = al.id
+		and al.funct_name = 'updateWordLexemesTagComplete'
+		and al.owner_name = 'WORD'
+		and al.entity_name = 'TAG'
+		and al.entity_id = -1
+		and al.event_on >= lt.created_on
+		and al.event_on < lt.created_on + interval '5 seconds'
+		and exists (
+			select 1
+			from unnest(al.curr_diffs) cd
+			where cd.op in ('add', 'replace') and cd.value = lt.tag_name)
+	order by lt.id, al.event_on asc
+)
+update lexeme_tag lt
+set created_by = awltc.event_by
+from activity_word_lex_tag_complete_matches awltc
+where
+	lt.id = awltc.lexeme_tag_id
+    and lt.created_by is null;
 
-insert into language_label (code, value, lang, type) values ('aka', 'akani keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('qbq', 'Ameerika hispaania keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('qbr', 'Ameerika inglise keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('phn', 'foiniikia keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('cel', 'keldi keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('gml', 'keskalamsaksa keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('ito', 'vanaitaalia keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('pro', 'vanaprovansi keel', 'est', 'wordweb');
-insert into language_label (code, value, lang, type) values ('und', 'määramata', 'est', 'wordweb');
+-- ca 1000
+with activity_lex_tag_create_matches as (
+	select distinct on (lt.id)
+		lt.id as lexeme_tag_id,
+		al.event_by
+	from
+		lexeme_tag lt,
+		lexeme_activity_log lal,
+		activity_log al
+	where
+		lt.lexeme_id = lal.lexeme_id
+		and lal.activity_log_id = al.id
+		and al.funct_name = 'create'
+		and al.owner_name = 'LEXEME'
+		and al.entity_name = 'TAG'
+		and al.entity_id = -1
+		and al.event_on >= lt.created_on
+		and al.event_on < lt.created_on + interval '5 seconds'
+		and exists (
+			select 1
+			from unnest(al.curr_diffs) cd
+			where cd.op in ('add') and cd.value = lt.tag_name)
+	order by lt.id, al.event_on asc
+)
+update lexeme_tag lt
+set created_by = altc.event_by
+from activity_lex_tag_create_matches altc
+where
+	lt.id = altc.lexeme_tag_id
+	and lt.created_by is null;
 
-insert into language_group (name) values ('Aafrika keeled');
-insert into language_group (name) values ('Austraalia keeled');
-insert into language_group (name) values ('India keeled');
-insert into language_group (name) values ('Indoneesia keeled');
-insert into language_group (name) values ('Lääne-Aafrika keeled');
-insert into language_group (name) values ('Paapua keeled');
-insert into language_group (name) values ('Polüneesia keeled');
-insert into language_group (name) values ('Skandinaavia keeled');
-insert into language_group (name) values ('Uurali keeled');
-insert into language_group (name) values ('aarja keeled');
-insert into language_group (name) values ('algonkini keeled');
-insert into language_group (name) values ('balti keeled');
-insert into language_group (name) values ('bantu keeled');
-insert into language_group (name) values ('berberi keeled');
-insert into language_group (name) values ('eesti-liivi kiht');
-insert into language_group (name) values ('eesti-soome kiht');
-insert into language_group (name) values ('eesti-vadja kiht');
-insert into language_group (name) values ('eskimo keeled');
-insert into language_group (name) values ('germaani keeled');
-insert into language_group (name) values ('hiina-tiibeti keeled');
-insert into language_group (name) values ('indiaani keeled');
-insert into language_group (name) values ('indoeuroopa keeled');
-insert into language_group (name) values ('iraani keeled');
-insert into language_group (name) values ('irokeesi keeled');
-insert into language_group (name) values ('läänemeresoome keeled');
-insert into language_group (name) values ('läänemeresoome-mordva kiht');
-insert into language_group (name) values ('läänemeresoome-permi kiht');
-insert into language_group (name) values ('läänemeresoome-saami kiht');
-insert into language_group (name) values ('läänemeresoome-volga kiht');
-insert into language_group (name) values ('romaani keeled');
-insert into language_group (name) values ('semi keeled');
-insert into language_group (name) values ('slaavi keeled');
-insert into language_group (name) values ('soome-ugri keeled');
-insert into language_group (name) values ('tiibeti keeled');
-insert into language_group (name) values ('tunguusi-mandžu keeled');
-insert into language_group (name) values ('tupii-guaranii keeled');
-insert into language_group (name) values ('turgi keeled');
+-- ca 211594
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	created_on between '2020-08-03 12:00' and '2020-08-03 13:00'
+	and created_by is null;
+
+-- ca 301518
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name = 'Kollide kolimine'
+	and created_on between '2024-07-18 16:00' and '2024-07-18 22:00'
+	and created_by is null;
+
+-- ca 2658
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name = 'tundmatu koll, 0 homon'
+	and created_on between '2020-12-16 21:00' and '2020-12-16 22:00'
+	and created_by is null;
+
+-- ca 11576
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name = 'termin'
+	and created_on between '2021-01-18 00:00' and '2021-01-18 01:00'
+	and created_by is null;
+
+-- ca 1931
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name in ('arhiveeritud', 'töös')
+	and created_on between '2022-06-20 04:00' and '2022-06-20 05:00'
+	and created_by is null;
+
+-- ca 679
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name = 'mil muudetud mitteavalikuks'
+	and created_on between '2023-10-04 12:00' and '2023-10-04 13:00'
+	and created_by is null;
+
+-- ca 358
+update lexeme_tag
+set created_by = 'Laadur'
+where
+	tag_name = 'etümoloogia üle vaadata'
+	and created_on between '2023-12-08 10:00' and '2023-12-08 11:00'
+	and created_by is null;
+
+-- ca 100
+update lexeme_tag
+set created_by = 'n/a'
+where created_by is null;
 
 -- #2 --
 
-delete from publishing where entity_name = 'meaning_relation';
-
-insert into publishing (event_by, target_name, entity_name, entity_id)
-select
-	'Laadur',
-	'ww_unif',
-	'meaning_relation',
-	mr.id
-from
-	meaning_relation mr
-where
-	mr.meaning_rel_type_code != 'duplikaadikandidaat'
-	and exists (
-		select
-			1
-		from
-			lexeme l
-		where
-			l.meaning_id = mr.meaning1_id
-			and l.dataset_code = 'eki'
-	)
-	and not exists (
-		select
-			1
-		from
-			publishing p
-		where
-			p.target_name = 'ww_unif'
-			and p.entity_name = 'meaning_relation'
-			and p.entity_id = mr.id
-	)
-;
-
-insert into publishing (event_by, target_name, entity_name, entity_id)
-select
-	'Laadur',
-	'ww_lite',
-	'meaning_relation',
-	mr.id
-from
-	meaning_relation mr
-where
-	mr.meaning_rel_type_code != 'duplikaadikandidaat'
-	and (
-			(
-				mr.meaning_rel_type_code = 'sarnane'
-				and exists (
-					select
-						1
-					from
-						lexeme l
-					where
-						l.meaning_id = mr.meaning1_id
-						and l.dataset_code = 'eki'
-				)
-			)
-			or
-			(
-				mr.meaning_rel_type_code != 'sarnane'
-				and exists (
-					select
-						1
-					from
-						lexeme l, publishing p
-					where
-						l.meaning_id = mr.meaning1_id
-						and l.dataset_code = 'eki'
-						and p.entity_name = 'lexeme'
-						and p.entity_id = l.id
-						and p.target_name = 'ww_lite'
-				)
-				and exists (
-					select
-						1
-					from
-						lexeme l, publishing p
-					where
-						l.meaning_id = mr.meaning2_id
-						and l.dataset_code = 'eki'
-						and p.entity_name = 'lexeme'
-						and p.entity_id = l.id
-						and p.target_name = 'ww_lite'
-				)
-			)
-	)
-	and not exists (
-		select
-			1
-		from
-			publishing p
-		where
-			p.target_name = 'ww_lite'
-			and p.entity_name = 'meaning_relation'
-			and p.entity_id = mr.id
-	)
-;
-
--- #3 --
-
-create table report (
+create table text_content (
 	id bigserial primary key,
-	user_id bigint references eki_user(id) on delete cascade not null,
-	type varchar(100) not null,
-	status varchar(100) not null,
-	content jsonb null,
-	created_on timestamp not null default statement_timestamp(),
-	completed_on timestamp null
+	name text not null,
+	lang char(3) references language(code) not null,
+	value text not null,
+	unique (name, lang)
 );
-alter sequence report_id_seq restart with 10000;
+alter sequence text_content_id_seq restart with 10000;
 
-create index report_user_id_idx on report(user_id);
-create index report_type_idx on report(type);
+create index text_content_lang_idx on text_content(lang);
+
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'est', 'Terminikogude raport annab ülevaate terminikogude mahust ja kvaliteedist. Näidatakse mõistete, definitsioonide, terminite jne muudatusi määratud ajavahemikul ja hetkeseisu raporti koostamise hetkel. Raporti saab alla laadida Exceli formaadis.');
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'eng', 'Gives an overview of the size and quality of datasets. Shows changes during the specified period, as well as the current state at the time of generation.');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'est', 'Raport annab ülevaate sellest, kui mitmele keelendile on valitud kasutaja määratud ajavahemikus lisanud ilmiku sildi "süno valmis".');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'eng', 'Gives an overview of how many word entries users have marked with "syno ready" lexeme tag during the specified period.');

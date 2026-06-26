@@ -185,7 +185,7 @@ public class EtymDbService implements SystemConstant, GlobalConstant {
 										DSL.key("wordEtymId").value(wesl.WORD_ETYM_ID),
 										DSL.key("sourceId").value(wesl.SOURCE_ID),
 										DSL.key("name").value(wesl.NAME),
-										DSL.key("value").value(wesl.VALUE),
+										//DSL.key("value").value(wesl.VALUE),
 										DSL.key("orderBy").value(wesl.ORDER_BY)))
 						.orderBy(wesl.ORDER_BY))
 				.from(wesl)

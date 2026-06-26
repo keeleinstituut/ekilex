@@ -84,9 +84,9 @@ public class SentenceMember extends TableImpl<SentenceMemberRecord> {
     public final TableField<SentenceMemberRecord, Long> MEMBER_FORM_ID = createField(DSL.name("member_form_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.sentence_member.pos_group_code</code>.
+     * The column <code>public.sentence_member.pos_code</code>.
      */
-    public final TableField<SentenceMemberRecord, String> POS_GROUP_CODE = createField(DSL.name("pos_group_code"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<SentenceMemberRecord, String> POS_CODE = createField(DSL.name("pos_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.sentence_member.deprel_code</code>.
@@ -158,7 +158,7 @@ public class SentenceMember extends TableImpl<SentenceMemberRecord> {
 
     @Override
     public List<ForeignKey<SentenceMemberRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SentenceMemberRecord, ?>>asList(Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_SENTENCE_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_CONSTRUCT_MEMBER_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_SENTENCE_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_LEXEME_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_FORM_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_POS_GROUP_CODE_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_DEPREL_CODE_FKEY);
+        return Arrays.<ForeignKey<SentenceMemberRecord, ?>>asList(Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_SENTENCE_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_CONSTRUCT_MEMBER_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_SENTENCE_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_LEXEME_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_MEMBER_FORM_ID_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_POS_CODE_FKEY, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_DEPREL_CODE_FKEY);
     }
 
     private transient Sentence _sentenceMemberSentenceIdFkey;
@@ -166,7 +166,7 @@ public class SentenceMember extends TableImpl<SentenceMemberRecord> {
     private transient Sentence _sentenceMemberMemberSentenceIdFkey;
     private transient Lexeme _lexeme;
     private transient Form _form;
-    private transient PosGroup _posGroup;
+    private transient Pos _pos;
     private transient Deprel _deprel;
 
     public Sentence sentenceMemberSentenceIdFkey() {
@@ -204,11 +204,11 @@ public class SentenceMember extends TableImpl<SentenceMemberRecord> {
         return _form;
     }
 
-    public PosGroup posGroup() {
-        if (_posGroup == null)
-            _posGroup = new PosGroup(this, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_POS_GROUP_CODE_FKEY);
+    public Pos pos() {
+        if (_pos == null)
+            _pos = new Pos(this, Keys.SENTENCE_MEMBER__SENTENCE_MEMBER_POS_CODE_FKEY);
 
-        return _posGroup;
+        return _pos;
     }
 
     public Deprel deprel() {

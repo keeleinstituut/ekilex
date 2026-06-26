@@ -183,15 +183,15 @@ public class TagDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public List<String> createLexemeAutomaticTags(Long lexemeId) {
+	public List<String> createLexemeAutomaticTags(Long lexemeId, String createdBy) {
 
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		Tag t = TAG.as("t");
 
 		List<String> createdTagNames = mainDb
-				.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
+				.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME, LEXEME_TAG.CREATED_BY)
 				.select(DSL
-						.select(DSL.val(lexemeId), t.NAME)
+						.select(DSL.val(lexemeId), t.NAME, DSL.val(createdBy))
 						.from(t)
 						.where(
 								t.SET_AUTOMATICALLY.isTrue()

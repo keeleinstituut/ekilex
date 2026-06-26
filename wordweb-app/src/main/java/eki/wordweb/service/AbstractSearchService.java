@@ -165,19 +165,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			searchWordUnaccent = asWordResult.getValue();
 		}
 		List<Word> allWords = searchDbService.getWords(searchWordUnaccent, searchContext, false);
-		wordConversionUtil.setWordTypeFlags(allWords);
-		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
-		wordConversionUtil.selectHomonymWithLang(allWords, searchWordValue, homonymNr, lang);
-		linkUtil.applySearchUris(allWords, searchFilter, isWwUnif(), isWwLite());
-
-		Long selectedWordId = allWords.stream()
-				.filter(Word::isSelected)
-				.map(Word::getWordId)
-				.findFirst()
-				.orElse(null);
-
-		WordData selectedWordData = getWordData(selectedWordId, searchFilter);
-
 		List<Word> wordMatchWords = allWords.stream()
 				.filter(Word::isWordMatch)
 				.collect(Collectors.toList());
@@ -192,6 +179,21 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		boolean wordOrFormResultExists = wordResultExists || formResultExists;
 		int wordResultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = wordResultCount == 1;
+
+		if (wordResultExists) {
+			wordConversionUtil.setWordTypeFlags(wordMatchWords);
+			wordConversionUtil.composeHomonymWrapups(wordMatchWords, searchContext);
+			wordConversionUtil.selectHomonymWithLang(wordMatchWords, searchWordValue, homonymNr, lang);
+			linkUtil.applySearchUris(wordMatchWords, searchFilter, isWwUnif(), isWwLite());
+		}
+
+		Long selectedWordId = allWords.stream()
+				.filter(Word::isSelected)
+				.map(Word::getWordId)
+				.findFirst()
+				.orElse(null);
+
+		WordData selectedWordData = getWordData(selectedWordId, searchFilter);
 
 		// #1 main flow
 		if (wordOrFormResultExists) {

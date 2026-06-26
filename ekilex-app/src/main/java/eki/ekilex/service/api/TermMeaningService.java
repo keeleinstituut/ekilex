@@ -233,7 +233,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						boolean lexemeTagExists = lookupDbService.lexemeTagExists(lexemeId, tagName);
 						if (!lexemeTagExists) {
 							activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-							Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+							Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName, userName);
 							activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 						}
 					}

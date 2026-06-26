@@ -67,11 +67,17 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 	List<String> getRequiredFilenames() {
 		List<String> requiredFilenames = Arrays.asList(
 				CLASSIF_LANG_GROUP_SS1_FILENAME,
+				CLASSIF_LANG_SS1_FILENAME,
+				SS1_FILENAME);
+		/*
+		List<String> requiredFilenames = Arrays.asList(
+				CLASSIF_LANG_GROUP_SS1_FILENAME,
 				CLASSIF_LANG_GROUP_VSL_FILENAME,
 				CLASSIF_LANG_SS1_FILENAME,
 				CLASSIF_LANG_VSL_FILENAME,
 				SS1_FILENAME,
 				VSL_FILENAME);
+		 */
 		return requiredFilenames;
 	}
 

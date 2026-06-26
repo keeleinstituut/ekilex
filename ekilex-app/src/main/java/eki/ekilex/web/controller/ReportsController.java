@@ -1,6 +1,5 @@
 package eki.ekilex.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,8 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Report;
+import eki.ekilex.data.ReportParameters;
+import eki.ekilex.data.SynWorkReportParameters;
 import eki.ekilex.data.TermDatasetReportParameters;
 import eki.ekilex.service.ReportService;
 
@@ -39,7 +40,7 @@ public class ReportsController extends AbstractPrivatePageController {
 			return REDIRECT_PREF + HOME_URI;
 		}
 
-		List<ReportType> accessibleReportTypes = getAccessibleReportTypes();
+		List<ReportType> accessibleReportTypes = reportService.getAccessibleReportTypes(user);
 		model.addAttribute("accessibleReportTypes", accessibleReportTypes);
 
 		return REPORTS_PAGE;
@@ -48,31 +49,37 @@ public class ReportsController extends AbstractPrivatePageController {
 	@GetMapping(REPORTS_URI + "/{reportType}")
 	public String getReportsByType(@PathVariable ReportType reportType, Model model) {
 
-		List<ReportType> accessibleReportTypes = getAccessibleReportTypes();
+		EkiUser user = userContext.getUser();
+
+		List<ReportType> accessibleReportTypes = reportService.getAccessibleReportTypes(user);
 		if (!accessibleReportTypes.contains(reportType)) {
 			return REDIRECT_PREF + HOME_URI;
 		}
 
-		List<Report> reports = reportService.getReports(reportType);
+		List<Report> reports = reportService.getReports(reportType, user);
 
 		model.addAttribute("selectedReportType", reportType);
 		model.addAttribute("accessibleReportTypes", accessibleReportTypes);
 		model.addAttribute("reports", reports);
+		model.addAttribute("reportRetentionDays", DELETE_REPORTS_OLDER_THAN_DAYS);
 
 		addReportTypeSpecificAttributes(reportType, model);
 
 		return REPORTS_PAGE;
 	}
 
+	@PostMapping(REPORTS_URI + "/generate/syn-work")
+	public String generateSynWorkReport(
+			@ModelAttribute(name = "synWorkReportParameters") SynWorkReportParameters parameters) {
+
+		return generateReport(ReportType.SYN_WORK, parameters);
+	}
+
 	@PostMapping(REPORTS_URI + "/generate/term-dataset")
 	public String generateTermDatasetReport(
 			@ModelAttribute(name = "termDatasetReportParameters") TermDatasetReportParameters parameters) {
 
-		ReportType reportType = ReportType.TERM_DATASET;
-		EkiUser user = userContext.getUser();
-		reportService.createReport(user, reportType, parameters);
-
-		return REDIRECT_PREF + REPORTS_URI + "/" + reportType.name();
+		return generateReport(ReportType.TERM_DATASET, parameters);
 	}
 
 	@GetMapping(REPORTS_URI + DOWNLOAD_URI + "/{reportId}")
@@ -87,24 +94,20 @@ public class ReportsController extends AbstractPrivatePageController {
 				.body(fileBytes);
 	}
 
-	private List<ReportType> getAccessibleReportTypes() {
-
-		EkiUser user = userContext.getUser();
-		List<ReportType> accessibleTypes = new ArrayList<>();
-
-		if (user.isAdmin() || user.isDatasetCrudPermissionsExist()) {
-			accessibleTypes.add(ReportType.TERM_DATASET);
-		}
-
-		return accessibleTypes;
-	}
-
 	private void addReportTypeSpecificAttributes(ReportType reportType, Model model) {
 		if (reportType == ReportType.TERM_DATASET) {
 			EkiUser user = userContext.getUser();
 			List<Dataset> datasets = reportService.getAccessibleTermDatasets(user);
 			model.addAttribute("reportDatasets", datasets);
 		}
+	}
+
+	private String generateReport(ReportType reportType, ReportParameters parameters) {
+
+		EkiUser user = userContext.getUser();
+		reportService.createReport(user, reportType, parameters);
+
+		return REDIRECT_PREF + REPORTS_URI + "/" + reportType.name();
 	}
 
 }

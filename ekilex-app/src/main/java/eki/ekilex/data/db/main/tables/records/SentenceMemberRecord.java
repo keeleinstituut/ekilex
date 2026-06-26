@@ -120,16 +120,16 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
     }
 
     /**
-     * Setter for <code>public.sentence_member.pos_group_code</code>.
+     * Setter for <code>public.sentence_member.pos_code</code>.
      */
-    public void setPosGroupCode(String value) {
+    public void setPosCode(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>public.sentence_member.pos_group_code</code>.
+     * Getter for <code>public.sentence_member.pos_code</code>.
      */
-    public String getPosGroupCode() {
+    public String getPosCode() {
         return (String) get(7);
     }
 
@@ -235,7 +235,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
 
     @Override
     public Field<String> field8() {
-        return SentenceMember.SENTENCE_MEMBER.POS_GROUP_CODE;
+        return SentenceMember.SENTENCE_MEMBER.POS_CODE;
     }
 
     @Override
@@ -290,7 +290,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
 
     @Override
     public String component8() {
-        return getPosGroupCode();
+        return getPosCode();
     }
 
     @Override
@@ -345,7 +345,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
 
     @Override
     public String value8() {
-        return getPosGroupCode();
+        return getPosCode();
     }
 
     @Override
@@ -407,7 +407,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
 
     @Override
     public SentenceMemberRecord value8(String value) {
-        setPosGroupCode(value);
+        setPosCode(value);
         return this;
     }
 
@@ -459,7 +459,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
     /**
      * Create a detached, initialised SentenceMemberRecord
      */
-    public SentenceMemberRecord(Long id, Long sentenceId, Long constructMemberId, String value, Long memberSentenceId, Long memberLexemeId, Long memberFormId, String posGroupCode, String deprelCode, String memberRole, Integer memberOrder) {
+    public SentenceMemberRecord(Long id, Long sentenceId, Long constructMemberId, String value, Long memberSentenceId, Long memberLexemeId, Long memberFormId, String posCode, String deprelCode, String memberRole, Integer memberOrder) {
         super(SentenceMember.SENTENCE_MEMBER);
 
         setId(id);
@@ -469,7 +469,7 @@ public class SentenceMemberRecord extends UpdatableRecordImpl<SentenceMemberReco
         setMemberSentenceId(memberSentenceId);
         setMemberLexemeId(memberLexemeId);
         setMemberFormId(memberFormId);
-        setPosGroupCode(posGroupCode);
+        setPosCode(posCode);
         setDeprelCode(deprelCode);
         setMemberRole(memberRole);
         setMemberOrder(memberOrder);

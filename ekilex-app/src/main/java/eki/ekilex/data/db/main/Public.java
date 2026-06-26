@@ -12,17 +12,21 @@ import eki.ekilex.data.db.main.tables.AspectLabel;
 import eki.ekilex.data.db.main.tables.Cgovernment;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Construct;
+import eki.ekilex.data.db.main.tables.ConstructAttr;
+import eki.ekilex.data.db.main.tables.ConstructComment;
+import eki.ekilex.data.db.main.tables.ConstructDescription;
 import eki.ekilex.data.db.main.tables.ConstructGroup;
 import eki.ekilex.data.db.main.tables.ConstructGroupMember;
-import eki.ekilex.data.db.main.tables.ConstructGroupRelation;
 import eki.ekilex.data.db.main.tables.ConstructMember;
 import eki.ekilex.data.db.main.tables.ConstructMemberDeprel;
 import eki.ekilex.data.db.main.tables.ConstructMemberLemmaMorph;
 import eki.ekilex.data.db.main.tables.ConstructMemberMorph;
-import eki.ekilex.data.db.main.tables.ConstructMemberPosGroup;
+import eki.ekilex.data.db.main.tables.ConstructMemberPos;
+import eki.ekilex.data.db.main.tables.ConstructMemberSemanticType;
 import eki.ekilex.data.db.main.tables.ConstructMemberStat;
 import eki.ekilex.data.db.main.tables.ConstructRelation;
 import eki.ekilex.data.db.main.tables.ConstructRelationType;
+import eki.ekilex.data.db.main.tables.ConstructSourceLink;
 import eki.ekilex.data.db.main.tables.ConstructSubtype;
 import eki.ekilex.data.db.main.tables.ConstructType;
 import eki.ekilex.data.db.main.tables.DataRequest;
@@ -126,10 +130,13 @@ import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Report;
 import eki.ekilex.data.db.main.tables.Schematicity;
+import eki.ekilex.data.db.main.tables.SemanticRole;
 import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.main.tables.Sentence;
+import eki.ekilex.data.db.main.tables.SentenceForm;
 import eki.ekilex.data.db.main.tables.SentenceMember;
+import eki.ekilex.data.db.main.tables.SentenceRelation;
 import eki.ekilex.data.db.main.tables.SentenceTranslation;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
@@ -137,6 +144,7 @@ import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
 import eki.ekilex.data.db.main.tables.TermsOfUse;
+import eki.ekilex.data.db.main.tables.TextContent;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
@@ -282,6 +290,21 @@ public class Public extends SchemaImpl {
     public final Construct CONSTRUCT = Construct.CONSTRUCT;
 
     /**
+     * The table <code>public.construct_attr</code>.
+     */
+    public final ConstructAttr CONSTRUCT_ATTR = ConstructAttr.CONSTRUCT_ATTR;
+
+    /**
+     * The table <code>public.construct_comment</code>.
+     */
+    public final ConstructComment CONSTRUCT_COMMENT = ConstructComment.CONSTRUCT_COMMENT;
+
+    /**
+     * The table <code>public.construct_description</code>.
+     */
+    public final ConstructDescription CONSTRUCT_DESCRIPTION = ConstructDescription.CONSTRUCT_DESCRIPTION;
+
+    /**
      * The table <code>public.construct_group</code>.
      */
     public final ConstructGroup CONSTRUCT_GROUP = ConstructGroup.CONSTRUCT_GROUP;
@@ -290,11 +313,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.construct_group_member</code>.
      */
     public final ConstructGroupMember CONSTRUCT_GROUP_MEMBER = ConstructGroupMember.CONSTRUCT_GROUP_MEMBER;
-
-    /**
-     * The table <code>public.construct_group_relation</code>.
-     */
-    public final ConstructGroupRelation CONSTRUCT_GROUP_RELATION = ConstructGroupRelation.CONSTRUCT_GROUP_RELATION;
 
     /**
      * The table <code>public.construct_member</code>.
@@ -317,9 +335,14 @@ public class Public extends SchemaImpl {
     public final ConstructMemberMorph CONSTRUCT_MEMBER_MORPH = ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH;
 
     /**
-     * The table <code>public.construct_member_pos_group</code>.
+     * The table <code>public.construct_member_pos</code>.
      */
-    public final ConstructMemberPosGroup CONSTRUCT_MEMBER_POS_GROUP = ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP;
+    public final ConstructMemberPos CONSTRUCT_MEMBER_POS = ConstructMemberPos.CONSTRUCT_MEMBER_POS;
+
+    /**
+     * The table <code>public.construct_member_semantic_type</code>.
+     */
+    public final ConstructMemberSemanticType CONSTRUCT_MEMBER_SEMANTIC_TYPE = ConstructMemberSemanticType.CONSTRUCT_MEMBER_SEMANTIC_TYPE;
 
     /**
      * The table <code>public.construct_member_stat</code>.
@@ -335,6 +358,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.construct_relation_type</code>.
      */
     public final ConstructRelationType CONSTRUCT_RELATION_TYPE = ConstructRelationType.CONSTRUCT_RELATION_TYPE;
+
+    /**
+     * The table <code>public.construct_source_link</code>.
+     */
+    public final ConstructSourceLink CONSTRUCT_SOURCE_LINK = ConstructSourceLink.CONSTRUCT_SOURCE_LINK;
 
     /**
      * The table <code>public.construct_subtype</code>.
@@ -852,6 +880,11 @@ public class Public extends SchemaImpl {
     public final Schematicity SCHEMATICITY = Schematicity.SCHEMATICITY;
 
     /**
+     * The table <code>public.semantic_role</code>.
+     */
+    public final SemanticRole SEMANTIC_ROLE = SemanticRole.SEMANTIC_ROLE;
+
+    /**
      * The table <code>public.semantic_type</code>.
      */
     public final SemanticType SEMANTIC_TYPE = SemanticType.SEMANTIC_TYPE;
@@ -867,9 +900,19 @@ public class Public extends SchemaImpl {
     public final Sentence SENTENCE = Sentence.SENTENCE;
 
     /**
+     * The table <code>public.sentence_form</code>.
+     */
+    public final SentenceForm SENTENCE_FORM = SentenceForm.SENTENCE_FORM;
+
+    /**
      * The table <code>public.sentence_member</code>.
      */
     public final SentenceMember SENTENCE_MEMBER = SentenceMember.SENTENCE_MEMBER;
+
+    /**
+     * The table <code>public.sentence_relation</code>.
+     */
+    public final SentenceRelation SENTENCE_RELATION = SentenceRelation.SENTENCE_RELATION;
 
     /**
      * The table <code>public.sentence_translation</code>.
@@ -905,6 +948,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.terms_of_use</code>.
      */
     public final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
+
+    /**
+     * The table <code>public.text_content</code>.
+     */
+    public final TextContent TEXT_CONTENT = TextContent.TEXT_CONTENT;
 
     /**
      * The table <code>public.usage</code>.
@@ -1268,9 +1316,14 @@ public class Public extends SchemaImpl {
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.CGOVERNMENT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
+            Sequences.CONSTRUCT_ATTR_ID_SEQ,
+            Sequences.CONSTRUCT_ATTR_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_COMMENT_ID_SEQ,
+            Sequences.CONSTRUCT_COMMENT_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_DESCRIPTION_ID_SEQ,
+            Sequences.CONSTRUCT_DESCRIPTION_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_GROUP_ID_SEQ,
             Sequences.CONSTRUCT_GROUP_MEMBER_ID_SEQ,
-            Sequences.CONSTRUCT_GROUP_RELATION_ID_SEQ,
             Sequences.CONSTRUCT_ID_SEQ,
             Sequences.CONSTRUCT_MEMBER_DEPREL_ID_SEQ,
             Sequences.CONSTRUCT_MEMBER_DEPREL_ORDER_BY_SEQ,
@@ -1279,12 +1332,16 @@ public class Public extends SchemaImpl {
             Sequences.CONSTRUCT_MEMBER_LEMMA_MORPH_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_MEMBER_MORPH_ID_SEQ,
             Sequences.CONSTRUCT_MEMBER_MORPH_ORDER_BY_SEQ,
-            Sequences.CONSTRUCT_MEMBER_POS_GROUP_ID_SEQ,
-            Sequences.CONSTRUCT_MEMBER_POS_GROUP_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_MEMBER_POS_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_POS_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_MEMBER_SEMANTIC_TYPE_ID_SEQ,
+            Sequences.CONSTRUCT_MEMBER_SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_MEMBER_STAT_ID_SEQ,
             Sequences.CONSTRUCT_RELATION_ID_SEQ,
             Sequences.CONSTRUCT_RELATION_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_RELATION_TYPE_ORDER_BY_SEQ,
+            Sequences.CONSTRUCT_SOURCE_LINK_ID_SEQ,
+            Sequences.CONSTRUCT_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_SUBTYPE_ORDER_BY_SEQ,
             Sequences.CONSTRUCT_TYPE_ORDER_BY_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
@@ -1397,9 +1454,12 @@ public class Public extends SchemaImpl {
             Sequences.REL_GROUP_ORDER_BY_SEQ,
             Sequences.REPORT_ID_SEQ,
             Sequences.SCHEMATICITY_ORDER_BY_SEQ,
+            Sequences.SEMANTIC_ROLE_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.SENTENCE_FORM_ID_SEQ,
             Sequences.SENTENCE_ID_SEQ,
             Sequences.SENTENCE_MEMBER_ID_SEQ,
+            Sequences.SENTENCE_RELATION_ID_SEQ,
             Sequences.SENTENCE_TRANSLATION_ID_SEQ,
             Sequences.SENTENCE_TRANSLATION_ORDER_BY_SEQ,
             Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
@@ -1408,6 +1468,7 @@ public class Public extends SchemaImpl {
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
             Sequences.TERMS_OF_USE_ID_SEQ,
+            Sequences.TEXT_CONTENT_ID_SEQ,
             Sequences.USAGE_ID_SEQ,
             Sequences.USAGE_ORDER_BY_SEQ,
             Sequences.USAGE_SOURCE_LINK_ID_SEQ,
@@ -1474,17 +1535,21 @@ public class Public extends SchemaImpl {
             Cgovernment.CGOVERNMENT,
             CollocationMember.COLLOCATION_MEMBER,
             Construct.CONSTRUCT,
+            ConstructAttr.CONSTRUCT_ATTR,
+            ConstructComment.CONSTRUCT_COMMENT,
+            ConstructDescription.CONSTRUCT_DESCRIPTION,
             ConstructGroup.CONSTRUCT_GROUP,
             ConstructGroupMember.CONSTRUCT_GROUP_MEMBER,
-            ConstructGroupRelation.CONSTRUCT_GROUP_RELATION,
             ConstructMember.CONSTRUCT_MEMBER,
             ConstructMemberDeprel.CONSTRUCT_MEMBER_DEPREL,
             ConstructMemberLemmaMorph.CONSTRUCT_MEMBER_LEMMA_MORPH,
             ConstructMemberMorph.CONSTRUCT_MEMBER_MORPH,
-            ConstructMemberPosGroup.CONSTRUCT_MEMBER_POS_GROUP,
+            ConstructMemberPos.CONSTRUCT_MEMBER_POS,
+            ConstructMemberSemanticType.CONSTRUCT_MEMBER_SEMANTIC_TYPE,
             ConstructMemberStat.CONSTRUCT_MEMBER_STAT,
             ConstructRelation.CONSTRUCT_RELATION,
             ConstructRelationType.CONSTRUCT_RELATION_TYPE,
+            ConstructSourceLink.CONSTRUCT_SOURCE_LINK,
             ConstructSubtype.CONSTRUCT_SUBTYPE,
             ConstructType.CONSTRUCT_TYPE,
             DataRequest.DATA_REQUEST,
@@ -1588,10 +1653,13 @@ public class Public extends SchemaImpl {
             RelGroupLabel.REL_GROUP_LABEL,
             Report.REPORT,
             Schematicity.SCHEMATICITY,
+            SemanticRole.SEMANTIC_ROLE,
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Sentence.SENTENCE,
+            SentenceForm.SENTENCE_FORM,
             SentenceMember.SENTENCE_MEMBER,
+            SentenceRelation.SENTENCE_RELATION,
             SentenceTranslation.SENTENCE_TRANSLATION,
             Source.SOURCE,
             SourceActivityLog.SOURCE_ACTIVITY_LOG,
@@ -1599,6 +1667,7 @@ public class Public extends SchemaImpl {
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
             TermsOfUse.TERMS_OF_USE,
+            TextContent.TEXT_CONTENT,
             Usage.USAGE,
             UsageSourceLink.USAGE_SOURCE_LINK,
             UsageTranslation.USAGE_TRANSLATION,

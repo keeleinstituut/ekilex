@@ -143,7 +143,7 @@ public class LexWordService extends AbstractApiCudService {
 				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, null, 1, null, PUBLICITY_PUBLIC);
 				Long lexemeId = wordLexemeMeaningId.getLexemeId();
 				Long meaningId = wordLexemeMeaningId.getMeaningId();
-				tagDbService.createLexemeAutomaticTags(lexemeId);
+				tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 				activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			}
@@ -163,7 +163,7 @@ public class LexWordService extends AbstractApiCudService {
 				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, null, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 				lexemeId = wordLexemeMeaningId.getLexemeId();
 				meaningId = wordLexemeMeaningId.getMeaningId();
-				tagDbService.createLexemeAutomaticTags(lexemeId);
+				tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 				activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			} else {
@@ -172,7 +172,7 @@ public class LexWordService extends AbstractApiCudService {
 				} else {
 					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 					lexemeId = wordLexemeMeaningId.getLexemeId();
-					tagDbService.createLexemeAutomaticTags(lexemeId);
+					tagDbService.createLexemeAutomaticTags(lexemeId, userName);
 					activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				}
 			}

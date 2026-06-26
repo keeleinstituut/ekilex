@@ -8,9 +8,9 @@ public class Construct extends AbstractDataObject {
 
 	private Long id;
 
-	private String name;
+	private String nameSimple;
 
-	private String description;
+	private String nameDetail;
 
 	private String constructTypeCode;
 
@@ -30,20 +30,20 @@ public class Construct extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getNameSimple() {
+		return nameSimple;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setNameSimple(String nameSimple) {
+		this.nameSimple = nameSimple;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getNameDetail() {
+		return nameDetail;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setNameDetail(String nameDetail) {
+		this.nameDetail = nameDetail;
 	}
 
 	public String getConstructTypeCode() {
