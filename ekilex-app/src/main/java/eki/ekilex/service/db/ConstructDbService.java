@@ -13,7 +13,6 @@ import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_MORPH;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_POS;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_MEMBER_STAT;
-import static eki.ekilex.data.db.main.Tables.CONSTRUCT_RELATION;
 import static eki.ekilex.data.db.main.Tables.CONSTRUCT_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.SENTENCE;
 import static eki.ekilex.data.db.main.Tables.SENTENCE_MEMBER;
@@ -152,11 +151,13 @@ public class ConstructDbService {
 				.getId();
 	}
 
-	public Long createConstructGroup() {
+	public Long createConstructGroup(String constructGroupTypeCode) {
 
 		return mainDb
-				.insertInto(CONSTRUCT_GROUP)
-				.defaultValues()
+				.insertInto(
+						CONSTRUCT_GROUP,
+						CONSTRUCT_GROUP.CONSTRUCT_GROUP_TYPE_CODE)
+				.values(constructGroupTypeCode)
 				.returning(CONSTRUCT_GROUP.ID)
 				.fetchOne()
 				.getId();
@@ -175,24 +176,6 @@ public class ConstructDbService {
 				.returning(CONSTRUCT_GROUP_MEMBER.ID)
 				.fetchOne()
 				.getId();
-	}
-
-	public Long createConstructRelation(Long construct1Id, Long construct2Id, String constructRelationTypeCode) {
-
-		return mainDb
-				.insertInto(
-						CONSTRUCT_RELATION,
-						CONSTRUCT_RELATION.CONSTRUCT1_ID,
-						CONSTRUCT_RELATION.CONSTRUCT2_ID,
-						CONSTRUCT_RELATION.CONSTRUCT_RELATION_TYPE_CODE)
-				.values(
-						construct1Id,
-						construct2Id,
-						constructRelationTypeCode)
-				.returning(CONSTRUCT_RELATION.ID)
-				.fetchOne()
-				.getId();
-
 	}
 
 	public void createConstructMemberLemmaMorphs(Long constructMemberId, List<String> memberLemmaMorphCodes) {

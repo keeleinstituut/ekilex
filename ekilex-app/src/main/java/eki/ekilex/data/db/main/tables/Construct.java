@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,6 +52,11 @@ public class Construct extends TableImpl<ConstructRecord> {
      * The column <code>public.construct.id</code>.
      */
     public final TableField<ConstructRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.construct.parent_construct_id</code>.
+     */
+    public final TableField<ConstructRecord, Long> PARENT_CONSTRUCT_ID = createField(DSL.name("parent_construct_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.construct.name_simple</code>.
@@ -143,14 +148,22 @@ public class Construct extends TableImpl<ConstructRecord> {
 
     @Override
     public List<ForeignKey<ConstructRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ConstructRecord, ?>>asList(Keys.CONSTRUCT__CONSTRUCT_CONSTRUCT_TYPE_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_CONSTRUCT_SUBTYPE_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_SCHEMATICITY_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_PROFICIENCY_LEVEL_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_LANG_FKEY);
+        return Arrays.<ForeignKey<ConstructRecord, ?>>asList(Keys.CONSTRUCT__CONSTRUCT_PARENT_CONSTRUCT_ID_FKEY, Keys.CONSTRUCT__CONSTRUCT_CONSTRUCT_TYPE_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_CONSTRUCT_SUBTYPE_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_SCHEMATICITY_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_PROFICIENCY_LEVEL_CODE_FKEY, Keys.CONSTRUCT__CONSTRUCT_LANG_FKEY);
     }
 
+    private transient Construct _construct;
     private transient ConstructType _constructType;
     private transient ConstructSubtype _constructSubtype;
     private transient Schematicity _schematicity;
     private transient ProficiencyLevel _proficiencyLevel;
     private transient Language _language;
+
+    public Construct construct() {
+        if (_construct == null)
+            _construct = new Construct(this, Keys.CONSTRUCT__CONSTRUCT_PARENT_CONSTRUCT_ID_FKEY);
+
+        return _construct;
+    }
 
     public ConstructType constructType() {
         if (_constructType == null)
@@ -214,11 +227,11 @@ public class Construct extends TableImpl<ConstructRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Long, Long, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

@@ -1,6 +1,7 @@
 package eki.ekilex.cli.runner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.SourceType;
 import eki.common.data.Count;
+import eki.ekilex.data.IdPair;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.conx.Construct;
 import eki.ekilex.data.conx.ConstructCommentType;
@@ -276,18 +278,45 @@ public class ConstructLoaderRunner extends AbstractLoaderRunner {
 
 	private void createConstructRelations() {
 
-		// TODO temporary. will be restructured
+		final String constructParentRelationCode = "ülemmõiste";
+		List<String> constructGroupTypeCodes = migrationDbService.getConstructGroupTypeCodes();
+		Map<String, List<IdPair>> constructTypePairsMap = new HashMap<>();
 
 		for (Map<String, Object> origConstructRelation : origConstructRelations) {
 
 			String origConstruct1Id = getId(origConstructRelation, "construction1_id");
 			String origConstruct2Id = getId(origConstructRelation, "construction2_id");
-			String constructRelationTypeCode = getStringValue(origConstructRelation, "relation");
+			String constructGroupTypeCode = getStringValue(origConstructRelation, "relation");
 
 			Long construct1Id = constructIdMap.get(origConstruct1Id);
 			Long construct2Id = constructIdMap.get(origConstruct2Id);
 
-			constructDbService.createConstructRelation(construct1Id, construct2Id, constructRelationTypeCode);
+			if (StringUtils.equals(constructParentRelationCode, constructGroupTypeCode)) {
+
+				migrationDbService.updateParentConstructId(construct2Id, construct1Id);
+
+			} else if (constructGroupTypeCodes.contains(constructGroupTypeCode)) {
+
+				IdPair pair1 = new IdPair(construct1Id, construct2Id);
+				IdPair pair2 = new IdPair(construct2Id, construct1Id);
+				List<IdPair> constructTypePairs = constructTypePairsMap.get(constructGroupTypeCode);
+
+				if (constructTypePairs == null) {
+					constructTypePairs = new ArrayList<>();
+					constructTypePairsMap.put(constructGroupTypeCode, constructTypePairs);
+				}
+
+				if (!constructTypePairs.contains(pair1) && !constructTypePairs.contains(pair2)) {
+
+					Long constructGroupId = constructDbService.createConstructGroup(constructGroupTypeCode);
+					constructDbService.createConstructGroupMember(constructGroupId, construct1Id);
+					constructDbService.createConstructGroupMember(constructGroupId, construct2Id);
+					constructTypePairs.add(pair1);
+				}
+
+			} else {
+				continue;
+			}
 		}
 	}
 

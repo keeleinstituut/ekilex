@@ -2,6 +2,8 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT;
+import static eki.ekilex.data.db.main.Tables.CONSTRUCT_GROUP_TYPE;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
@@ -41,6 +43,7 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
+import eki.ekilex.data.db.main.tables.ConstructGroupType;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Form;
@@ -700,5 +703,25 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 														.and(lgm.LANG.eq(lang)))))
 				.orderBy(lg.NAME)
 				.fetchInto(Long.class);
+	}
+
+	public List<String> getConstructGroupTypeCodes() {
+
+		ConstructGroupType cgt = CONSTRUCT_GROUP_TYPE.as("cgt");
+
+		return mainDb
+				.select(cgt.CODE)
+				.from(cgt)
+				.orderBy(cgt.ORDER_BY)
+				.fetchInto(String.class);
+	}
+
+	public void updateParentConstructId(Long constructId, Long parentConstructId) {
+
+		mainDb
+				.update(CONSTRUCT)
+				.set(CONSTRUCT.PARENT_CONSTRUCT_ID, parentConstructId)
+				.where(CONSTRUCT.ID.eq(constructId))
+				.execute();
 	}
 }

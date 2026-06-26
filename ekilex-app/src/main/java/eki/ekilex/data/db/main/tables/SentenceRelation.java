@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -67,6 +67,11 @@ public class SentenceRelation extends TableImpl<SentenceRelationRecord> {
      * The column <code>public.sentence_relation.type</code>.
      */
     public final TableField<SentenceRelationRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.sentence_relation.order_by</code>.
+     */
+    public final TableField<SentenceRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     private SentenceRelation(Name alias, Table<SentenceRelationRecord> aliased) {
         this(alias, aliased, null);
@@ -170,11 +175,11 @@ public class SentenceRelation extends TableImpl<SentenceRelationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, Long, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, Long, String, Long> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

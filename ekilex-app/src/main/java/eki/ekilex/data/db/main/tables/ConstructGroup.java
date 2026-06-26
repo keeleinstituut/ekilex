@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row1;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,6 +52,11 @@ public class ConstructGroup extends TableImpl<ConstructGroupRecord> {
      * The column <code>public.construct_group.id</code>.
      */
     public final TableField<ConstructGroupRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.construct_group.construct_group_type_code</code>.
+     */
+    public final TableField<ConstructGroupRecord, String> CONSTRUCT_GROUP_TYPE_CODE = createField(DSL.name("construct_group_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     private ConstructGroup(Name alias, Table<ConstructGroupRecord> aliased) {
         this(alias, aliased, null);
@@ -107,6 +112,20 @@ public class ConstructGroup extends TableImpl<ConstructGroupRecord> {
     }
 
     @Override
+    public List<ForeignKey<ConstructGroupRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ConstructGroupRecord, ?>>asList(Keys.CONSTRUCT_GROUP__CONSTRUCT_GROUP_CONSTRUCT_GROUP_TYPE_CODE_FKEY);
+    }
+
+    private transient ConstructGroupType _constructGroupType;
+
+    public ConstructGroupType constructGroupType() {
+        if (_constructGroupType == null)
+            _constructGroupType = new ConstructGroupType(this, Keys.CONSTRUCT_GROUP__CONSTRUCT_GROUP_CONSTRUCT_GROUP_TYPE_CODE_FKEY);
+
+        return _constructGroupType;
+    }
+
+    @Override
     public ConstructGroup as(String alias) {
         return new ConstructGroup(DSL.name(alias), this);
     }
@@ -133,11 +152,11 @@ public class ConstructGroup extends TableImpl<ConstructGroupRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row1 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row1<Long> fieldsRow() {
-        return (Row1) super.fieldsRow();
+    public Row2<Long, String> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

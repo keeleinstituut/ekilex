@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,6 +54,11 @@ public class SentenceForm extends TableImpl<SentenceFormRecord> {
     public final TableField<SentenceFormRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>public.sentence_form.sentence_id</code>.
+     */
+    public final TableField<SentenceFormRecord, Long> SENTENCE_ID = createField(DSL.name("sentence_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
      * The column <code>public.sentence_form.morph_code</code>.
      */
     public final TableField<SentenceFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
@@ -67,6 +72,11 @@ public class SentenceForm extends TableImpl<SentenceFormRecord> {
      * The column <code>public.sentence_form.value_prese</code>.
      */
     public final TableField<SentenceFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.sentence_form.order_by</code>.
+     */
+    public final TableField<SentenceFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     private SentenceForm(Name alias, Table<SentenceFormRecord> aliased) {
         this(alias, aliased, null);
@@ -123,10 +133,18 @@ public class SentenceForm extends TableImpl<SentenceFormRecord> {
 
     @Override
     public List<ForeignKey<SentenceFormRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SentenceFormRecord, ?>>asList(Keys.SENTENCE_FORM__SENTENCE_FORM_MORPH_CODE_FKEY);
+        return Arrays.<ForeignKey<SentenceFormRecord, ?>>asList(Keys.SENTENCE_FORM__SENTENCE_FORM_SENTENCE_ID_FKEY, Keys.SENTENCE_FORM__SENTENCE_FORM_MORPH_CODE_FKEY);
     }
 
+    private transient Sentence _sentence;
     private transient Morph _morph;
+
+    public Sentence sentence() {
+        if (_sentence == null)
+            _sentence = new Sentence(this, Keys.SENTENCE_FORM__SENTENCE_FORM_SENTENCE_ID_FKEY);
+
+        return _sentence;
+    }
 
     public Morph morph() {
         if (_morph == null)
@@ -162,11 +180,11 @@ public class SentenceForm extends TableImpl<SentenceFormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row6<Long, Long, String, String, String, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
