@@ -36,6 +36,10 @@ public class QueueService implements InitializingBean, SystemConstant {
 
 	}
 
+	public int getQueueItemCount() {
+		return queueItems.size();
+	}
+
 	public List<QueueStat> getQueueStats() {
 		if (CollectionUtils.isEmpty(queueItems)) {
 			return null;
