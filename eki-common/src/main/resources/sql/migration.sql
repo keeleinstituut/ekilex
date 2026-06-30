@@ -154,3 +154,17 @@ insert into text_content (name, lang, value) values ('report.description.term_da
 insert into text_content (name, lang, value) values ('report.description.term_dataset', 'eng', 'Gives an overview of the size and quality of datasets. Shows changes during the specified period, as well as the current state at the time of generation.');
 insert into text_content (name, lang, value) values ('report.description.syn_work', 'est', 'Raport annab ülevaate sellest, kui mitmele keelendile on valitud kasutaja määratud ajavahemikus lisanud ilmiku sildi "süno valmis".');
 insert into text_content (name, lang, value) values ('report.description.syn_work', 'eng', 'Gives an overview of how many word entries users have marked with "syno ready" lexeme tag during the specified period.');
+
+-- #3 --
+
+delete
+from
+	language_label ll
+where
+	ll."type" = 'iso2'
+	and ll.lang = 'est'
+	and ll.code = ll.value
+;
+
+
+
