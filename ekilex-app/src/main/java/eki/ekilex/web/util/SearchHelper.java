@@ -67,19 +67,19 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	@Autowired
 	private MessageSource messageSource;
 
-	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
-		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
+	public String composeSimpleSearchUri(List<String> datasets, String simpleSearchFilter) {
+		return composeSearchUri(SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
 	}
 
-	public String composeSearchUriAndAppendId(List<String> datasets, String simpleSearchFilter, Long entityId) {
-		String searchUri = composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
+	public String composeSimpleSearchUriAndAppendId(List<String> datasets, String simpleSearchFilter, Long entityId) {
+		String searchUri = composeSearchUri(SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
 		searchUri += "?id=" + entityId;
 		return searchUri;
 	}
 
 	public String composeSearchUri(
 			String searchMode,
-			List<String> selectedDatasets,
+			List<String> datasetCodes,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
 			SearchResultMode resultMode,
@@ -108,10 +108,10 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		}
 
 		// datasets
-		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
 			Long userId = userContext.getUserId();
 			List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
-			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
+			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(datasetCodes, userVisibleDatasets));
 			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, userVisibleDatasets);
 			if (CollectionUtils.isNotEmpty(validDatasetSelection) && CollectionUtils.isNotEmpty(datasetComparison)) {
 				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> valueUtil.encode(dataset)).collect(Collectors.toList());

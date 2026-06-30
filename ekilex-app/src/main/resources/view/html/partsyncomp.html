@@ -147,16 +147,16 @@
             <th:block th:each="synWord, synWordIter : ${syn.words}">
               <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
               <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-                <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank" rel="noopener noreferrer"></a>
-                <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                <small th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                <th:block th:if="${not isMeaningRelSyn}">
-                  <span class="syn-handle handle drag-handle text-muted p-0">
-                    <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
-                  </span>
-                </th:block>
+              <a th:href="@{${synWord.searchUri}}" th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" rel="noopener noreferrer"></a>
+              <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
+              <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+              <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+              <small th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+              <th:block th:if="${not isMeaningRelSyn}">
+                <span class="syn-handle handle drag-handle text-muted p-0">
+                  <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
+                </span>
+              </th:block>
               <span th:unless="${synWordIter.last}">,</span>
             </th:block>
             <th:block th:if="${isMeaningRelSyn}">

@@ -38,7 +38,7 @@ public class BackController extends AbstractPrivatePageController {
 		List<String> datasets = getUserPreferredDatasetCodes();
 		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getWordValue();
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, wordId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(datasets, wordValue, wordId);
 
 		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
@@ -50,7 +50,7 @@ public class BackController extends AbstractPrivatePageController {
 		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(lexemeId);
 		String lexemeWordValue = lexemeSimpleWord.getWordValue();
 		Long lexemeWordId = lexemeSimpleWord.getWordId();
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
 		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
@@ -60,7 +60,7 @@ public class BackController extends AbstractPrivatePageController {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, firstWordValue, meaningId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(datasets, firstWordValue, meaningId);
 
 		return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 	}
