@@ -22,18 +22,23 @@
     </div>
     <div class="card-body">
       <th:block th:if="${selectedReportType != null}">
-        <div class="alert alert-info mb-4" th:with="description=${@textContentUtil.getText('report.description.' + selectedReportType.name())}">
+        <div class="alert alert-info" th:with="description=${@textContentUtil.getText('report.description.' + selectedReportType.name())}">
           <p th:if="${description != null}" th:text="${description}"></p>
           <p class="mb-0" th:text="#{report.retention(${reportRetentionDays})}"></p>
         </div>
-        <th:block th:switch="${selectedReportType}">
-          <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
-            <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
+        <div class="alert alert-warning" th:if="${queueItemCount > 0}">
+          <p class="mb-0" th:text="#{report.queue.info(${queueItemCount})}"></p>
+        </div>
+        <div class="mt-4">
+          <th:block th:switch="${selectedReportType}">
+            <th:block th:case="${T(eki.ekilex.constant.ReportType).TERM_DATASET}">
+              <th:block th:replace="reportscomp :: term_dataset_form"></th:block>
+            </th:block>
+            <th:block th:case="${T(eki.ekilex.constant.ReportType).SYN_WORK}">
+              <th:block th:replace="reportscomp :: syn_work_form"></th:block>
+            </th:block>
           </th:block>
-          <th:block th:case="${T(eki.ekilex.constant.ReportType).SYN_WORK}">
-            <th:block th:replace="reportscomp :: syn_work_form"></th:block>
-          </th:block>
-        </th:block>
+        </div>
         <hr class="my-3">
         <div th:fragment="reports" id="report-list" class="mt-4">
           <h6 th:text="#{report.list.heading}">Varasemad raportid</h6>

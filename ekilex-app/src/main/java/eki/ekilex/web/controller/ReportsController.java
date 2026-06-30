@@ -22,6 +22,7 @@ import eki.ekilex.data.Report;
 import eki.ekilex.data.ReportParameters;
 import eki.ekilex.data.SynWorkReportParameters;
 import eki.ekilex.data.TermDatasetReportParameters;
+import eki.ekilex.service.QueueService;
 import eki.ekilex.service.ReportService;
 
 @ConditionalOnWebApplication
@@ -31,6 +32,9 @@ public class ReportsController extends AbstractPrivatePageController {
 
 	@Autowired
 	private ReportService reportService;
+
+	@Autowired
+	private QueueService queueService;
 
 	@GetMapping(REPORTS_URI)
 	public String init(Model model) {
@@ -57,10 +61,12 @@ public class ReportsController extends AbstractPrivatePageController {
 		}
 
 		List<Report> reports = reportService.getReports(reportType, user);
+		int queueItemCount = queueService.getQueueItemCount();
 
 		model.addAttribute("selectedReportType", reportType);
 		model.addAttribute("accessibleReportTypes", accessibleReportTypes);
 		model.addAttribute("reports", reports);
+		model.addAttribute("queueItemCount", queueItemCount);
 		model.addAttribute("reportRetentionDays", DELETE_REPORTS_OLDER_THAN_DAYS);
 
 		addReportTypeSpecificAttributes(reportType, model);
