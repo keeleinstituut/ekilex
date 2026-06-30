@@ -798,7 +798,6 @@ public class EtymLoaderRunner extends AbstractLanguageGroupLoaderRunner {
 			String mappedValue = valueMap.get(origValue);
 			if (StringUtils.isBlank(mappedValue)) {
 				String placeholderValue = "(" + origValue + ")?";
-				System.out.println(placeholderValue);
 				mappedValues.add(placeholderValue);
 			} else {
 				mappedValues.add(mappedValue);
