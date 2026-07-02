@@ -142,7 +142,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, targetMeaningId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(datasets, wordValue, targetMeaningId);
 
 		return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 	}

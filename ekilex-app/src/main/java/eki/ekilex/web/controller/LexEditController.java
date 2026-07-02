@@ -173,7 +173,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		String lexemeWordValue = lexemeSimpleWord.getWordValue();
 		Long lexemeWordId = lexemeSimpleWord.getWordId();
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
 		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
@@ -329,7 +329,7 @@ public class LexEditController extends AbstractPrivatePageController {
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
-			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
+			searchUri = searchHelper.composeSimpleSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		addRedirectSuccessMessage(attributes, "lex.create.word.success");
 
@@ -358,7 +358,7 @@ public class LexEditController extends AbstractPrivatePageController {
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
-			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
+			searchUri = searchHelper.composeSimpleSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
@@ -405,7 +405,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			selectedDatasets.add(dataset);
 			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
-		String searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
+		String searchUri = searchHelper.composeSimpleSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 

@@ -39,6 +39,7 @@ import eki.ekilex.data.WordsResult;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.PartSynSearchService;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.WebUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -52,6 +53,9 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 
 	@Autowired
 	private EkilexPermissionEvaluator permissionEvaluator;
+
+	@Autowired
+	private WebUtil webUtil;
 
 	@GetMapping(value = PART_SYN_SEARCH_URI)
 	public String initPage(Authentication authentication, Model model) {
@@ -85,8 +89,8 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		}
 
 		String roleDatasetCode = getRoleDatasetCode();
-		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
+		List<String> datasetCodes = new ArrayList<>(Arrays.asList(roleDatasetCode));
+		String searchUri = searchHelper.composeSearchUri(searchMode, datasetCodes, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 
 		return REDIRECT_PREF + PART_SYN_SEARCH_URI + searchUri;
 	}
@@ -155,10 +159,13 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		List<String> synCandidateLangCodes = userContextData.getPartSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
 		Tag activeTag = userContextData.getActiveTag();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		List<String> datasetCodes = new ArrayList<>(Arrays.asList(userRoleDatasetCode));
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Count meaningCount = new Count();
 		WordDetails details = partSynSearchService.getWordPartSynDetails(wordId, languagesOrder, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, user, userProfile);
+		webUtil.applySynWordsSimpleSearchLinks(PART_SYN_SEARCH_URI, datasetCodes, details.getLexemes());
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

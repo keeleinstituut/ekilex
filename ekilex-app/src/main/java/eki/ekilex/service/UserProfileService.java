@@ -14,6 +14,7 @@ import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
@@ -39,12 +40,21 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
 
 		if (userProfile != null) {
+
+			List<Dataset> userVisibleDatasets = permissionDbService.getUserVisibleDatasets(userId);
+			List<Classifier> allLangs = commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
+
+			List<String> userVisibleDatasetCodes = userVisibleDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+			List<String> preferredDatasets = userProfile.getPreferredDatasets();
 			List<String> partSynCandidateLangs = userProfile.getPreferredPartSynCandidateLangs();
 			List<String> synLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
-			List<Classifier> allLangs = commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
-			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
 
+			if (CollectionUtils.isEmpty(preferredDatasets)) {
+				userProfile.setPreferredDatasets(userVisibleDatasetCodes);
+			}
 			if (CollectionUtils.isEmpty(partSynCandidateLangs)) {
 				partSynCandidateLangs = allLangCodes;
 				userProfile.setPreferredPartSynCandidateLangs(partSynCandidateLangs);

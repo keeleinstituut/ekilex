@@ -38,6 +38,8 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	private boolean isLexemePublic;
 
+	private String searchUri;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -168,6 +170,14 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLexemePublic(boolean isLexemePublic) {
 		this.isLexemePublic = isLexemePublic;
+	}
+
+	public String getSearchUri() {
+		return searchUri;
+	}
+
+	public void setSearchUri(String searchUri) {
+		this.searchUri = searchUri;
 	}
 
 }

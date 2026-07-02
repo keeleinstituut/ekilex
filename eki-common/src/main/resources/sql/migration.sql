@@ -150,7 +150,21 @@ alter sequence text_content_id_seq restart with 10000;
 
 create index text_content_lang_idx on text_content(lang);
 
-insert into text_content (name, lang, value) values ('report.description.term_dataset', 'est', 'Terminikogude raport annab ülevaate terminikogude mahust ja kvaliteedist. Näidatakse mõistete, definitsioonide, terminite jne muudatusi määratud ajavahemikul ja hetkeseisu raporti koostamise hetkel. Raporti saab alla laadida Exceli formaadis.');
-insert into text_content (name, lang, value) values ('report.description.term_dataset', 'eng', 'Gives an overview of the size and quality of datasets. Shows changes during the specified period, as well as the current state at the time of generation.');
-insert into text_content (name, lang, value) values ('report.description.syn_work', 'est', 'Raport annab ülevaate sellest, kui mitmele keelendile on valitud kasutaja määratud ajavahemikus lisanud ilmiku sildi "süno valmis".');
-insert into text_content (name, lang, value) values ('report.description.syn_work', 'eng', 'Gives an overview of how many word entries users have marked with "syno ready" lexeme tag during the specified period.');
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'est', 'Terminikogude raport annab ülevaate terminikogude mahust ja kvaliteedist. Näidatakse mõistete, definitsioonide, terminite jne muudatusi määratud ajavahemikul (algus- ja lõpukuupäev on kaasa arvatud) ja hetkeseisu raporti koostamise ajal. Raporti koostamiseks on vajalik terminikogu muutmise õigus.');
+insert into text_content (name, lang, value) values ('report.description.term_dataset', 'eng', 'The terminology collection report provides an overview of the size and quality of terminology collections. It shows changes to concepts, definitions, terms, and other data during the selected time period (both the start and end dates are inclusive), as well as the current state of the collection at the time the report is generated. Generating the report requires permission to modify the terminology collection.');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'est', 'Raport annab ülevaate sellest, kui mitmele EKI ühendsõnastiku keelendile on eri kasutajad määratud ajavahemikus lisanud ilmiku sildi "süno valmis". Algus- ja lõpukuupäev on kaasa arvatud.');
+insert into text_content (name, lang, value) values ('report.description.syn_work', 'eng', 'The report provides an overview of how many words in the EKI Combined Dictionary have been assigned the lexeme tag "süno valmis" by different users during the selected time period. Both the start and end dates are inclusive.');
+
+-- #3 --
+
+delete
+from
+	language_label ll
+where
+	ll."type" = 'iso2'
+	and ll.lang = 'est'
+	and ll.code = ll.value
+;
+
+
+
