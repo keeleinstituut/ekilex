@@ -71,6 +71,7 @@
 .etym-tree__canvas {
   position: relative;
   width: 100%;
+  min-height: 250px;
 }
 
 .etym-tree__links {
@@ -87,10 +88,25 @@
   stroke-width: 2;
 }
 
+.etym-tree__line--questionable {
+  stroke: var(--color-olive-brown);
+}
+
 .etym-tree__junction circle {
   fill: var(--color-white);
   stroke: var(--color-gray-200);
   stroke-width: 1;
+}
+
+.etym-tree__junction--questionable circle {
+  fill: var(--color-olive-brown);
+  stroke: var(--color-olive-brown);
+}
+
+.etym-tree__junction-question {
+  fill: var(--color-white);
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .etym-tree__junction--interactive {
@@ -287,6 +303,15 @@
   outline: none;
 }
 
+/* Smaller variant shown inline next to a questionable word. */
+.etym-questionable--inline {
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
 .etym-questionable__note {
   color: var(--color-olive-brown);
   font-style: italic;
@@ -328,4 +353,43 @@
   font-size: 14px;
   line-height: 21px;
   color: var(--color-dark-blue);
+}
+
+/* Inline markup tags carried in node values/comments. These are styled globally in
+   eki-markup.scss, but global CSS does not cross the shadow boundary, so they are
+   redeclared here to apply inside the component. */
+eki-foreign {
+  color: #00874f;
+  font-style: italic;
+}
+
+eki-highlight {
+  font-weight: bold;
+}
+
+eki-stress {
+  font-weight: bold;
+  color: #ec0138;
+}
+
+eki-sub {
+  vertical-align: sub;
+  font-size: 70%;
+}
+
+eki-sup {
+  vertical-align: super;
+  font-size: 70%;
+}
+
+eki-meta {
+  color: #00874f;
+  font-variant: small-caps;
+  font-stretch: expanded;
+}
+
+eki-link,
+ext-link {
+  color: #004f87;
+  cursor: pointer;
 }

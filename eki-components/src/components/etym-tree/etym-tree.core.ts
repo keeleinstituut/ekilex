@@ -13,6 +13,7 @@ export interface EtymNode {
   sources: string[];
   notes: string[];
   questionableTooltip: Tooltip | null;
+  selfQuestionableTip: Tooltip | null;
   detailTip: string;
 }
 
@@ -31,6 +32,7 @@ export interface EtymLabel {
 export interface EtymLevel {
   level: number;
   connector: 'chain' | 'merge';
+  alternative: boolean;
   items: Array<EtymNode | EtymGroup | EtymLabel>;
 }
 
@@ -56,33 +58,42 @@ export function escapeAttr(text: unknown): string {
 
 export function mapTree(data: any, messages: Messages): EtymTree {
   const apiLevels: any[] = (data && data.levels) || [];
+  const rows = mergeByLevel(apiLevels);
   const levels: EtymLevel[] = [];
-  apiLevels.forEach((apiLevel, index) => {
-    const groups: any[] = apiLevel.groups || [];
+
+  rows.forEach((row) => {
+    const groups: any[] = row.groups;
     const compound = groups.find((group) => group.groupType === 'COMPOUND');
     if (compound) {
-      // COMPOUND: a "<prev language> keel" label, then its components below.
-      const language = previousLanguage(apiLevels[index - 1]);
       levels.push({
-        level: apiLevel.level,
-        connector: 'chain',
-        items: [{ kind: 'label', text: language ? language + ' keel' : '' }],
-      });
-      levels.push({
-        level: apiLevel.level,
+        level: row.level,
         connector: 'merge',
+        alternative: false,
         items: (compound.groupMembers || []).map((member: any) => mapNode(member, compound, messages)),
       });
     } else {
-      levels.push({ level: apiLevel.level, connector: 'chain', items: mapLevelItems(groups, messages) });
+      levels.push({
+        level: row.level,
+        connector: 'chain',
+        alternative: groups.some((group) => group.groupType === 'ALTERNATIVE'),
+        items: mapLevelItems(groups, messages),
+      });
     }
   });
   return { typeLabel: extractTypeLabel(apiLevels), levels };
 }
 
-function previousLanguage(apiLevel: any): string {
-  const group = ((apiLevel && apiLevel.groups) || []).find((g: any) => g.groupMembers && g.groupMembers.length);
-  return group ? group.groupMembers[0].langValue || '' : '';
+function mergeByLevel(apiLevels: any[]): Array<{ level: number; groups: any[] }> {
+  const rows: Array<{ level: number; groups: any[] }> = [];
+  apiLevels.forEach((apiLevel) => {
+    const last = rows[rows.length - 1];
+    if (last && last.level === apiLevel.level) {
+      last.groups.push(...(apiLevel.groups || []));
+    } else {
+      rows.push({ level: apiLevel.level, groups: [...(apiLevel.groups || [])] });
+    }
+  });
+  return rows;
 }
 
 function extractTypeLabel(levels: any[]): string {
@@ -111,21 +122,23 @@ function mapLevelItems(groups: any[], messages: Messages): Array<EtymNode | Etym
   return items;
 }
 
+function questionableNote(messages: Messages, key: string): Tooltip {
+  const noteText = messages[key];
+  return { html: '<span class="etym-questionable__note">' + escapeText(noteText) + '</span>', text: noteText };
+}
+
 function questionableTooltip(group: any, messages: Messages): Tooltip | null {
   if (!group || !group.questionable) {
     return null;
   }
-  const noteText = messages['lex.wordetym.questionable.tooltip'];
-  const noteHtml = '<span class="etym-questionable__note">' + escapeText(noteText) + '</span>';
-  if (group.groupType === 'LANGUAGE_GROUP') {
-    const template = messages['lex.wordetym.questionable.languagegroup'];
-    const name = group.languageGroupName || '';
-    return {
-      html: template.replace('{0}', () => escapeText(name)).replace('{1}', () => noteHtml),
-      text: template.replace('{0}', () => name).replace('{1}', () => noteText),
-    };
+  return questionableNote(messages, 'lex.wordetym.questionable.tooltip');
+}
+
+function memberQuestionableTip(member: any, messages: Messages): Tooltip | null {
+  if (!member || !member.questionable) {
+    return null;
   }
-  return { html: noteHtml, text: noteText };
+  return questionableNote(messages, 'lex.wordetym.questionable.member');
 }
 
 function mapNode(member: any, group: any, messages: Messages): EtymNode {
@@ -142,6 +155,7 @@ function mapNode(member: any, group: any, messages: Messages): EtymNode {
     sources: (member.sourceLinks || []).map((s: any) => s.name || s.sourceName).filter(Boolean),
     notes: (member.notes || []).map((n: any) => n.valuePrese).filter(Boolean),
     questionableTooltip: questionableTooltip(group, messages),
+    selfQuestionableTip: memberQuestionableTip(member, messages),
     detailTip: '',
   };
 
@@ -187,30 +201,34 @@ function renderHeader(tree: EtymTree, messages: Messages): string {
     + '</div>';
 }
 
-function renderLevel(level: EtymLevel): string {
+function renderLevel(level: EtymLevel, index: number): string {
   const connector = level.connector === 'merge' ? ' data-connector="merge"' : '';
-  return '<div class="etym-tree__level"' + connector + '>' + level.items.map(renderItem).join('') + '</div>';
+  const topLevel = index === 0;
+
+  return '<div class="etym-tree__level"' + connector + '>'
+    + level.items.map((item) => renderItem(item, topLevel)).join('')
+    + '</div>';
 }
 
-function renderItem(item: EtymNode | EtymGroup | EtymLabel): string {
+function renderItem(item: EtymNode | EtymGroup | EtymLabel, topLevel: boolean): string {
   if (item.kind === 'group') {
-    return renderGroup(item);
+    return renderGroup(item, topLevel);
   }
   if (item.kind === 'label') {
     return '<div class="etym-label">' + escapeText(item.text) + '</div>';
   }
-  return renderNode(item);
+  return renderNode(item, topLevel);
 }
 
-function renderGroup(group: EtymGroup): string {
+function renderGroup(group: EtymGroup, topLevel: boolean): string {
   return '<div class="etym-group">'
+    + (topLevel ? renderQuestionableConnector(group.questionableTooltip) : '')
     + '<div class="etym-group__name">' + escapeText(group.name) + '</div>'
-    + '<div class="etym-group__nodes">' + group.nodes.map(renderNode).join('') + '</div>'
-    + renderQuestionableConnector(group.questionableTooltip)
+    + '<div class="etym-group__nodes">' + group.nodes.map((node) => renderNode(node, false)).join('') + '</div>'
     + '</div>';
 }
 
-function renderNode(node: EtymNode): string {
+function renderNode(node: EtymNode, topLevel: boolean): string {
   const hasComments = node.comments.length > 0;
   const variants = node.variants
     .map((variant) => '<span class="etym-node__variant">' + variant + '</span>')
@@ -218,7 +236,7 @@ function renderNode(node: EtymNode): string {
   const head ='<div class="etym-node__head" tabindex="0" role="button" data-tip="' + escapeAttr(node.detailTip) + '">'
     + '<span class="etym-node__lang">' + escapeText(node.language) + '</span>'
     + '<span class="etym-node__value">'
-    + '<span class="etym-node__word">' + (node.value || '') + '</span>'
+    + '<span class="etym-node__word">' + (node.value || '') + renderQuestionableBadge(node.selfQuestionableTip) + '</span>'
     + variants
     + '</span>'
     + '</div>';
@@ -228,7 +246,7 @@ function renderNode(node: EtymNode): string {
       + '</div>'
     : '';
   return '<div class="etym-node' + (hasComments ? '' : ' etym-node--no-comment') + '">'
-    + head + comments + renderQuestionableConnector(node.questionableTooltip)
+    + (topLevel ? renderQuestionableConnector(node.questionableTooltip) : '') + head + comments
     + '</div>';
 }
 
@@ -254,15 +272,25 @@ function tooltipRow(label: string, items: string[]): string {
     + '</div>';
 }
 
+function renderQuestionableBadge(tooltip: Tooltip | null): string {
+  if (!tooltip) {
+    return '';
+  }
+  return '<span class="etym-questionable etym-questionable--inline" tabindex="0" role="button"'
+    + ' aria-label="' + escapeAttr(tooltip.text) + '"'
+    + ' data-tip="' + escapeAttr(tooltip.html) + '">?</span>';
+}
+
 function renderQuestionableConnector(tooltip: Tooltip | null): string {
   if (!tooltip) {
     return '';
   }
+
   return '<div class="etym-questionable-connector">'
-    + '<span class="etym-questionable-connector__line" aria-hidden="true"></span>'
     + '<span class="etym-questionable" tabindex="0" role="button"'
     + ' aria-label="' + escapeAttr(tooltip.text) + '"'
     + ' data-tip="' + escapeAttr(tooltip.html) + '">?</span>'
+    + '<span class="etym-questionable-connector__line" aria-hidden="true"></span>'
     + '</div>';
 }
 
@@ -273,9 +301,10 @@ export function avg(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-export function curvePath(x1: number, y1: number, x2: number, y2: number): string {
+export function curvePath(x1: number, y1: number, x2: number, y2: number, questionable = false): string {
   const midY = (y1 + y2) / 2;
-  return '<path class="etym-tree__line" d="M ' + x1 + ' ' + y1
+  const cls = questionable ? 'etym-tree__line etym-tree__line--questionable' : 'etym-tree__line';
+  return '<path class="' + cls + '" d="M ' + x1 + ' ' + y1
     + ' C ' + x1 + ' ' + midY + ', ' + x2 + ' ' + midY + ', ' + x2 + ' ' + y2 + '" />';
 }
 
@@ -283,7 +312,6 @@ export function junction(x: number, y: number, type: 'chain' | 'merge', tipHtml:
   const merge = type === 'merge';
   const path = merge ? MERGE_ICON_PATH : LINK_ICON_PATH;
   const iconTransform = merge ? 'translate(-8,-8) scale(0.667)' : 'translate(-9.45,-9.45) scale(0.9)';
-  // A connector linking two words carries the origin sentence and is clickable.
   const interactive = tipHtml
     ? ' etym-tree__junction--interactive" tabindex="0" role="button" data-tip="' + escapeAttr(tipHtml) + '"'
     : '"';
@@ -291,6 +319,29 @@ export function junction(x: number, y: number, type: 'chain' | 'merge', tipHtml:
     + '<circle r="12" />'
     + '<path class="etym-tree__junction-icon" transform="' + iconTransform + '" d="' + path + '" />'
     + '</g>';
+}
+
+export function questionJunction(x: number, y: number, tooltip: Tooltip): string {
+  return '<g class="etym-tree__junction etym-tree__junction--interactive etym-tree__junction--questionable"'
+    + ' tabindex="0" role="button"'
+    + ' aria-label="' + escapeAttr(tooltip.text) + '"'
+    + ' data-tip="' + escapeAttr(tooltip.html) + '"'
+    + ' transform="translate(' + x + ',' + y + ')">'
+    + '<circle r="12" />'
+    + '<text class="etym-tree__junction-question" text-anchor="middle" dominant-baseline="central">?</text>'
+    + '</g>';
+}
+
+export function levelQuestionableTip(level: EtymLevel | undefined): Tooltip | null {
+  if (!level) {
+    return null;
+  }
+  for (const item of level.items) {
+    if ((item.kind === 'node' || item.kind === 'group') && item.questionableTooltip) {
+      return item.questionableTooltip;
+    }
+  }
+  return null;
 }
 
 export function firstNodeOf(items: Array<EtymNode | EtymGroup | EtymLabel>): EtymNode | null {
@@ -306,12 +357,3 @@ export function firstNodeOf(items: Array<EtymNode | EtymGroup | EtymLabel>): Ety
   return null;
 }
 
-function originValue(node: EtymNode): string {
-  return '<strong>' + (node.value || '') + ' (' + escapeText(node.language) + ')</strong>';
-}
-
-export function originSentence(upperNode: EtymNode, lowerNode: EtymNode, messages: Messages): string {
-  return (messages['lex.wordetym.origin.sentence'] || '')
-    .replace('{0}', () => originValue(upperNode))
-    .replace('{1}', () => originValue(lowerNode));
-}

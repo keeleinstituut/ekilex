@@ -6,8 +6,9 @@ import {
   avg,
   curvePath,
   junction,
+  questionJunction,
   firstNodeOf,
-  originSentence,
+  levelQuestionableTip,
   type EtymTree,
   type Messages,
 } from './etym-tree.core';
@@ -183,13 +184,19 @@ export class EkiEtymTree extends HTMLElement {
       const lowerY = Math.min.apply(null, lower.map((p) => p.top));
       const midY = (upperY + lowerY) / 2;
       const type = levelEls[i + 1].getAttribute('data-connector') === 'merge' ? 'merge' : 'chain';
-      upper.forEach((p) => parts.push(curvePath(p.x, p.bottom, midX, midY)));
-      lower.forEach((p) => parts.push(curvePath(midX, midY, p.x, p.top)));
+      const questionableTip = levelQuestionableTip(levels[i + 1]);
 
-      const upperNode = levels[i] ? firstNodeOf(levels[i].items) : null;
-      const lowerNode = levels[i + 1] ? firstNodeOf(levels[i + 1].items) : null;
-      const tip = upperNode && lowerNode ? originSentence(upperNode, lowerNode, this._messages) : '';
-      parts.push(junction(midX, midY, type, tip));
+      upper.forEach((p) => parts.push(curvePath(p.x, p.bottom, midX, midY, !!questionableTip)));
+      lower.forEach((p) => parts.push(curvePath(midX, midY, p.x, p.top, !!questionableTip)));
+
+      if (questionableTip) {
+        parts.push(questionJunction(midX, midY, questionableTip));
+      } else {
+        const upperHasNode = levels[i] && firstNodeOf(levels[i].items);
+        const lowerHasNode = levels[i + 1] && firstNodeOf(levels[i + 1].items);
+        const tip = upperHasNode && lowerHasNode ? (this._messages['lex.wordetym.origin.link'] || '') : '';
+        parts.push(junction(midX, midY, type, tip));
+      }
     }
     svg.innerHTML = parts.join('');
   }
